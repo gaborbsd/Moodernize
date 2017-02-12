@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            id="hu.bme.aut.moodernize.ui.contribution1">
+         <visibility>
+              <objectState
+                 name="projectNature"
+                 value="org.eclipse.cdt.core.cnature"/>
+         </visibility>
+         <menu
+               label="Moodernize C Project"
+               path="additions"
+               id="hu.bme.aut.moodernize.ui.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Transform to Java Code"
+               class="hu.bme.aut.moodernize.ui.popup.actions.TransformCToJava"
+               menubarPath="hu.bme.aut.moodernize.ui.menu1/group1"
+               enablesFor="1"
+               id="hu.bme.aut.moodernize.ui.newAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
