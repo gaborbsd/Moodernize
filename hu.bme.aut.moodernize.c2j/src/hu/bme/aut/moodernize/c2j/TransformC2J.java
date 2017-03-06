@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IASTPreprocessorIncludeStatement;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.index.IIndex;
 
@@ -28,8 +30,10 @@ public class TransformC2J {
 		sb.append("package app;\n\n");
 		sb.append("public class " + className + "{\n\n");
 		
-		// TODO
+		ASTWithoutIncludesVisitor visitor = new ASTWithoutIncludesVisitor(ast.getContainingFilename());
+		ast.accept(visitor);
 		
+		sb.append(visitor.getData());
 		sb.append("}");
 		return sb.toString();
 	}
@@ -40,5 +44,4 @@ public class TransformC2J {
 			return null;
 		return TransformUtil.capitalizeFirst(matcher.group(3));
 	}
-
 }
