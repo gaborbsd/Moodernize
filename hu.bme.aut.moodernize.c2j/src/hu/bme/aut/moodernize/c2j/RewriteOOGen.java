@@ -25,9 +25,12 @@ public class RewriteOOGen {
 		pkg.getClasses().add(cl);
 		
 		for (OOMethod f : model.getGlobalFunctions()) {
+			//TODO: deep copy OOMethod
 			OOMethod m = factory.createOOMethod();
 			m.setName(f.getName());
 			m.setVisibility(f.getVisibility());
+			m.setStatic(f.isStatic());
+			m.setReturnType(f.getReturnType());
 			cl.getMethods().add(m);
 		}
 		model.getGlobalFunctions().clear();
@@ -41,5 +44,4 @@ public class RewriteOOGen {
 		}
 		model.getGlobalVariables().clear();
 	}
-
 }

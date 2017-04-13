@@ -1,7 +1,6 @@
 package hu.bme.aut.moodernize.c2j;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
