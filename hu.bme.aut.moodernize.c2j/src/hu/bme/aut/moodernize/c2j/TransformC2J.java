@@ -1,6 +1,8 @@
 package hu.bme.aut.moodernize.c2j;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -9,10 +11,9 @@ import java.util.regex.Pattern;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.index.IIndex;
 
+import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OogenFactory;
-import hu.bme.aut.oogen.general.GeneratedFile;
-import hu.bme.aut.oogen.java.OOCodeGeneratorJava;
 import hu.bme.aut.oogen.java.OOCodeGeneratorTemplatesJava;
 
 public class TransformC2J {
@@ -20,16 +21,26 @@ public class TransformC2J {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	
 	public static Map<String, String> transform(IIndex index, Set<IASTTranslationUnit> sources) {
+		// TODO: "Generált import hu.bme.aut.protokit.runtime.ProtoUtil;"
 		Map<String, String> classes = new HashMap<>();
 		OOModel model = factory.createOOModel();
 		
+		List<OOClass> structs = new ArrayList<OOClass>();
 		for (IASTTranslationUnit ast : sources) {
 			CDT2OOgenTransform visitor = new CDT2OOgenTransform(ast.getContainingFilename(), model);
 			ast.accept(visitor);
+			
+			for (OOClass cl : visitor.getStructs()) {
+				structs.add(cl);
+			}
 		}
-		RewriteOOGen.rewrite(model);
+		RewriteOOGen.rewrite(model, structs);
 		OOCodeGeneratorTemplatesJava template = OOCodeGeneratorTemplatesJava.getInstance();
-		classes.put("prog.ModernizedCProgram" , template.generate(model.getPackages().get(0).getClasses().get(0)));
+		
+		// TODO: majd lesz több package is, egyelõre egyet feltétlez
+		for (OOClass cl : model.getPackages().get(0).getClasses()) {
+			classes.put(model.getPackages().get(0).getName() + "." + cl.getName(), template.generate(cl));
+		}
 		return classes;
 	}
 	

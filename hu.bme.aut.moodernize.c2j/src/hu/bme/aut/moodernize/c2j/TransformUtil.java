@@ -7,10 +7,7 @@ import hu.bme.aut.oogen.OogenFactory;
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
-import org.eclipse.cdt.core.dom.ast.IFunctionType;
-import org.eclipse.cdt.core.dom.ast.IPointerType;
 import org.eclipse.cdt.core.dom.ast.IType;
-import org.eclipse.cdt.core.dom.ast.c.ICBasicType;
 
 public class TransformUtil {
 
@@ -59,8 +56,6 @@ public class TransformUtil {
 			ooType.setBaseType(OOBaseType.DOUBLE);
 		} else if (kind == Kind.eChar || kind == Kind.eChar16 || kind == Kind.eChar32) {
 			ooType.setBaseType(OOBaseType.BYTE);
-		} else if (kind == Kind.eVoid) {
-			ooType.setBaseType(null);
-		}
+		} 
 	}
 }

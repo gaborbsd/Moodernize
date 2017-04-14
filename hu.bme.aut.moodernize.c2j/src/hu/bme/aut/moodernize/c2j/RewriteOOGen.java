@@ -1,5 +1,7 @@
 package hu.bme.aut.moodernize.c2j;
 
+import java.util.List;
+
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
@@ -12,7 +14,7 @@ import hu.bme.aut.oogen.OogenFactory;
 public class RewriteOOGen {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	
-	public static void rewrite(OOModel model) {
+	public static void rewrite(OOModel model, List<OOClass> structs) {
 		OOPackage pkg = factory.createOOPackage();
 		pkg.setName("prog");
 		
@@ -36,11 +38,27 @@ public class RewriteOOGen {
 		model.getGlobalFunctions().clear();
 		
 		for (OOVariable v : model.getGlobalVariables()) {
+			// TODO deep copy OOMember
 			OOMember m = factory.createOOMember();
 			m.setName(v.getName());
 			m.setType(v.getType());
 			m.setVisibility(OOVisibility.PRIVATE);
 			cl.getMembers().add(m);
+		}
+		
+		for (OOClass s : structs) {
+			// TODO: deep copy OOClass
+			OOClass struct = factory.createOOClass();
+			struct.setName(s.getName());
+			for (OOMember m : s.getMembers()) {
+				OOMember member = factory.createOOMember();
+				member.setName(m.getName());
+				member.setType(m.getType());
+				member.setVisibility(OOVisibility.PRIVATE);
+				struct.getMembers().add(member);
+			}
+			struct.setPackage(pkg);
+			pkg.getClasses().add(struct);
 		}
 		model.getGlobalVariables().clear();
 	}
