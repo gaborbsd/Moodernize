@@ -1,16 +1,18 @@
 package hu.bme.aut.moodernize.c2j;
 
 import hu.bme.aut.oogen.OOBaseType;
+import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
 
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
+import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IType;
+import org.eclipse.cdt.core.dom.ast.ITypedef;
 
 public class TransformUtil {
-
 	public static String capitalizeFirst(String s) {
 		if (s.isEmpty())
 			return s;
@@ -23,25 +25,44 @@ public class TransformUtil {
 	public static OOType convertCDTTypeToOOgen(IType type) {
 		OogenFactory factory = OogenFactory.eINSTANCE;
 		OOType ooType = factory.createOOType();
-
-		if (type instanceof IBasicType) {
-			setOOType(ooType, (IBasicType) type);
+		
+		if (type instanceof IArrayType) {
+			ooType.setArray(true);
+			type = ((IArrayType) type).getType();
+		}
+		handleType(ooType, type);
+		
+		/*if (type instanceof IBasicType) {
+			setOOBaseType(ooType, (IBasicType) type);
 		} else if (type instanceof IArrayType) {
 			ooType.setArray(true);
 			IType arrayType = ((IArrayType) type).getType();
 			if (arrayType instanceof IBasicType) {
-				setOOType(ooType, (IBasicType) arrayType);
+				setOOBaseType(ooType, (IBasicType) arrayType);
 			} else {
 				ooType.setBaseType(OOBaseType.OBJECT);
+				
 			}
 		} else {
 			ooType.setBaseType(OOBaseType.OBJECT);
-		}
+		}*/
 
 		return ooType;
 	}
+	
+	private static void handleType(OOType ooType, IType type) {
+		if (type instanceof IBasicType) {
+			setOOBaseType(ooType, (IBasicType) type); 
+		} else if (type instanceof ICompositeType) {
+			setOOStructureType(ooType, (ICompositeType) type);
+		} else if (type instanceof ITypedef && (((ITypedef) type).getType()) instanceof ICompositeType) {
+			setOOStructureType(ooType, (ICompositeType)(((ITypedef) type).getType()));
+		} else {
+			ooType.setBaseType(OOBaseType.OBJECT);
+		}
+	}
 
-	private static void setOOType(OOType ooType, IBasicType type) {
+	private static void setOOBaseType(OOType ooType, IBasicType type) {
 		IBasicType.Kind kind = type.getKind();
 		if (kind == Kind.eBoolean) {
 			ooType.setBaseType(OOBaseType.BOOLEAN);
@@ -57,5 +78,13 @@ public class TransformUtil {
 		} else if (kind == Kind.eChar || kind == Kind.eChar16 || kind == Kind.eChar32) {
 			ooType.setBaseType(OOBaseType.BYTE);
 		} 
+	}
+	
+	private static void setOOStructureType(OOType ooType, ICompositeType struct) {
+		OogenFactory factory = OogenFactory.eINSTANCE;
+		ooType.setBaseType(OOBaseType.OBJECT);
+		OOClass classType = factory.createOOClass();
+		classType.setName(struct.getName());
+		ooType.setClassType(classType);
 	}
 }

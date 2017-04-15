@@ -33,6 +33,14 @@ public class RewriteOOGen {
 			m.setVisibility(f.getVisibility());
 			m.setStatic(f.isStatic());
 			m.setReturnType(f.getReturnType());
+			
+			for (OOVariable v : f.getParameters()) {
+				OOVariable param = factory.createOOVariable();
+				param.setName(v.getName());
+				param.setType(v.getType());
+				m.getParameters().add(param);
+			}
+			
 			cl.getMethods().add(m);
 		}
 		model.getGlobalFunctions().clear();
