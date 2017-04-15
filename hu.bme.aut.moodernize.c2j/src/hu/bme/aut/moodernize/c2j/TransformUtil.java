@@ -9,6 +9,7 @@ import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
+import org.eclipse.cdt.core.dom.ast.IPointerType;
 import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.core.dom.ast.ITypedef;
 
@@ -25,31 +26,16 @@ public class TransformUtil {
 	public static OOType convertCDTTypeToOOgen(IType type) {
 		OogenFactory factory = OogenFactory.eINSTANCE;
 		OOType ooType = factory.createOOType();
-		
+
 		if (type instanceof IArrayType) {
 			ooType.setArray(true);
 			type = ((IArrayType) type).getType();
 		}
 		handleType(ooType, type);
-		
-		/*if (type instanceof IBasicType) {
-			setOOBaseType(ooType, (IBasicType) type);
-		} else if (type instanceof IArrayType) {
-			ooType.setArray(true);
-			IType arrayType = ((IArrayType) type).getType();
-			if (arrayType instanceof IBasicType) {
-				setOOBaseType(ooType, (IBasicType) arrayType);
-			} else {
-				ooType.setBaseType(OOBaseType.OBJECT);
-				
-			}
-		} else {
-			ooType.setBaseType(OOBaseType.OBJECT);
-		}*/
 
 		return ooType;
 	}
-	
+
 	private static void handleType(OOType ooType, IType type) {
 		if (type instanceof IBasicType) {
 			setOOBaseType(ooType, (IBasicType) type); 
@@ -57,6 +43,12 @@ public class TransformUtil {
 			setOOStructureType(ooType, (ICompositeType) type);
 		} else if (type instanceof ITypedef && (((ITypedef) type).getType()) instanceof ICompositeType) {
 			setOOStructureType(ooType, (ICompositeType)(((ITypedef) type).getType()));
+		} else if(type instanceof IPointerType) {
+			IType refType = ((IPointerType) type).getType();
+			if (refType instanceof IBasicType && ((IBasicType) refType).getKind() == Kind.eVoid) {
+				ooType.setBaseType(OOBaseType.OBJECT);
+			}
+			
 		} else {
 			ooType.setBaseType(OOBaseType.OBJECT);
 		}
@@ -77,9 +69,9 @@ public class TransformUtil {
 			ooType.setBaseType(OOBaseType.DOUBLE);
 		} else if (kind == Kind.eChar || kind == Kind.eChar16 || kind == Kind.eChar32) {
 			ooType.setBaseType(OOBaseType.BYTE);
-		} 
+		}
 	}
-	
+
 	private static void setOOStructureType(OOType ooType, ICompositeType struct) {
 		OogenFactory factory = OogenFactory.eINSTANCE;
 		ooType.setBaseType(OOBaseType.OBJECT);
