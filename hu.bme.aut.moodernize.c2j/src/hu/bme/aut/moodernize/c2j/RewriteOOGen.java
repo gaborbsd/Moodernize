@@ -2,6 +2,8 @@ package hu.bme.aut.moodernize.c2j;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
@@ -27,26 +29,12 @@ public class RewriteOOGen {
 		pkg.getClasses().add(cl);
 		
 		for (OOMethod f : model.getGlobalFunctions()) {
-			//TODO: deep copy OOMethod
-			OOMethod m = factory.createOOMethod();
-			m.setName(f.getName());
-			m.setVisibility(f.getVisibility());
-			m.setStatic(f.isStatic());
-			m.setReturnType(f.getReturnType());
-			
-			for (OOVariable v : f.getParameters()) {
-				OOVariable param = factory.createOOVariable();
-				param.setName(v.getName());
-				param.setType(v.getType());
-				m.getParameters().add(param);
-			}
-			
+			OOMethod m = (OOMethod)EcoreUtil.copy(f);
 			cl.getMethods().add(m);
 		}
 		model.getGlobalFunctions().clear();
 		
 		for (OOVariable v : model.getGlobalVariables()) {
-			// TODO deep copy OOMember
 			OOMember m = factory.createOOMember();
 			m.setName(v.getName());
 			m.setType(v.getType());
@@ -55,16 +43,7 @@ public class RewriteOOGen {
 		}
 		
 		for (OOClass s : structs) {
-			// TODO: deep copy OOClass
-			OOClass struct = factory.createOOClass();
-			struct.setName(s.getName());
-			for (OOMember m : s.getMembers()) {
-				OOMember member = factory.createOOMember();
-				member.setName(m.getName());
-				member.setType(m.getType());
-				member.setVisibility(OOVisibility.PRIVATE);
-				struct.getMembers().add(member);
-			}
+			OOClass struct = (OOClass)EcoreUtil.copy(s);
 			struct.setPackage(pkg);
 			pkg.getClasses().add(struct);
 		}

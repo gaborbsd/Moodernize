@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNameOwner;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -40,11 +43,11 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		this.model = model;
 		shouldVisitNames = true;
 		shouldVisitImplicitNames = true;
+		shouldVisitExpressions = true;
 	}
 
 	public int visit(IASTName name) {
-
-		if (name.getContainingFilename() != fileName) {
+		if (!isCorrectContainingFile(name)) {
 			return PROCESS_SKIP;
 		}
 
@@ -77,7 +80,7 @@ public class CDT2OOgenTransform extends ASTVisitor {
 			return PROCESS_CONTINUE;
 		} else if (binding instanceof IVariable && name.getRoleOfName(true) != IASTNameOwner.r_reference) {
 			IVariable variable = (IVariable) binding;
-
+			
 			if (variable.getOwner() == null) {
 				OOVariable var = factory.createOOVariable();
 				var.setName(variable.getName());
@@ -89,14 +92,14 @@ public class CDT2OOgenTransform extends ASTVisitor {
 			}
 			return PROCESS_CONTINUE;
 		}
-		
+
 		else if (binding instanceof ICompositeType) {
 			ICompositeType composite = (ICompositeType) binding;
 			IField[] members = composite.getFields();
-			
+
 			OOClass cl = factory.createOOClass();
 			cl.setName(composite.getName());
-			
+
 			for (IField var : members) {
 				OOMember m = factory.createOOMember();
 				m.setName(var.getName());
@@ -113,11 +116,32 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		}
 	}
 	
+	public int visit(IASTExpression expression) {
+		if (!isCorrectContainingFile(expression)) {
+			return PROCESS_SKIP;
+		}
+		
+		if (expression instanceof IASTBinaryExpression) {
+			IASTBinaryExpression bexp = (IASTBinaryExpression) expression;
+			IASTExpression oper1 = bexp.getOperand1();
+			IASTExpression oper2 = bexp.getOperand2();
+			
+		}
+		return PROCESS_CONTINUE;
+	}
+
 	public List<OOClass> getStructs() {
 		return structs;
 	}
 
 	public OOModel getModel() {
 		return model;
+	}
+	
+	private boolean isCorrectContainingFile(IASTNode node) {
+		if (node.getContainingFilename() != this.fileName) {
+			return false;
+		}
+		return true;
 	}
 }

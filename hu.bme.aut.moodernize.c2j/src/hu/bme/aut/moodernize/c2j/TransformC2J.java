@@ -32,9 +32,12 @@ public class TransformC2J {
 			ast.accept(visitor);
 
 			for (OOClass cl : visitor.getStructs()) {
-				structs.add(cl);
+				if (!TransformUtil.containsClass(structs, cl)) {
+					structs.add(cl);
+				}
 			}
 		}
+		MethodAnalyzer.moveToReferenceTypes(structs, model.getGlobalFunctions());
 		RewriteOOGen.rewrite(model, structs);
 		
 		OOCodeGeneratorTemplatesJava template = OOCodeGeneratorTemplatesJava.getInstance();

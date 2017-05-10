@@ -5,6 +5,8 @@ import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
@@ -34,6 +36,16 @@ public class TransformUtil {
 		handleType(ooType, type);
 
 		return ooType;
+	}
+	
+	public static boolean containsClass(List<OOClass> classes, OOClass cl) {
+		for (OOClass c : classes) {
+			if (c.getName().equals(cl.getName())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	private static void handleType(OOType ooType, IType type) {
