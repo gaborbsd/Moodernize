@@ -1,11 +1,11 @@
 package hu.bme.aut.moodernize.c2j;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
-import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNameOwner;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -23,7 +23,6 @@ import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
-import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
 import hu.bme.aut.oogen.OogenFactory;
@@ -32,7 +31,8 @@ public class CDT2OOgenTransform extends ASTVisitor {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	private String fileName;
 	private OOModel model;
-	private List<OOClass> structs = new ArrayList<OOClass>();
+	private static List<OOClass> structs = new ArrayList<OOClass>();
+	private static Map<String, ArrayList<String>> functionCallHierarchy = new HashMap<String, ArrayList<String>>();
 
 	public CDT2OOgenTransform(String fn) {
 		this(fn, factory.createOOModel());
@@ -43,7 +43,6 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		this.model = model;
 		shouldVisitNames = true;
 		shouldVisitImplicitNames = true;
-		shouldVisitExpressions = true;
 	}
 
 	public int visit(IASTName name) {
@@ -52,9 +51,9 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		}
 
 		IBinding binding = name.resolveBinding();
+		// Function definition was found
 		if (binding instanceof IFunction && name.getRoleOfName(true) == IASTNameOwner.r_definition) {
 			IFunction function = (IFunction) binding;
-
 			OOMethod func = factory.createOOMethod();
 			func.setName(function.getName());
 			func.setStatic(function.isStatic());
@@ -64,35 +63,36 @@ public class CDT2OOgenTransform extends ASTVisitor {
 			if (returnType instanceof IBasicType && ((IBasicType) returnType).getKind() == Kind.eVoid) {
 				func.setReturnType(null);
 			} else {
-				func.setReturnType(TransformUtil.convertCDTTypeToOOgen(function.getType().getReturnType()));
+				func.setReturnType(TransformUtil.convertCDTTypeToOOgenType(returnType));
 			}
 
 			for (IParameter p : function.getParameters()) {
 				OOVariable param = factory.createOOVariable();
 				param.setName(p.getName());
-				OOType paramType = TransformUtil.convertCDTTypeToOOgen(p.getType());
-				param.setType(paramType);
+				param.setType(TransformUtil.convertCDTTypeToOOgenType(p.getType()));
 				func.getParameters().add(param);
 			}
 
 			model.getGlobalFunctions().add(func);
 
 			return PROCESS_CONTINUE;
-		} else if (binding instanceof IVariable && name.getRoleOfName(true) != IASTNameOwner.r_reference) {
+		}
+		// A variable was found
+		else if (binding instanceof IVariable && name.getRoleOfName(true) != IASTNameOwner.r_reference) {
 			IVariable variable = (IVariable) binding;
-			
 			if (variable.getOwner() == null) {
 				OOVariable var = factory.createOOVariable();
 				var.setName(variable.getName());
-				OOType varType = TransformUtil.convertCDTTypeToOOgen(variable.getType());
-				var.setType(varType);
+				var.setType(TransformUtil.convertCDTTypeToOOgenType(variable.getType()));
 				// TODO: init exp
 
 				model.getGlobalVariables().add(var);
 			}
+
 			return PROCESS_CONTINUE;
 		}
 
+		// A struct was found
 		else if (binding instanceof ICompositeType) {
 			ICompositeType composite = (ICompositeType) binding;
 			IField[] members = composite.getFields();
@@ -103,41 +103,31 @@ public class CDT2OOgenTransform extends ASTVisitor {
 			for (IField var : members) {
 				OOMember m = factory.createOOMember();
 				m.setName(var.getName());
-				m.setType(TransformUtil.convertCDTTypeToOOgen(var.getType()));
+				m.setType(TransformUtil.convertCDTTypeToOOgenType(var.getType()));
 				m.setVisibility(OOVisibility.PRIVATE);
 				cl.getMembers().add(m);
 			}
-			structs.add(cl);
+			if (!structs.contains(cl)) {
+				structs.add(cl);
+			}
 			return PROCESS_CONTINUE;
 		}
 
-		else {
-			return PROCESS_SKIP;
-		}
-	}
-	
-	public int visit(IASTExpression expression) {
-		if (!isCorrectContainingFile(expression)) {
-			return PROCESS_SKIP;
-		}
-		
-		if (expression instanceof IASTBinaryExpression) {
-			IASTBinaryExpression bexp = (IASTBinaryExpression) expression;
-			IASTExpression oper1 = bexp.getOperand1();
-			IASTExpression oper2 = bexp.getOperand2();
-			
-		}
-		return PROCESS_CONTINUE;
+		return PROCESS_SKIP;
 	}
 
-	public List<OOClass> getStructs() {
+	public static List<OOClass> getStructs() {
 		return structs;
+	}
+
+	public static Map<String, ArrayList<String>> getFunctionCallHierarchy() {
+		return functionCallHierarchy;
 	}
 
 	public OOModel getModel() {
 		return model;
 	}
-	
+
 	private boolean isCorrectContainingFile(IASTNode node) {
 		if (node.getContainingFilename() != this.fileName) {
 			return false;

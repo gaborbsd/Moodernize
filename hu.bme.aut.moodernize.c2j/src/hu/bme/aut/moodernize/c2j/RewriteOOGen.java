@@ -41,12 +41,12 @@ public class RewriteOOGen {
 			m.setVisibility(OOVisibility.PRIVATE);
 			cl.getMembers().add(m);
 		}
+		model.getGlobalVariables().clear();
 		
 		for (OOClass s : structs) {
 			OOClass struct = (OOClass)EcoreUtil.copy(s);
 			struct.setPackage(pkg);
 			pkg.getClasses().add(struct);
 		}
-		model.getGlobalVariables().clear();
 	}
 }
