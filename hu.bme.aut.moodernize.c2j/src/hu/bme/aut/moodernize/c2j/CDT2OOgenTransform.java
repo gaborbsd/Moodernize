@@ -1,14 +1,20 @@
 package hu.bme.aut.moodernize.c2j;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNameOwner;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -26,13 +32,17 @@ import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
 import hu.bme.aut.oogen.OogenFactory;
+import util.Calledge;
+import util.Callgraph;
+import util.TransformUtil;
+import util.TypeConverter;
 
 public class CDT2OOgenTransform extends ASTVisitor {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	private String fileName;
 	private OOModel model;
 	private static List<OOClass> structs = new ArrayList<OOClass>();
-	private static Map<String, ArrayList<String>> functionCallHierarchy = new HashMap<String, ArrayList<String>>();
+	private static Callgraph callGraph = new Callgraph();
 
 	public CDT2OOgenTransform(String fn) {
 		this(fn, factory.createOOModel());
@@ -43,6 +53,8 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		this.model = model;
 		shouldVisitNames = true;
 		shouldVisitImplicitNames = true;
+		shouldVisitDeclarations = true;
+		shouldVisitExpressions = true;
 	}
 
 	public int visit(IASTName name) {
@@ -63,13 +75,13 @@ public class CDT2OOgenTransform extends ASTVisitor {
 			if (returnType instanceof IBasicType && ((IBasicType) returnType).getKind() == Kind.eVoid) {
 				func.setReturnType(null);
 			} else {
-				func.setReturnType(TransformUtil.convertCDTTypeToOOgenType(returnType));
+				func.setReturnType(TypeConverter.convertCDTTypeToOOgenType(returnType));
 			}
 
 			for (IParameter p : function.getParameters()) {
 				OOVariable param = factory.createOOVariable();
 				param.setName(p.getName());
-				param.setType(TransformUtil.convertCDTTypeToOOgenType(p.getType()));
+				param.setType(TypeConverter.convertCDTTypeToOOgenType(p.getType()));
 				func.getParameters().add(param);
 			}
 
@@ -77,23 +89,24 @@ public class CDT2OOgenTransform extends ASTVisitor {
 
 			return PROCESS_CONTINUE;
 		}
-		// A variable was found
-		else if (binding instanceof IVariable && name.getRoleOfName(true) != IASTNameOwner.r_reference) {
+		// A global variable was found
+		else if (binding instanceof IVariable && !(binding instanceof IParameter) && !(binding instanceof IField)) {
 			IVariable variable = (IVariable) binding;
 			if (variable.getOwner() == null) {
 				OOVariable var = factory.createOOVariable();
 				var.setName(variable.getName());
-				var.setType(TransformUtil.convertCDTTypeToOOgenType(variable.getType()));
-				// TODO: init exp
-
-				model.getGlobalVariables().add(var);
+				var.setType(TypeConverter.convertCDTTypeToOOgenType(variable.getType()));
+				
+				if (!TransformUtil.listContainsOOVariable(model.getGlobalVariables(), var)) {
+					model.getGlobalVariables().add(var);
+				}
 			}
 
 			return PROCESS_CONTINUE;
 		}
 
 		// A struct was found
-		else if (binding instanceof ICompositeType) {
+		else if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
 			ICompositeType composite = (ICompositeType) binding;
 			IField[] members = composite.getFields();
 
@@ -103,7 +116,7 @@ public class CDT2OOgenTransform extends ASTVisitor {
 			for (IField var : members) {
 				OOMember m = factory.createOOMember();
 				m.setName(var.getName());
-				m.setType(TransformUtil.convertCDTTypeToOOgenType(var.getType()));
+				m.setType(TypeConverter.convertCDTTypeToOOgenType(var.getType()));
 				m.setVisibility(OOVisibility.PRIVATE);
 				cl.getMembers().add(m);
 			}
@@ -116,16 +129,54 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		return PROCESS_SKIP;
 	}
 
+	public int visit(IASTDeclaration decl) {
+		if (!isCorrectContainingFile(decl)) {
+			return PROCESS_SKIP;
+		}
+
+		if (decl instanceof IASTFunctionDefinition) {
+			IASTFunctionDefinition func = (IASTFunctionDefinition) decl;
+			String callerName = func.getDeclarator().getName().resolveBinding().getName();
+
+			IASTStatement[] statements = ((IASTCompoundStatement) func.getBody()).getStatements();
+			for (IASTStatement statement : statements) {
+				// TODO: Handle statements and expressions: all types, in their own funtions
+				if (statement instanceof IASTExpressionStatement) {
+					IASTExpression expression = ((IASTExpressionStatement) statement).getExpression();
+					if (expression instanceof IASTFunctionCallExpression) {
+						IASTFunctionCallExpression call = (IASTFunctionCallExpression) expression;
+						IASTExpression exp = call.getFunctionNameExpression();
+						if (exp != null && exp instanceof IASTIdExpression) {
+							IASTIdExpression idExp = (IASTIdExpression) call.getFunctionNameExpression();
+							String calledName = idExp.getName().resolveBinding().getName();
+							addEdgeToCallgraph(callerName, calledName);
+						}
+					}
+				}
+			}
+		}
+		return PROCESS_CONTINUE;
+	}
+
 	public static List<OOClass> getStructs() {
 		return structs;
 	}
 
-	public static Map<String, ArrayList<String>> getFunctionCallHierarchy() {
-		return functionCallHierarchy;
+	public static Callgraph getCallgraph() {
+		return callGraph;
 	}
 
 	public OOModel getModel() {
 		return model;
+	}
+	
+	private static void addEdgeToCallgraph(String callerName, String calledName) {
+		callGraph.add(new Calledge(callerName, calledName));
+	}
+	
+	public static void resetDataStructures() {
+		structs.clear();
+		callGraph.clear();
 	}
 
 	private boolean isCorrectContainingFile(IASTNode node) {

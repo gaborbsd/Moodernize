@@ -1,12 +1,9 @@
-package hu.bme.aut.moodernize.c2j;
+package util;
 
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
-
-import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
@@ -16,7 +13,7 @@ import org.eclipse.cdt.core.dom.ast.IPointerType;
 import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.core.dom.ast.ITypedef;
 
-public class TransformUtil {
+public class TypeConverter {
 	
 	public static OOType convertCDTTypeToOOgenType(IType cdtType) {
 		OogenFactory factory = OogenFactory.eINSTANCE;
@@ -34,7 +31,7 @@ public class TransformUtil {
 	}
 	
 	private static void handleType(OOType ooType, IType cdtType) {
-		//More indirection than one is not supported yet
+		//More than one indirection is not supported yet
 		if(cdtType instanceof IPointerType) {
 			handleType(ooType, ((IPointerType) cdtType).getType());
 		} 
