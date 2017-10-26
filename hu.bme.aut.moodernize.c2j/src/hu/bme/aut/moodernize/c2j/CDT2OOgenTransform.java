@@ -111,7 +111,7 @@ public class CDT2OOgenTransform extends ASTVisitor {
 			IField[] members = composite.getFields();
 
 			OOClass cl = factory.createOOClass();
-			cl.setName(composite.getName());
+			cl.setName(TransformUtil.capitalizeFirst(composite.getName()));
 
 			for (IField var : members) {
 				OOMember m = factory.createOOMember();

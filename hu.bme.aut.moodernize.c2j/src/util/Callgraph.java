@@ -27,11 +27,11 @@ public class Callgraph {
 	}
 	
 	public int calculateMaximumInDegree() {
-		return 2;
+		return (getDistinctNodes().size() / 5) + 1;
 	}
 	
-	public int calculateMinimumOutDegree() {
-		return 2;
+	public int calculateMinimumClassSize() {
+		return (getDistinctNodes().size() / 10) + 1 + 1;
 	}
 	
 	public List<String> getDistinctNodes() {
@@ -57,16 +57,6 @@ public class Callgraph {
 			}
 		}
 		return inDegree;
-	}
-	
-	public int getOutDegree(String node) {
-		int outDegree = 0;
-		for (Calledge edge : edges) {
-			if (edge.getCaller().equals(node) && !edge.getTarget().equals(node)) {
-				outDegree++;
-			}
-		}
-		return outDegree;
 	}
 	
 	public List<String> getChildren(String node) {

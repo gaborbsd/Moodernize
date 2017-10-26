@@ -22,14 +22,14 @@ public class MethodAnalyzer {
 	private static List<Boolean> shouldVisitFlags;
 	private static int maxInDegree;
 	private static List<String> nodes;
-	private static int minOutDegree;
+	private static int minClassSize;
 	private static Callgraph CFG;
 	private static List<OOMethod> functions;
 
 	public static Set<OOClass> analyze(List<OOClass> structs, List<OOMethod> globalFunctions, Callgraph callGraph) {
 		CFG = callGraph;
 		functions = globalFunctions;
-		
+
 		checkParameterLists(structs);
 		return checkCallHierarchy();
 	}
@@ -39,11 +39,10 @@ public class MethodAnalyzer {
 		while (iter.hasNext()) {
 			OOMethod m = iter.next();
 			OOType returnType = m.getReturnType();
-			
-			//TODO: Cleanup: Extract body to a method.
+
+			// TODO: Cleanup: Extract body to a method.
 			if (TransformUtil.isReferenceType(returnType)) {
-				OOClass correspondingStruct = TransformUtil.getClassFromStructs(structs,
-						returnType.getClassType());
+				OOClass correspondingStruct = TransformUtil.getClassFromStructs(structs, returnType.getClassType());
 				if (correspondingStruct != null) {
 					addMethodToClass(m, correspondingStruct);
 					iter.remove();
@@ -67,35 +66,38 @@ public class MethodAnalyzer {
 		nodes = CFG.getDistinctNodes();
 		shouldVisitFlags = new ArrayList<Boolean>();
 		for (int i = 0; i < nodes.size(); i++) {
-			shouldVisitFlags.add(i, true);
+			shouldVisitFlags.add(true);
 		}
 		maxInDegree = CFG.calculateMaximumInDegree();
-		minOutDegree = CFG.calculateMinimumOutDegree();
+		minClassSize = CFG.calculateMinimumClassSize();
 		Set<OOClass> classes = new HashSet<OOClass>();
 
 		for (int i = 0; i < nodes.size(); i++) {
 			if (shouldVisitFlags.get(i)) {
 				String f = nodes.get(i);
-				int outDegree = CFG.getOutDegree(f);
-				if (outDegree >= minOutDegree) {
-					OOClass cl = factory.createOOClass();
-					cl.setName(f);
-					cl = analyzeChain(f, cl);
+				OOClass cl = factory.createOOClass();
+				cl.setName(f.toUpperCase());
+				cl = analyzeChain(f, cl);
 
-					if (cl.getMethods().size() >= minOutDegree) {
-						classes.add(cl);
-					} else {
-						for (OOMethod m : cl.getMethods()) {
-							shouldVisitFlags.set(nodes.indexOf(m.getName()), true);
-						}
+				if (cl.getMethods().size() >= minClassSize) {
+					classes.add(cl);
+				} else {
+					for (OOMethod m : cl.getMethods()) {
+						shouldVisitFlags.set(nodes.indexOf(m.getName()), true);
 					}
 				}
 			}
 		}
-		
+
 		for (OOClass cl : classes) {
 			for (OOMethod m : cl.getMethods()) {
-					functions.remove(m);				
+				Iterator<OOMethod> iter = functions.iterator();
+				while (iter.hasNext()) {
+					OOMethod f = iter.next();
+					if (m.getName().equals(f.getName())) {
+						iter.remove();
+					}
+				}
 			}
 		}
 		return classes;
@@ -118,7 +120,7 @@ public class MethodAnalyzer {
 				analyzeChain(child, cl);
 			}
 		}
-		
+
 		return cl;
 	}
 
@@ -150,8 +152,7 @@ public class MethodAnalyzer {
 		Iterator<OOVariable> iter = from.getParameters().iterator();
 		while (iter.hasNext()) {
 			OOVariable param = iter.next();
-			if (TransformUtil.isReferenceType(param.getType())
-					&& param.getType().getClassType().equals(ref)) {
+			if (TransformUtil.isReferenceType(param.getType()) && param.getType().getClassType().equals(ref)) {
 				iter.remove();
 			}
 		}

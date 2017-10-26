@@ -2,6 +2,8 @@ package util;
 
 import java.util.List;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
@@ -35,10 +37,19 @@ public class TransformUtil {
 	public static OOMethod getMethodByName(List<OOMethod> methods, String name) {
 		for (OOMethod m : methods) {
 			if (m.getName().equals(name)) {
-				return m;
+				return (OOMethod)EcoreUtil.copy(m);
 			}
 		}
-		
 		return null;
+	}
+	
+	public static String capitalizeFirst(String string) {
+		if (string == null || string.isEmpty()) {
+			return string;
+		}
+		if (string.length() == 1) {
+			return string.toUpperCase();
+		}
+		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
 }
