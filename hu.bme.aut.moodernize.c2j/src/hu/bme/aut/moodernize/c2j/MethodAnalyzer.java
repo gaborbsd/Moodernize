@@ -29,9 +29,10 @@ public class MethodAnalyzer {
 	public static Set<OOClass> analyze(List<OOClass> structs, List<OOMethod> globalFunctions, Callgraph callGraph) {
 		CFG = callGraph;
 		functions = globalFunctions;
-
+		int numberOfFunctions = functions.size() - 1;
+		
 		checkParameterLists(structs);
-		return checkCallHierarchy();
+		return checkCallHierarchy(numberOfFunctions);
 	}
 
 	private static void checkParameterLists(List<OOClass> structs) {
@@ -62,14 +63,14 @@ public class MethodAnalyzer {
 		}
 	}
 
-	private static Set<OOClass> checkCallHierarchy() {
+	private static Set<OOClass> checkCallHierarchy(int numberOfFunctions) {
 		nodes = CFG.getDistinctNodes();
 		shouldVisitFlags = new ArrayList<Boolean>();
 		for (int i = 0; i < nodes.size(); i++) {
 			shouldVisitFlags.add(true);
 		}
-		maxInDegree = CFG.calculateMaximumInDegree();
-		minClassSize = CFG.calculateMinimumClassSize();
+		maxInDegree = CFG.calculateMaximumInDegree(numberOfFunctions);
+		minClassSize = CFG.calculateMinimumClassSize(numberOfFunctions);
 		Set<OOClass> classes = new HashSet<OOClass>();
 
 		for (int i = 0; i < nodes.size(); i++) {

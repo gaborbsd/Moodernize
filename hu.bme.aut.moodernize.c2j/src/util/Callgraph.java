@@ -9,7 +9,9 @@ public class Callgraph {
 	List<Calledge> edges = new LinkedList<Calledge>();
 	
 	public void add(Calledge edge) {
-		edges.add(edge);
+		if (!edges.contains(edge)) {
+			edges.add(edge);
+		}
 	}
 	
 	public void clear() {
@@ -26,12 +28,12 @@ public class Callgraph {
 		}
 	}
 	
-	public int calculateMaximumInDegree() {
-		return (getDistinctNodes().size() / 5) + 1;
+	public int calculateMaximumInDegree(int numberOfFunctions) {
+		return (numberOfFunctions / 5) + 1;
 	}
 	
-	public int calculateMinimumClassSize() {
-		return (getDistinctNodes().size() / 10) + 1 + 1;
+	public int calculateMinimumClassSize(int numberOfFunctions) {
+		return (numberOfFunctions / 10) + 1 + 1;
 	}
 	
 	public List<String> getDistinctNodes() {

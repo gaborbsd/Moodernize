@@ -2,6 +2,7 @@ package util;
 
 public class Calledge {
 	private String caller;
+
 	public String getCaller() {
 		return caller;
 	}
@@ -19,9 +20,19 @@ public class Calledge {
 	}
 
 	private String target;
-	
+
 	public Calledge(String caller, String target) {
 		this.caller = caller;
 		this.target = target;
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof Calledge) {
+			Calledge other = (Calledge) obj;
+			if (other.getCaller().equals(this.getCaller()) && other.getTarget().equals(this.getTarget())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
