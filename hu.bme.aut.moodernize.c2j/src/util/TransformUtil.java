@@ -52,4 +52,24 @@ public class TransformUtil {
 		}
 		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
+	
+	public static boolean isCorrectClassName(String name) {
+		if (name == null) {
+			return false;
+		}
+		name = name.toUpperCase();
+		boolean isIncorrect = 
+				   name.equals("ABSTRACT") || name.equals("ASSERT") || name.equals("BOOLEAN")
+				|| name.equals("CATCH") || name.equals("CLASS" ) ||name.equals("ENUM")
+				|| name.equals("EXTENDS") || name.equals("FINAL") || name.equals("FINALLY")
+				|| name.equals("IMPLEMENTS") || name.equals("IMPORT") || name.equals("INSTANCEOF") || name.equals("INTERFACE")
+				|| name.equals("NATIVE") || name.equals("NEW") || name.equals("PACKAGE") 
+				|| name.equals("PRIVATE") || name.equals("PROTECTED") || name.equals("PUBLIC")
+				|| name.equals("STATIC") || name.equals("STRICTFP") || name.equals("SUPER")
+				|| name.equals("SYNCHRONIZED") || name.equals("THIS") || name.equals("THROW")
+				|| name.equals("THROWS") || name.equals("TRANSIENT") || name.equals("TRY")
+				|| name.equals("VOLATILE") || name.equals("");
+		
+		return !isIncorrect;
+	}
 }

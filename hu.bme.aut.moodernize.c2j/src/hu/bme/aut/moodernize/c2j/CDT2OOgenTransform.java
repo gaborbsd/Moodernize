@@ -108,9 +108,15 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		// A struct was found
 		else if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
 			ICompositeType composite = (ICompositeType) binding;
+			//TODO: What to do with incorrect class names? Replace all references or ignore?wwwwwwww
+			if (!TransformUtil.isCorrectClassName(composite.getName())) {
+				return PROCESS_SKIP;
+			}
 			IField[] members = composite.getFields();
 
 			OOClass cl = factory.createOOClass();
+			
+			
 			cl.setName(composite.getName());
 
 			for (IField var : members) {

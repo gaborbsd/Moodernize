@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
@@ -48,7 +49,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 
 	private IProject project;
 	private ICProject cProject;
-	
+
 	private IProgressService pgService;
 
 	public TransformCToJava() {
@@ -74,20 +75,18 @@ public class TransformCToJava implements IObjectActionDelegate {
 				SubMonitor subMonitor = SubMonitor.convert(pm, 100);
 				try {
 					subMonitor.beginTask("Modernizing project", 100);
-					
+
 					SubMonitor transformationMonitor = subMonitor.split(50);
 					transformationMonitor.beginTask("Transforming program code", 100);
-					
+
 					IIndex index = CCorePlugin.getIndexManager().getIndex(cProject);
 
 					Set<IASTTranslationUnit> asts = new HashSet<>();
-					ISourceRoot sourceRoots[] = cProject.getSourceRoots();
-					for (ISourceRoot folder : sourceRoots) {
+					for (ISourceRoot folder : cProject.getSourceRoots()) {
 						if (folder.getElementName() == null || folder.getElementName().isEmpty())
 							continue;
 						for (ITranslationUnit tu : folder.getTranslationUnits()) {
-							IASTTranslationUnit ast = tu.getAST();
-							asts.add(ast);
+							asts.add(tu.getAST());
 						}
 					}
 					transformationMonitor.worked(10);
@@ -113,12 +112,11 @@ public class TransformCToJava implements IObjectActionDelegate {
 						javaProject.setOutputLocation(binFolder.getFullPath(), generationMonitor.split(5));
 					}
 					List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
-					IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
-					LibraryLocation[] locations = JavaRuntime.getLibraryLocations(vmInstall);
-					for (LibraryLocation element : locations) {
+					for (LibraryLocation element : JavaRuntime.getLibraryLocations(JavaRuntime.getDefaultVMInstall())) {
 						entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
 					}
-					javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), generationMonitor.split(5));
+					javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]),
+							generationMonitor.split(5));
 
 					IFolder srcFolder = newProject.getFolder("src");
 					if (!srcFolder.exists()) {
@@ -139,10 +137,14 @@ public class TransformCToJava implements IObjectActionDelegate {
 						String pkgName = matcher.group(1);
 						String fileName = matcher.group(2) + ".java";
 
-						IPackageFragment pkg = javaProject.getPackageFragmentRoot(srcFolder).createPackageFragment(pkgName,
-								false, generationMonitor.split(increment / 2));
-
-						pkg.createCompilationUnit(fileName, e.getValue(), true, generationMonitor.split(increment / 2));
+						IPackageFragment pkg = javaProject.getPackageFragmentRoot(srcFolder)
+								.createPackageFragment(pkgName, false, generationMonitor.split(increment / 2));
+						try {
+							pkg.createCompilationUnit(fileName, e.getValue(), true,
+									generationMonitor.split(increment / 2));
+						} catch (JavaModelException me) {
+							me.printStackTrace();
+						}
 					}
 				} catch (CModelException e) {
 					e.printStackTrace();
