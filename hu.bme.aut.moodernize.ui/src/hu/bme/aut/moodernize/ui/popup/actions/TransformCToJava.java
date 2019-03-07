@@ -10,9 +10,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-import org.eclipse.cdt.core.index.IIndex;
 import org.eclipse.cdt.core.model.CModelException;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICProject;
@@ -31,7 +29,6 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
 import org.eclipse.jface.action.IAction;
@@ -42,7 +39,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.progress.IProgressService;
 
-import hu.bme.aut.moodernize.c2j.TransformC2J;
+import hu.bme.aut.moodernize.c2j.CToJavaTransformer;
+import hu.bme.aut.moodernize.c2j.ICToJavaTransformer;
 
 public class TransformCToJava implements IObjectActionDelegate {
 	private static final Pattern PKG_CLASS_PARSE_PATTERN = Pattern.compile("(.*)\\.(.*)");
@@ -74,82 +72,11 @@ public class TransformCToJava implements IObjectActionDelegate {
 			pgService.busyCursorWhile((pm) -> {
 				SubMonitor subMonitor = SubMonitor.convert(pm, 100);
 				try {
-					subMonitor.beginTask("Modernizing project", 100);
+					subMonitor.beginTask("Parsing project", 100);
+					Set<IASTTranslationUnit> asts = parseCProject();
+					Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts);
+					generateJavaProject(subMonitor, transformedCode);
 
-					SubMonitor transformationMonitor = subMonitor.split(50);
-					transformationMonitor.beginTask("Transforming program code", 100);
-
-					IIndex index = CCorePlugin.getIndexManager().getIndex(cProject);
-
-					Set<IASTTranslationUnit> asts = new HashSet<>();
-					for (ISourceRoot folder : cProject.getSourceRoots()) {
-						if (folder.getElementName() == null || folder.getElementName().isEmpty())
-							continue;
-						for (ITranslationUnit tu : folder.getTranslationUnits()) {
-							asts.add(tu.getAST());
-						}
-					}
-					transformationMonitor.worked(10);
-					Map<String, String> transformedCode = TransformC2J.transform(index, asts);
-					transformationMonitor.worked(90);
-					transformationMonitor.done();
-
-					SubMonitor generationMonitor = subMonitor.split(50);
-					generationMonitor.beginTask("Generating source code", 100);
-					String newProjName = cProject.getResource().getName() + ".javaproj";
-					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-					IProject newProject = root.getProject(newProjName);
-					if (!newProject.exists())
-						newProject.create(generationMonitor.split(5));
-					newProject.open(generationMonitor.split(5));
-					IProjectDescription newProjectDesc = newProject.getDescription();
-					newProjectDesc.setNatureIds(new String[] { JavaCore.NATURE_ID });
-					newProject.setDescription(newProjectDesc, generationMonitor.split(5));
-					IJavaProject javaProject = JavaCore.create(newProject);
-					IFolder binFolder = newProject.getFolder("bin");
-					if (!binFolder.exists()) {
-						binFolder.create(true, true, generationMonitor.split(5));
-						javaProject.setOutputLocation(binFolder.getFullPath(), generationMonitor.split(5));
-					}
-					List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
-					for (LibraryLocation element : JavaRuntime.getLibraryLocations(JavaRuntime.getDefaultVMInstall())) {
-						entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
-					}
-					javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]),
-							generationMonitor.split(5));
-
-					IFolder srcFolder = newProject.getFolder("src");
-					if (!srcFolder.exists()) {
-						srcFolder.create(true, true, generationMonitor.split(5));
-					}
-					IPackageFragmentRoot pkgRoot = javaProject.getPackageFragmentRoot(srcFolder);
-					IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-					IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
-					System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-					newEntries[oldEntries.length] = JavaCore.newSourceEntry(pkgRoot.getPath());
-					javaProject.setRawClasspath(newEntries, generationMonitor.split(5));
-
-					int increment = 60 / transformedCode.size();
-					for (Entry<String, String> e : transformedCode.entrySet()) {
-						Matcher matcher = PKG_CLASS_PARSE_PATTERN.matcher(e.getKey());
-						if (!matcher.matches())
-							continue;
-						String pkgName = matcher.group(1);
-						String fileName = matcher.group(2) + ".java";
-
-						IPackageFragment pkg = javaProject.getPackageFragmentRoot(srcFolder)
-								.createPackageFragment(pkgName, false, generationMonitor.split(increment / 2));
-						try {
-							pkg.createCompilationUnit(fileName, e.getValue(), true,
-									generationMonitor.split(increment / 2));
-						} catch (JavaModelException me) {
-							me.printStackTrace();
-						}
-					}
-				} catch (CModelException e) {
-					e.printStackTrace();
-				} catch (CoreException e1) {
-					e1.printStackTrace();
 				} finally {
 					subMonitor.done();
 				}
@@ -178,5 +105,96 @@ public class TransformCToJava implements IObjectActionDelegate {
 			}
 		}
 	}
+	
+	private Map<String, String> transformToOOgenModel(SubMonitor subMonitor, Set<IASTTranslationUnit> asts) {
+		SubMonitor transformationMonitor = subMonitor.split(50);
+		transformationMonitor.beginTask("Transforming program code", 100);
+		transformationMonitor.worked(10);
+		
+		ICToJavaTransformer transformer = new CToJavaTransformer();
+		
+		transformationMonitor.worked(90);
+		transformationMonitor.done();
+		
+		return transformer.transform(asts);
+	}
+	
+	private Set<IASTTranslationUnit> parseCProject() {
+		Set<IASTTranslationUnit> asts = new HashSet<>();
+		try {
+			for (ISourceRoot folder : cProject.getSourceRoots()) {
+				if (folder.getElementName() == null || folder.getElementName().isEmpty())
+					continue;
+				for (ITranslationUnit tu : folder.getTranslationUnits()) {
+					asts.add(tu.getAST());
+				}
+			}
+		} catch (CModelException cme) {
+			cme.printStackTrace();
+		} catch (CoreException ce) {
+			ce.printStackTrace();
+		}
 
+		return asts;
+	}
+
+	private void generateJavaProject(SubMonitor subMonitor, Map<String, String> transformedCode) {
+		SubMonitor generationMonitor = subMonitor.split(50);
+		generationMonitor.beginTask("Generating source code", 100);
+		String newProjName = cProject.getResource().getName() + ".javaproj";
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IProject newProject = root.getProject(newProjName);
+
+		try {
+			if (!newProject.exists()) {
+				newProject.create(generationMonitor.split(5));
+			}
+			newProject.open(generationMonitor.split(5));
+			IProjectDescription newProjectDesc = newProject.getDescription();
+			newProjectDesc.setNatureIds(new String[] { JavaCore.NATURE_ID });
+			newProject.setDescription(newProjectDesc, generationMonitor.split(5));
+			IJavaProject javaProject = JavaCore.create(newProject);
+			IFolder binFolder = newProject.getFolder("bin");
+			if (!binFolder.exists()) {
+				binFolder.create(true, true, generationMonitor.split(5));
+				javaProject.setOutputLocation(binFolder.getFullPath(), generationMonitor.split(5));
+			}
+			List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+			for (LibraryLocation element : JavaRuntime.getLibraryLocations(JavaRuntime.getDefaultVMInstall())) {
+				entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
+			}
+			javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]),
+					generationMonitor.split(5));
+
+			IFolder srcFolder = newProject.getFolder("src");
+			if (!srcFolder.exists()) {
+				srcFolder.create(true, true, generationMonitor.split(5));
+			}
+			IPackageFragmentRoot pkgRoot = javaProject.getPackageFragmentRoot(srcFolder);
+			IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
+			IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
+			System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
+			newEntries[oldEntries.length] = JavaCore.newSourceEntry(pkgRoot.getPath());
+			javaProject.setRawClasspath(newEntries, generationMonitor.split(5));
+
+			int increment = 60 / transformedCode.size();
+			for (Entry<String, String> e : transformedCode.entrySet()) {
+				Matcher matcher = PKG_CLASS_PARSE_PATTERN.matcher(e.getKey());
+				if (!matcher.matches())
+					continue;
+				String pkgName = matcher.group(1);
+				String fileName = matcher.group(2) + ".java";
+
+				IPackageFragment pkg = javaProject.getPackageFragmentRoot(srcFolder).createPackageFragment(pkgName,
+						false, generationMonitor.split(increment / 2));
+				try {
+					pkg.createCompilationUnit(fileName, e.getValue(), true, generationMonitor.split(increment / 2));
+				} catch (JavaModelException me) {
+					me.printStackTrace();
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+	}
 }

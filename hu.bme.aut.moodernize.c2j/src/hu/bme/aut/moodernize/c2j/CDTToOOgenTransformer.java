@@ -37,20 +37,21 @@ import util.Callgraph;
 import util.TransformUtil;
 import util.TypeConverter;
 
-public class CDT2OOgenTransform extends ASTVisitor {
+public class CDTToOOgenTransformer extends ASTVisitor {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	private String fileName;
 	private OOModel model;
 	private static List<OOClass> structs = new ArrayList<OOClass>();
 	private static Callgraph callGraph = new Callgraph();
 
-	public CDT2OOgenTransform(String fn) {
-		this(fn, factory.createOOModel());
+	public CDTToOOgenTransformer(String fileName) {
+		this(fileName, factory.createOOModel());
 	}
 
-	public CDT2OOgenTransform(String fileName, OOModel model) {
+	public CDTToOOgenTransformer(String fileName, OOModel model) {
 		this.fileName = fileName;
 		this.model = model;
+		
 		shouldVisitNames = true;
 		shouldVisitImplicitNames = true;
 		shouldVisitDeclarations = true;
@@ -108,7 +109,7 @@ public class CDT2OOgenTransform extends ASTVisitor {
 		// A struct was found
 		else if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
 			ICompositeType composite = (ICompositeType) binding;
-			//TODO: What to do with incorrect class names? Replace all references or ignore?wwwwwwww
+			//TODO: What to do with incorrect class names? Replace all references or ignore?
 			if (!TransformUtil.isCorrectClassName(composite.getName())) {
 				return PROCESS_SKIP;
 			}

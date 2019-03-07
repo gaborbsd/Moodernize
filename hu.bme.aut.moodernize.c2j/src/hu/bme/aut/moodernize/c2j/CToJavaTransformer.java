@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-import org.eclipse.cdt.core.index.IIndex;
 
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
@@ -16,24 +15,23 @@ import hu.bme.aut.oogen.OogenFactory;
 import hu.bme.aut.oogen.java.OOCodeGeneratorTemplatesJava;
 import util.Callgraph;
 
-public class TransformC2J {
-	//private static Pattern PATH_FILE_EXT_PATTERN = Pattern.compile("(.*)(/|\\\\)+(.*).c");
+public class CToJavaTransformer implements ICToJavaTransformer {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 
-	public static Map<String, String> transform(IIndex index, Set<IASTTranslationUnit> sources) {
+	public Map<String, String> transform(Set<IASTTranslationUnit> sources) {
 		Map<String, String> classes = new HashMap<>();
 		OOModel model = factory.createOOModel();
-		CDT2OOgenTransform.resetDataStructures();
+		CDTToOOgenTransformer.resetDataStructures();
 		
 		for (IASTTranslationUnit ast : sources) {
 			if (ast != null) {
-				CDT2OOgenTransform visitor = new CDT2OOgenTransform(ast.getContainingFilename(), model);
+				CDTToOOgenTransformer visitor = new CDTToOOgenTransformer(ast.getContainingFilename(), model);
 				ast.accept(visitor);
 			}
 		}
-		List<OOClass> structs = CDT2OOgenTransform.getStructs();
-		Callgraph callGraph = CDT2OOgenTransform.getCallgraph();
-		removeNonCustomFunctionsFromCFG(callGraph, model.getGlobalFunctions());
+		List<OOClass> structs = CDTToOOgenTransformer.getStructs();
+		Callgraph callGraph = CDTToOOgenTransformer.getCallgraph();
+		removeNonCustomFunctionsFromCG(callGraph, model.getGlobalFunctions());
 		
 		Set<OOClass> newClasses = MethodAnalyzer.analyze(structs, model.getGlobalFunctions(), callGraph);
 		for (OOClass cl : newClasses) {
@@ -52,8 +50,8 @@ public class TransformC2J {
 		return classes;
 	}
 	
-	private static void removeNonCustomFunctionsFromCFG(Callgraph CFG, List<OOMethod> globalFunctions) {
-		for (String node : CFG.getDistinctNodes()) {
+	private static void removeNonCustomFunctionsFromCG(Callgraph cg, List<OOMethod> globalFunctions) {
+		for (String node : cg.getDistinctNodes()) {
 			boolean contains = false;
 			for (OOMethod m : globalFunctions) {
 				if (m.getName().equals(node)) {
@@ -62,7 +60,7 @@ public class TransformC2J {
 				}
 			}
 			if (!contains) {
-				CFG.removeNodeIfExists(node);
+				cg.removeNodeIfExists(node);
 			}
 		}
 	}

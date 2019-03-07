@@ -76,5 +76,4 @@ public class TypeConverter {
 		classType.setName(struct.getName());
 		ooType.setClassType(classType);
 	}
-
 }

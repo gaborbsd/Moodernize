@@ -4,5 +4,5 @@
 int globalIntFromFoo = 122;
 int main(void) {
 	int innerVar;
-	return EXIT_SUCCESS;
+	return 0;
 }

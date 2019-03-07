@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.cdt.core;bundle-version="6.2.0",
  hu.bme.aut.oogen.java;bundle-version="1.0.0",
  hu.bme.aut.oogen.cpp;bundle-version="1.0.0"
 Export-Package: hu.bme.aut.moodernize.c2j
+Automatic-Module-Name: hu.bme.aut.moodernize.c2j

@@ -23,11 +23,11 @@ public class MethodAnalyzer {
 	private static int maxInDegree;
 	private static List<String> nodes;
 	private static int minClassSize;
-	private static Callgraph CFG;
+	private static Callgraph cfg;
 	private static List<OOMethod> functions;
 
 	public static Set<OOClass> analyze(List<OOClass> structs, List<OOMethod> globalFunctions, Callgraph callGraph) {
-		CFG = callGraph;
+		cfg = callGraph;
 		functions = globalFunctions;
 		int numberOfFunctions = functions.size() - 1;
 		
@@ -47,7 +47,7 @@ public class MethodAnalyzer {
 				if (correspondingStruct != null) {
 					addMethodToClass(m, correspondingStruct);
 					iter.remove();
-					CFG.removeNodeIfExists(m.getName());
+					cfg.removeNodeIfExists(m.getName());
 				}
 			} else {
 				List<OOClass> refParams = getReferenceTypeParameters(m);
@@ -56,7 +56,7 @@ public class MethodAnalyzer {
 					if (correspondingStruct != null) {
 						addMethodToClass(m, correspondingStruct);
 						iter.remove();
-						CFG.removeNodeIfExists(m.getName());
+						cfg.removeNodeIfExists(m.getName());
 					}
 				}
 			}
@@ -64,13 +64,13 @@ public class MethodAnalyzer {
 	}
 
 	private static Set<OOClass> checkCallHierarchy(int numberOfFunctions) {
-		nodes = CFG.getDistinctNodes();
+		nodes = cfg.getDistinctNodes();
 		shouldVisitFlags = new ArrayList<Boolean>();
 		for (int i = 0; i < nodes.size(); i++) {
 			shouldVisitFlags.add(true);
 		}
-		maxInDegree = CFG.calculateMaximumInDegree(numberOfFunctions);
-		minClassSize = CFG.calculateMinimumClassSize(numberOfFunctions);
+		maxInDegree = cfg.calculateMaximumInDegree(numberOfFunctions);
+		minClassSize = cfg.calculateMinimumClassSize(numberOfFunctions);
 		Set<OOClass> classes = new HashSet<OOClass>();
 
 		for (int i = 0; i < nodes.size(); i++) {
@@ -106,7 +106,7 @@ public class MethodAnalyzer {
 
 	private static OOClass analyzeChain(String node, OOClass cl) {
 		shouldVisitFlags.set(nodes.indexOf(node), false);
-		int inDegree = CFG.getInDegree(node);
+		int inDegree = cfg.getInDegree(node);
 
 		if (inDegree > maxInDegree) {
 			return cl;
@@ -116,7 +116,7 @@ public class MethodAnalyzer {
 			cl.getMethods().add(method);
 		}
 
-		for (String child : CFG.getChildren(node)) {
+		for (String child : cfg.getChildren(node)) {
 			if (shouldVisitFlags.get(nodes.indexOf(child))) {
 				analyzeChain(child, cl);
 			}
