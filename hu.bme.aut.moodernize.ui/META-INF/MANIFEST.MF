@@ -13,3 +13,6 @@ Require-Bundle: org.eclipse.ui,
  hu.bme.aut.moodernize.c2j;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: hu.bme.aut.moodernize.ui
+Import-Package: hu.bme.aut.oogen,
+ hu.bme.aut.oogen.java,
+ org.eclipse.emf.common.util

@@ -2,6 +2,7 @@ package hu.bme.aut.moodernize.ui.popup.actions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,10 @@ import org.eclipse.ui.progress.IProgressService;
 
 import hu.bme.aut.moodernize.c2j.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.ICToJavaTransformer;
+import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOModel;
+import hu.bme.aut.oogen.OOPackage;
+import hu.bme.aut.oogen.java.OOCodeGeneratorTemplatesJava;
 
 public class TransformCToJava implements IObjectActionDelegate {
 	private static final Pattern PKG_CLASS_PARSE_PATTERN = Pattern.compile("(.*)\\.(.*)");
@@ -112,11 +117,19 @@ public class TransformCToJava implements IObjectActionDelegate {
 		transformationMonitor.worked(10);
 		
 		ICToJavaTransformer transformer = new CToJavaTransformer();
+		OOModel oogenModel = transformer.transform(asts);
+		Map<String, String> classes = new HashMap<>();
+		OOCodeGeneratorTemplatesJava template = OOCodeGeneratorTemplatesJava.getInstance();
+		for (OOPackage pkg : oogenModel.getPackages()) {
+			for (OOClass cl : pkg.getClasses()) {
+				classes.put(pkg.getName() + "." + cl.getName(), template.generate(cl));
+			}
+		}
 		
 		transformationMonitor.worked(90);
 		transformationMonitor.done();
 		
-		return transformer.transform(asts);
+		return classes;
 	}
 	
 	private Set<IASTTranslationUnit> parseCProject() {
