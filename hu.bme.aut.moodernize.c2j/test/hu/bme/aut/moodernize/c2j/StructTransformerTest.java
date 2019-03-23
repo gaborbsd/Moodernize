@@ -14,7 +14,7 @@ public class StructTransformerTest extends TransformationTest {
 	public void struct_shouldTransformToClassWithCorrespondingMembers() {
 		StringBuilder sourceCode = new StringBuilder();
 		sourceCode.append("typedef struct S1 {int i, j = 0;}someStruct;");
-		sourceCode.append("struct S2 {char *c;}");
+		sourceCode.append("struct S2 {char *c;}\n");
 		
 		OOModel model = getModelBySourceCode(sourceCode.toString());
 		

@@ -20,7 +20,7 @@ import org.junit.Before;
 
 import hu.bme.aut.oogen.OOModel;
 
-public class TransformationTest {
+public abstract class TransformationTest {
 	protected ICToJavaTransformer transformer;
 	@Before
 	public void setup() {

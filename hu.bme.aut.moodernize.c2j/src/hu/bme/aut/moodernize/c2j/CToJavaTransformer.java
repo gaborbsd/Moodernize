@@ -33,7 +33,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		Callgraph callGraph = CDTToOOgenTransformer.getCallgraph();
 		removeNonCustomFunctionsFromCG(callGraph, model.getGlobalFunctions());
 		
-		Set<OOClass> newClasses = MethodAnalyzer.analyze(structs, model.getGlobalFunctions(), callGraph);
+		Set<OOClass> newClasses = CallChainAnalyzer.analyze(structs, model.getGlobalFunctions(), callGraph);
 		for (OOClass cl : newClasses) {
 			structs.add(cl);
 		}

@@ -16,7 +16,7 @@ import hu.bme.aut.oogen.OogenFactory;
 import util.Callgraph;
 import util.TransformUtil;
 
-public class MethodAnalyzer {
+public class CallChainAnalyzer {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 
 	private static List<Boolean> shouldVisitFlags;
