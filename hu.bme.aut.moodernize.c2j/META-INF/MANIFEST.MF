@@ -9,6 +9,20 @@ Require-Bundle: org.eclipse.cdt.core;bundle-version="6.2.0",
  hu.bme.aut.oogen.meta;bundle-version="0.1.0",
  hu.bme.aut.oogen.general;bundle-version="1.0.0",
  hu.bme.aut.oogen.java;bundle-version="1.0.0",
- hu.bme.aut.oogen.cpp;bundle-version="1.0.0"
+ hu.bme.aut.oogen.cpp;bundle-version="1.0.0",
+ org.junit,
+ org.junit.jupiter.api,
+ org.junit.jupiter.engine,
+ org.junit.jupiter.migrationsupport,
+ org.junit.jupiter.params,
+ org.junit.platform.commons,
+ org.junit.platform.engine,
+ org.junit.platform.launcher,
+ org.junit.platform.runner,
+ org.junit.platform.suite.api,
+ org.junit.vintage.engine,
+ org.hamcrest.core,
+ org.opentest4j,
+ org.apiguardian
 Export-Package: hu.bme.aut.moodernize.c2j
 Automatic-Module-Name: hu.bme.aut.moodernize.c2j

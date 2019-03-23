@@ -12,11 +12,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
+import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage;
+import org.eclipse.cdt.core.index.IIndex;
 import org.eclipse.cdt.core.model.CModelException;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICProject;
+import org.eclipse.cdt.core.model.ILanguage;
 import org.eclipse.cdt.core.model.ISourceRoot;
 import org.eclipse.cdt.core.model.ITranslationUnit;
+import org.eclipse.cdt.core.parser.DefaultLogService;
+import org.eclipse.cdt.core.parser.FileContent;
+import org.eclipse.cdt.core.parser.IParserLogService;
+import org.eclipse.cdt.core.parser.IScannerInfo;
+import org.eclipse.cdt.core.parser.IncludeFileContentProvider;
+import org.eclipse.cdt.core.parser.ScannerInfo;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -39,7 +48,6 @@ import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.progress.IProgressService;
-
 import hu.bme.aut.moodernize.c2j.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.ICToJavaTransformer;
 import hu.bme.aut.oogen.OOClass;
@@ -117,10 +125,10 @@ public class TransformCToJava implements IObjectActionDelegate {
 		transformationMonitor.worked(10);
 		
 		ICToJavaTransformer transformer = new CToJavaTransformer();
-		OOModel oogenModel = transformer.transform(asts);
+		OOModel ooModel = transformer.transform(asts);
 		Map<String, String> classes = new HashMap<>();
 		OOCodeGeneratorTemplatesJava template = OOCodeGeneratorTemplatesJava.getInstance();
-		for (OOPackage pkg : oogenModel.getPackages()) {
+		for (OOPackage pkg : ooModel.getPackages()) {
 			for (OOClass cl : pkg.getClasses()) {
 				classes.put(pkg.getName() + "." + cl.getName(), template.generate(cl));
 			}

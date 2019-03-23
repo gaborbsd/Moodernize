@@ -1,10 +1,5 @@
 package util;
 
-import hu.bme.aut.oogen.OOBaseType;
-import hu.bme.aut.oogen.OOClass;
-import hu.bme.aut.oogen.OOType;
-import hu.bme.aut.oogen.OogenFactory;
-
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
@@ -12,6 +7,11 @@ import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IPointerType;
 import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.core.dom.ast.ITypedef;
+
+import hu.bme.aut.oogen.OOBaseType;
+import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOType;
+import hu.bme.aut.oogen.OogenFactory;
 
 public class TypeConverter {
 	
