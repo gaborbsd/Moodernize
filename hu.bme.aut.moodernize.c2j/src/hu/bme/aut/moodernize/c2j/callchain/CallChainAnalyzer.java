@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j;
+package hu.bme.aut.moodernize.c2j.callchain;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,13 +8,12 @@ import java.util.Set;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OogenFactory;
-import util.Callgraph;
-import util.TransformUtil;
 
 public class CallChainAnalyzer {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;

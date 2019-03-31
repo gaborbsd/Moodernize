@@ -9,7 +9,7 @@ import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 
-public class FunctionToClassAssignerTest extends TransformationTest {
+public class FunctionToClassAssignerTest extends AbstractTransformationTest {
 	@Test
 	public void noStructType_shouldNotTransformToAClass() {
 		StringBuilder sourceCode = new StringBuilder();

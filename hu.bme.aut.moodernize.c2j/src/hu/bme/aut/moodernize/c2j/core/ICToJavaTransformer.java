@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j;
+package hu.bme.aut.moodernize.c2j.core;
 
 import java.util.Set;
 

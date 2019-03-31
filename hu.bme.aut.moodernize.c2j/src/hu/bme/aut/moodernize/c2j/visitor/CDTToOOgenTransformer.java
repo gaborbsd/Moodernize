@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j;
+package hu.bme.aut.moodernize.c2j.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,10 @@ import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.core.dom.ast.IVariable;
 
+import hu.bme.aut.moodernize.c2j.callchain.Calledge;
+import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
@@ -32,16 +36,12 @@ import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
 import hu.bme.aut.oogen.OogenFactory;
-import util.Calledge;
-import util.Callgraph;
-import util.TransformUtil;
-import util.TypeConverter;
 
 public class CDTToOOgenTransformer extends ASTVisitor {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	private String fileName;
 	private OOModel model;
-	private static List<OOClass> structs = new ArrayList<OOClass>();
+	private List<OOClass> structs = new ArrayList<OOClass>();
 	private static Callgraph callGraph = new Callgraph();
 
 	public CDTToOOgenTransformer(String fileName) {
@@ -165,7 +165,7 @@ public class CDTToOOgenTransformer extends ASTVisitor {
 		return PROCESS_CONTINUE;
 	}
 
-	public static List<OOClass> getStructs() {
+	public List<OOClass> getStructs() {
 		return structs;
 	}
 
@@ -181,15 +181,11 @@ public class CDTToOOgenTransformer extends ASTVisitor {
 		callGraph.add(new Calledge(callerName, calledName));
 	}
 	
-	public static void resetDataStructures() {
-		structs.clear();
+	public static void resetCallgraph() {
 		callGraph.clear();
 	}
 
 	private boolean isCorrectContainingFile(IASTNode node) {
-		if (node.getContainingFilename() != this.fileName) {
-			return false;
-		}
-		return true;
+		return node.getContainingFilename().equals(this.fileName);
 	}
 }

@@ -1,4 +1,4 @@
-package util;
+package hu.bme.aut.moodernize.c2j.util;
 
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;

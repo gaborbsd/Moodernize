@@ -40,8 +40,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.progress.IProgressService;
 
-import hu.bme.aut.moodernize.c2j.CToJavaTransformer;
-import hu.bme.aut.moodernize.c2j.ICToJavaTransformer;
+import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
+import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOPackage;

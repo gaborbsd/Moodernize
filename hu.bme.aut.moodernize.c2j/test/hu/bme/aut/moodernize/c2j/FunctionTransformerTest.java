@@ -9,7 +9,7 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOVariable;
 
-public class FunctionTransformerTest extends TransformationTest {
+public class FunctionTransformerTest extends AbstractTransformationTest {
 	@Test
 	public void function_shouldTransformToCorrespondingSignature() {
 		StringBuilder sourceCode = new StringBuilder();

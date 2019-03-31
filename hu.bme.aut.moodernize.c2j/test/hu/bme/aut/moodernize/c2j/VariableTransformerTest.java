@@ -10,7 +10,7 @@ import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOModel;
 
-public class VariableTransformerTest extends TransformationTest{
+public class VariableTransformerTest extends AbstractTransformationTest{
 	@Test
 	public void globalVariable_shouldTransformToGlobalVariable() throws CoreException {
 		StringBuilder sourceCode = new StringBuilder();

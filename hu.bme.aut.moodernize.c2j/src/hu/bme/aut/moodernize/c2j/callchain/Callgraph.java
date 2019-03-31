@@ -1,4 +1,4 @@
-package util;
+package hu.bme.aut.moodernize.c2j.callchain;
 
 import java.util.ArrayList;
 import java.util.Iterator;
