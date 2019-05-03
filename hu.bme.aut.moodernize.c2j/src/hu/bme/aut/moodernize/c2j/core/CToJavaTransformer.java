@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import hu.bme.aut.moodernize.c2j.callchain.CallChainAnalyzer;
 import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
-import hu.bme.aut.moodernize.c2j.visitor.CDTToOOgenTransformer;
+import hu.bme.aut.moodernize.c2j.visitor.CdtToOOgenTransformer;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
@@ -25,7 +25,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	private List<OOClass> structs = new ArrayList<OOClass>();
 	
 	public OOModel transform(Set<IASTTranslationUnit> asts) {
-		CDTToOOgenTransformer.resetCallgraph();
+		CdtToOOgenTransformer.resetCallgraph();
 		
 		traverseAsts(asts);
 		analyzeCallchains();
@@ -37,17 +37,18 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	private void traverseAsts(Set<IASTTranslationUnit> asts) {
 		for (IASTTranslationUnit ast : asts) {
 			if (ast != null) {
-				CDTToOOgenTransformer visitor = new CDTToOOgenTransformer(ast.getContainingFilename(), model);
+				CdtToOOgenTransformer visitor = new CdtToOOgenTransformer(ast.getContainingFilename(), model);
 				ast.accept(visitor);
 				for (OOClass struct : visitor.getStructs()) {
 					structs.add(struct);
+					OOMethod m = factory.createOOMethod();
 				}
 			}
 		}
 	}
 	
 	private void analyzeCallchains() {
-		Callgraph callGraph = CDTToOOgenTransformer.getCallgraph();
+		Callgraph callGraph = CdtToOOgenTransformer.getCallgraph();
 		removeNonCustomFunctionsFromCallgraph(callGraph, model.getGlobalFunctions());
 		Set<OOClass> newClasses = CallChainAnalyzer.analyze(structs, model.getGlobalFunctions(), callGraph);
 		for (OOClass cl : newClasses) {

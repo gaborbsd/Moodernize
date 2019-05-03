@@ -3,7 +3,6 @@ package hu.bme.aut.moodernize.c2j.visitor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -35,27 +34,27 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
-import hu.bme.aut.oogen.OogenFactory;
 
-public class CDTToOOgenTransformer extends ASTVisitor {
-	private static OogenFactory factory = OogenFactory.eINSTANCE;
+public class CdtToOOgenTransformer extends CdtBaseVisitor {
 	private String fileName;
-	private OOModel model;
 	private List<OOClass> structs = new ArrayList<OOClass>();
 	private static Callgraph callGraph = new Callgraph();
 
-	public CDTToOOgenTransformer(String fileName) {
+	public CdtToOOgenTransformer(String fileName) {
 		this(fileName, factory.createOOModel());
 	}
 
-	public CDTToOOgenTransformer(String fileName, OOModel model) {
+	public CdtToOOgenTransformer(String fileName, OOModel model) {
 		this.fileName = fileName;
-		this.model = model;
-		
+
 		shouldVisitNames = true;
 		shouldVisitImplicitNames = true;
 		shouldVisitDeclarations = true;
 		shouldVisitExpressions = true;
+	}
+
+	public int visit(IASTNode node) {
+		return PROCESS_SKIP;
 	}
 
 	public int visit(IASTName name) {
@@ -97,7 +96,7 @@ public class CDTToOOgenTransformer extends ASTVisitor {
 				OOVariable var = factory.createOOVariable();
 				var.setName(variable.getName());
 				var.setType(TypeConverter.convertCDTTypeToOOgenType(variable.getType()));
-				
+
 				if (!TransformUtil.listContainsOOVariable(model.getGlobalVariables(), var)) {
 					model.getGlobalVariables().add(var);
 				}
@@ -109,15 +108,15 @@ public class CDTToOOgenTransformer extends ASTVisitor {
 		// A struct was found
 		else if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
 			ICompositeType composite = (ICompositeType) binding;
-			//TODO: What to do with incorrect class names? Replace all references or ignore?
+			// TODO: What to do with incorrect class names? Replace all references or
+			// ignore?
 			if (!TransformUtil.isCorrectClassName(composite.getName())) {
 				return PROCESS_SKIP;
 			}
 			IField[] members = composite.getFields();
 
 			OOClass cl = factory.createOOClass();
-			
-			
+
 			cl.setName(composite.getName());
 
 			for (IField var : members) {
@@ -148,16 +147,15 @@ public class CDTToOOgenTransformer extends ASTVisitor {
 			IASTStatement[] statements = ((IASTCompoundStatement) func.getBody()).getStatements();
 			for (IASTStatement statement : statements) {
 				// TODO: Handle statements and expressions: all types, in their own funtions
-				if (statement instanceof IASTExpressionStatement) {
-					IASTExpression expression = ((IASTExpressionStatement) statement).getExpression();
-					if (expression instanceof IASTFunctionCallExpression) {
-						IASTFunctionCallExpression call = (IASTFunctionCallExpression) expression;
-						IASTExpression exp = call.getFunctionNameExpression();
-						if (exp != null && exp instanceof IASTIdExpression) {
-							IASTIdExpression idExp = (IASTIdExpression) call.getFunctionNameExpression();
-							String calledName = idExp.getName().resolveBinding().getName();
-							addEdgeToCallgraph(callerName, calledName);
-						}
+				if (statement instanceof IASTFunctionCallExpression) {
+					IASTFunctionCallExpression call = (IASTFunctionCallExpression) ((IASTExpressionStatement) statement)
+							.getExpression();
+					;
+					IASTExpression functionNameExpression = call.getFunctionNameExpression();
+					if (functionNameExpression != null && functionNameExpression instanceof IASTIdExpression) {
+						IASTIdExpression idExpression = (IASTIdExpression) functionNameExpression;
+						String calledName = idExpression.getName().resolveBinding().getName();
+						addEdgeToCallgraph(callerName, calledName);
 					}
 				}
 			}
@@ -173,19 +171,11 @@ public class CDTToOOgenTransformer extends ASTVisitor {
 		return callGraph;
 	}
 
-	public OOModel getModel() {
-		return model;
-	}
-	
 	private static void addEdgeToCallgraph(String callerName, String calledName) {
 		callGraph.add(new Calledge(callerName, calledName));
 	}
-	
+
 	public static void resetCallgraph() {
 		callGraph.clear();
-	}
-
-	private boolean isCorrectContainingFile(IASTNode node) {
-		return node.getContainingFilename().equals(this.fileName);
 	}
 }
