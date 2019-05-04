@@ -7,7 +7,6 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import hu.bme.aut.moodernize.c2j.util.ClassesAndGlobalFunctionsHolder;
 import hu.bme.aut.moodernize.c2j.visitor.CdtBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionBodyVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionVisitor;
@@ -70,9 +69,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	}
 	
 	private void assignFunctionsToClassesBySignature() {
-		ClassesAndGlobalFunctionsHolder classesAndFunctions = new ClassesAndGlobalFunctionsHolder(classes, model.getGlobalFunctions());
-		FunctionToClassAssigner assigner = new FunctionToClassAssigner(classesAndFunctions);
-		
+		FunctionToClassAssigner assigner = new FunctionToClassAssigner(classes, model.getGlobalFunctions());
 		assigner.assignFunctionsToClasses();
 	}
 	

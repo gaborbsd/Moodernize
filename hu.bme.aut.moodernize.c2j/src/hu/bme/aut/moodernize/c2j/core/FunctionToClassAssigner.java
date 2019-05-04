@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import hu.bme.aut.moodernize.c2j.util.ClassesAndGlobalFunctionsHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
@@ -14,15 +13,19 @@ import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 
 public class FunctionToClassAssigner {
-	private ClassesAndGlobalFunctionsHolder classesAndFunctions;
+	private List<OOClass> classes;
+	private List<OOMethod> functions;
 	private List<OOMethod> toRemove = new ArrayList<OOMethod>();
 
-	public FunctionToClassAssigner(ClassesAndGlobalFunctionsHolder classesAndFunctions) {
-		this.classesAndFunctions = classesAndFunctions;
+
+	public FunctionToClassAssigner(List<OOClass> classes, List<OOMethod> functions) {
+		super();
+		this.classes = classes;
+		this.functions = functions;
 	}
 
 	public void assignFunctionsToClasses() {
-		for (OOMethod function : classesAndFunctions.functions) {
+		for (OOMethod function : functions) {
 			boolean transformedByReturnType = checkReturnType(function);
 			if (!transformedByReturnType) {
 				checkParameterList(function);
@@ -40,7 +43,7 @@ public class FunctionToClassAssigner {
 			if (referenceReturnType != null) {
 				OOClass target = getTargetClass(referenceReturnType);
 				if (target != null) {
-					assignFunctionToClass(TransformUtil.getClassFromClasses(classesAndFunctions.classes, target), function);
+					assignFunctionToClass(TransformUtil.getClassFromClasses(classes, target), function);
 					transformedByReturnType = true;
 				}
 			}
@@ -61,12 +64,12 @@ public class FunctionToClassAssigner {
 
 		if (parameterReferenceTypes.size() == 1) {
 			OOClass target = parameterReferenceTypes.get(0);
-			assignFunctionToClass(TransformUtil.getClassFromClasses(classesAndFunctions.classes, target), function);
+			assignFunctionToClass(TransformUtil.getClassFromClasses(classes, target), function);
 		}
 	}
 
 	private OOClass getTargetClass(OOClass target) {
-		for (OOClass cl : classesAndFunctions.classes) {
+		for (OOClass cl : classes) {
 			if (cl.getName().equals(target.getName())) {
 				return cl;
 			}
@@ -77,7 +80,7 @@ public class FunctionToClassAssigner {
 
 	private void removeAssignedFunctionsFromGlobalFunctions() {
 		for (OOMethod function : toRemove) {
-			classesAndFunctions.functions.remove(function);
+			functions.remove(function);
 		}
 	}
 
