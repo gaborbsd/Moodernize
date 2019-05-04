@@ -15,7 +15,7 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
 
-public class FunctionVisitor extends CdtBaseVisitor {	
+public class FunctionVisitor extends AbstractBaseVisitor {	
 	public FunctionVisitor(String fileName) {
 		super(fileName);
 		shouldVisitNames = true;

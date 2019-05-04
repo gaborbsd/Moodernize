@@ -11,7 +11,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 import hu.bme.aut.moodernize.c2j.core.TransformationDataRepository;
 
-public class FunctionBodyVisitor extends CdtBaseVisitor {	
+public class FunctionBodyVisitor extends AbstractBaseVisitor {	
 	public FunctionBodyVisitor(String fileName) {
 		super(fileName);
 		shouldVisitDeclarations = true;

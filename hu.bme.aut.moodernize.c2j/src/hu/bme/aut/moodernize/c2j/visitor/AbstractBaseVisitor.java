@@ -5,11 +5,11 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 import hu.bme.aut.oogen.OogenFactory;
 
-public class CdtBaseVisitor extends ASTVisitor {
+public abstract class AbstractBaseVisitor extends ASTVisitor {
 	protected String containingFileName;
 	protected static OogenFactory factory = OogenFactory.eINSTANCE;
 	
-	public CdtBaseVisitor(String fileName) {
+	public AbstractBaseVisitor(String fileName) {
 		this.containingFileName = fileName;
 	}
 	

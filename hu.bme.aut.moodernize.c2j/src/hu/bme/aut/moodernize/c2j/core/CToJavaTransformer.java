@@ -7,7 +7,7 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import hu.bme.aut.moodernize.c2j.visitor.CdtBaseVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionBodyVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.GlobalVariableVisitor;
@@ -47,13 +47,13 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	}
 	
 	private void acceptVisitors(IASTTranslationUnit ast, String containingFilename) {
-		List<CdtBaseVisitor> visitors = new ArrayList<CdtBaseVisitor>();
+		List<AbstractBaseVisitor> visitors = new ArrayList<AbstractBaseVisitor>();
 		visitors.add(new GlobalVariableVisitor(containingFilename));
 		visitors.add(new StructVisitor(containingFilename));
 		visitors.add(new FunctionVisitor(containingFilename));
 		visitors.add(new FunctionBodyVisitor(containingFilename));
 		
-		for (CdtBaseVisitor visitor : visitors) {
+		for (AbstractBaseVisitor visitor : visitors) {
 			ast.accept(visitor);
 		}
 	}

@@ -12,7 +12,7 @@ import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOVisibility;
 
-public class StructVisitor extends CdtBaseVisitor {
+public class StructVisitor extends AbstractBaseVisitor {
 	public StructVisitor(String fileName) {
 		super(fileName);
 		shouldVisitNames = true;

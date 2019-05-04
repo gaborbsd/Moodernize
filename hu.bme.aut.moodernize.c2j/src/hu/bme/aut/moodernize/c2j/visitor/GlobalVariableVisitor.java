@@ -10,7 +10,7 @@ import hu.bme.aut.moodernize.c2j.core.TransformationDataRepository;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOVariable;
 
-public class GlobalVariableVisitor extends CdtBaseVisitor {
+public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	public GlobalVariableVisitor(String fileName) {
 		super(fileName);
 		shouldVisitNames = true;
