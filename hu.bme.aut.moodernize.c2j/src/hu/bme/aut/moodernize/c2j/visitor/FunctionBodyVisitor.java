@@ -9,11 +9,15 @@ import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-import hu.bme.aut.moodernize.c2j.core.TransformationDataRepository;
+import hu.bme.aut.moodernize.c2j.callchain.Calledge;
+import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
 
 public class FunctionBodyVisitor extends AbstractBaseVisitor {	
-	public FunctionBodyVisitor(String fileName) {
+	private Callgraph callGraph;
+	
+	public FunctionBodyVisitor(String fileName, Callgraph callGraph) {
 		super(fileName);
+		this.callGraph = callGraph;
 		shouldVisitDeclarations = true;
 	}
 	
@@ -37,7 +41,7 @@ public class FunctionBodyVisitor extends AbstractBaseVisitor {
 					if (functionNameExpression != null && functionNameExpression instanceof IASTIdExpression) {
 						IASTIdExpression idExpression = (IASTIdExpression) functionNameExpression;
 						String calledName = idExpression.getName().resolveBinding().getName();
-						TransformationDataRepository.addEdgeToCallgraph(callerName, calledName);
+						callGraph.add(new Calledge(callerName, calledName));
 					}
 				}
 			}

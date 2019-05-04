@@ -1,5 +1,7 @@
 package hu.bme.aut.moodernize.c2j.visitor;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNameOwner;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
@@ -9,15 +11,17 @@ import org.eclipse.cdt.core.dom.ast.IFunction;
 import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IType;
 
-import hu.bme.aut.moodernize.c2j.core.TransformationDataRepository;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
 
 public class FunctionVisitor extends AbstractBaseVisitor {	
-	public FunctionVisitor(String fileName) {
+	private List<OOMethod> globalFunctions;
+	
+	public FunctionVisitor(String fileName, List<OOMethod> globalFunctions) {
 		super(fileName);
+		this.globalFunctions = globalFunctions;
 		shouldVisitNames = true;
 	}
 	
@@ -48,7 +52,7 @@ public class FunctionVisitor extends AbstractBaseVisitor {
 				param.setType(TypeConverter.convertCDTTypeToOOgenType(p.getType()));
 				ooFunction.getParameters().add(param);
 			}
-			TransformationDataRepository.addFunction(ooFunction);
+			globalFunctions.add(ooFunction);
 			
 			return PROCESS_CONTINUE;
 		}

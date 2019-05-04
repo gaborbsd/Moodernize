@@ -7,6 +7,7 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionBodyVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionVisitor;
@@ -23,14 +24,13 @@ import hu.bme.aut.oogen.OogenFactory;
 
 public class CToJavaTransformer implements ICToJavaTransformer {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
+	
 	private OOModel model = factory.createOOModel();
 	private List<OOClass> classes = new ArrayList<OOClass>();
+	private Callgraph callGraph = new Callgraph();
 	
-	public OOModel transform(Set<IASTTranslationUnit> asts) {
-		TransformationDataRepository.resetTransformationData();
-		
+	public OOModel transform(Set<IASTTranslationUnit> asts) {		
 		traverseAsts(asts);
-		setTransformationData();
 		assignFunctionsToClassesBySignature();
 		//analyzeCallchains();
 		createClasses(model, classes);
@@ -48,23 +48,13 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	
 	private void acceptVisitors(IASTTranslationUnit ast, String containingFilename) {
 		List<AbstractBaseVisitor> visitors = new ArrayList<AbstractBaseVisitor>();
-		visitors.add(new GlobalVariableVisitor(containingFilename));
-		visitors.add(new StructVisitor(containingFilename));
-		visitors.add(new FunctionVisitor(containingFilename));
-		visitors.add(new FunctionBodyVisitor(containingFilename));
+		visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
+		visitors.add(new StructVisitor(containingFilename, classes));
+		visitors.add(new FunctionVisitor(containingFilename, model.getGlobalFunctions()));
+		visitors.add(new FunctionBodyVisitor(containingFilename, callGraph));
 		
 		for (AbstractBaseVisitor visitor : visitors) {
 			ast.accept(visitor);
-		}
-	}
-	
-	private void setTransformationData() {
-		classes = TransformationDataRepository.getClasses();
-		for (OOMethod function : TransformationDataRepository.getFunctions()) {
-			model.getGlobalFunctions().add(function);
-		}
-		for (OOVariable globalVariable : TransformationDataRepository.getGlobalVariables()) {
-			model.getGlobalVariables().add(globalVariable);
 		}
 	}
 	

@@ -1,18 +1,22 @@
 package hu.bme.aut.moodernize.c2j.visitor;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IField;
 import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IVariable;
 
-import hu.bme.aut.moodernize.c2j.core.TransformationDataRepository;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOVariable;
 
 public class GlobalVariableVisitor extends AbstractBaseVisitor {
-	public GlobalVariableVisitor(String fileName) {
+	private List<OOVariable> globalVariables;
+	
+	public GlobalVariableVisitor(String fileName, List<OOVariable> globalVariables) {
 		super(fileName);
+		this.globalVariables = globalVariables;
 		shouldVisitNames = true;
 	}
 	
@@ -29,7 +33,7 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 				var.setName(variable.getName());
 				var.setType(TypeConverter.convertCDTTypeToOOgenType(variable.getType()));
 
-				TransformationDataRepository.addGlobalVariable(var);
+				globalVariables.add(var);
 			}
 
 			return PROCESS_CONTINUE;
