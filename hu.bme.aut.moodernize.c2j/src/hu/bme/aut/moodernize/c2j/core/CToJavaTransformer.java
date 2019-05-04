@@ -7,9 +7,12 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import hu.bme.aut.moodernize.c2j.callchain.CallChainAnalyzer;
-import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
-import hu.bme.aut.moodernize.c2j.visitor.CdtToOOgenTransformer;
+import hu.bme.aut.moodernize.c2j.util.ClassesAndGlobalFunctionsHolder;
+import hu.bme.aut.moodernize.c2j.visitor.CdtBaseVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.FunctionBodyVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.FunctionVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.GlobalVariableVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.StructVisitor;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
@@ -22,14 +25,16 @@ import hu.bme.aut.oogen.OogenFactory;
 public class CToJavaTransformer implements ICToJavaTransformer {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	private OOModel model = factory.createOOModel();
-	private List<OOClass> structs = new ArrayList<OOClass>();
+	private List<OOClass> classes = new ArrayList<OOClass>();
 	
 	public OOModel transform(Set<IASTTranslationUnit> asts) {
-		CdtToOOgenTransformer.resetCallgraph();
+		TransformationDataRepository.resetTransformationData();
 		
 		traverseAsts(asts);
-		analyzeCallchains();
-		createClasses(model, structs);
+		setTransformationData();
+		assignFunctionsToClassesBySignature();
+		//analyzeCallchains();
+		createClasses(model, classes);
 		
 		return model;
 	}
@@ -37,22 +42,46 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	private void traverseAsts(Set<IASTTranslationUnit> asts) {
 		for (IASTTranslationUnit ast : asts) {
 			if (ast != null) {
-				CdtToOOgenTransformer visitor = new CdtToOOgenTransformer(ast.getContainingFilename(), model);
-				ast.accept(visitor);
-				for (OOClass struct : visitor.getStructs()) {
-					structs.add(struct);
-					OOMethod m = factory.createOOMethod();
-				}
+				acceptVisitors(ast, ast.getContainingFilename());
 			}
 		}
 	}
 	
-	private void analyzeCallchains() {
-		Callgraph callGraph = CdtToOOgenTransformer.getCallgraph();
+	private void acceptVisitors(IASTTranslationUnit ast, String containingFilename) {
+		List<CdtBaseVisitor> visitors = new ArrayList<CdtBaseVisitor>();
+		visitors.add(new GlobalVariableVisitor(containingFilename));
+		visitors.add(new StructVisitor(containingFilename));
+		visitors.add(new FunctionVisitor(containingFilename));
+		visitors.add(new FunctionBodyVisitor(containingFilename));
+		
+		for (CdtBaseVisitor visitor : visitors) {
+			ast.accept(visitor);
+		}
+	}
+	
+	private void setTransformationData() {
+		classes = TransformationDataRepository.getClasses();
+		for (OOMethod function : TransformationDataRepository.getFunctions()) {
+			model.getGlobalFunctions().add(function);
+		}
+		for (OOVariable globalVariable : TransformationDataRepository.getGlobalVariables()) {
+			model.getGlobalVariables().add(globalVariable);
+		}
+	}
+	
+	private void assignFunctionsToClassesBySignature() {
+		ClassesAndGlobalFunctionsHolder classesAndFunctions = new ClassesAndGlobalFunctionsHolder(classes, model.getGlobalFunctions());
+		FunctionToClassAssigner assigner = new FunctionToClassAssigner(classesAndFunctions);
+		
+		assigner.assignFunctionsToClasses();
+	}
+	
+	/*private void analyzeCallchains() {
+		Callgraph callGraph = TransformationDataRepository.getCallGraph();
 		removeNonCustomFunctionsFromCallgraph(callGraph, model.getGlobalFunctions());
-		Set<OOClass> newClasses = CallChainAnalyzer.analyze(structs, model.getGlobalFunctions(), callGraph);
-		for (OOClass cl : newClasses) {
-			structs.add(cl);
+		Set<OOClass> callChainClasses = CallChainAnalyzer.analyze(classes, model.getGlobalFunctions(), callGraph);
+		for (OOClass callChainClass : callChainClasses) {
+			classes.add(callChainClass);
 		}
 	}
 	
@@ -69,9 +98,9 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 				cg.removeNodeIfExists(node);
 			}
 		}
-	}
+	}*/
 	
-	private void createClasses(OOModel model, List<OOClass> structs) {
+	private void createClasses(OOModel model, List<OOClass> classes) {
 		OOPackage mainPackage = factory.createOOPackage();
 		mainPackage.setName("prog");
 		model.getPackages().add(mainPackage);
@@ -82,22 +111,22 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		
 		mainPackage.getClasses().add(mainClass);
 		
-		for (OOMethod f : model.getGlobalFunctions()) {
-			OOMethod m = (OOMethod)EcoreUtil.copy(f);
-			mainClass.getMethods().add(m);
+		for (OOMethod globalFunction : model.getGlobalFunctions()) {
+			OOMethod method = (OOMethod)EcoreUtil.copy(globalFunction);
+			mainClass.getMethods().add(method);
 		}
 		model.getGlobalFunctions().clear();
 		
-		for (OOVariable v : model.getGlobalVariables()) {
-			OOMember m = factory.createOOMember();
-			m.setName(v.getName());
-			m.setType(v.getType());
-			m.setVisibility(OOVisibility.PRIVATE);
-			mainClass.getMembers().add(m);
+		for (OOVariable globalVariable : model.getGlobalVariables()) {
+			OOMember member = factory.createOOMember();
+			member.setName(globalVariable.getName());
+			member.setType(globalVariable.getType());
+			member.setVisibility(OOVisibility.PRIVATE);
+			mainClass.getMembers().add(member);
 		}
 		model.getGlobalVariables().clear();
 		
-		for (OOClass s : structs) {
+		for (OOClass s : classes) {
 			OOClass struct = (OOClass)EcoreUtil.copy(s);
 			struct.setPackage(mainPackage);
 			mainPackage.getClasses().add(struct);

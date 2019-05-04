@@ -1,22 +1,7 @@
 package hu.bme.aut.moodernize.c2j.callchain;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import hu.bme.aut.moodernize.c2j.util.TransformUtil;
-import hu.bme.aut.oogen.OOClass;
-import hu.bme.aut.oogen.OOMethod;
-import hu.bme.aut.oogen.OOType;
-import hu.bme.aut.oogen.OOVariable;
-import hu.bme.aut.oogen.OogenFactory;
-
 public class CallChainAnalyzer {
-	private static OogenFactory factory = OogenFactory.eINSTANCE;
+	/*private static OogenFactory factory = OogenFactory.eINSTANCE;
 
 	private static List<Boolean> shouldVisitFlags;
 	private static int maxInDegree;
@@ -25,41 +10,12 @@ public class CallChainAnalyzer {
 	private static Callgraph cg;
 	private static List<OOMethod> functions;
 
-	public static Set<OOClass> analyze(List<OOClass> structs, List<OOMethod> globalFunctions, Callgraph callGraph) {
+	public static Set<OOClass> analyze(Set<OOClass> classes, List<OOMethod> globalFunctions, Callgraph callGraph) {
 		cg = callGraph;
 		functions = globalFunctions;
 		int numberOfFunctions = functions.size() - 1;
 		
-		checkParameterLists(structs);
 		return checkCallHierarchy(numberOfFunctions);
-	}
-
-	private static void checkParameterLists(List<OOClass> structs) {
-		Iterator<OOMethod> iter = functions.iterator();
-		while (iter.hasNext()) {
-			OOMethod m = iter.next();
-			OOType returnType = m.getReturnType();
-
-			// TODO: Cleanup: Extract body to a method.
-			if (TransformUtil.isReferenceType(returnType)) {
-				OOClass correspondingStruct = TransformUtil.getClassFromStructs(structs, returnType.getClassType());
-				if (correspondingStruct != null) {
-					addMethodToClass(m, correspondingStruct);
-					iter.remove();
-					cg.removeNodeIfExists(m.getName());
-				}
-			} else {
-				List<OOClass> refParams = getReferenceTypeParameters(m);
-				if (refParams.size() == 1) {
-					OOClass correspondingStruct = TransformUtil.getClassFromStructs(structs, refParams.get(0));
-					if (correspondingStruct != null) {
-						addMethodToClass(m, correspondingStruct);
-						iter.remove();
-						cg.removeNodeIfExists(m.getName());
-					}
-				}
-			}
-		}
 	}
 
 	private static Set<OOClass> checkCallHierarchy(int numberOfFunctions) {
@@ -156,5 +112,5 @@ public class CallChainAnalyzer {
 				iter.remove();
 			}
 		}
-	}
+	}*/
 }

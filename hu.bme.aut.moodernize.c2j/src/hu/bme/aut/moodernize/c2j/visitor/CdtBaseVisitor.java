@@ -3,7 +3,6 @@ package hu.bme.aut.moodernize.c2j.visitor;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
-import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class CdtBaseVisitor extends ASTVisitor {

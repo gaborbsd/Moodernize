@@ -1,42 +1,7 @@
 package hu.bme.aut.moodernize.c2j.visitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
-import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
-import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
-import org.eclipse.cdt.core.dom.ast.IASTName;
-import org.eclipse.cdt.core.dom.ast.IASTNameOwner;
-import org.eclipse.cdt.core.dom.ast.IASTNode;
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
-import org.eclipse.cdt.core.dom.ast.IBasicType;
-import org.eclipse.cdt.core.dom.ast.IBasicType.Kind;
-import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.core.dom.ast.ICompositeType;
-import org.eclipse.cdt.core.dom.ast.IField;
-import org.eclipse.cdt.core.dom.ast.IFunction;
-import org.eclipse.cdt.core.dom.ast.IParameter;
-import org.eclipse.cdt.core.dom.ast.IType;
-import org.eclipse.cdt.core.dom.ast.IVariable;
-
-import hu.bme.aut.moodernize.c2j.callchain.Calledge;
-import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
-import hu.bme.aut.moodernize.c2j.util.TransformUtil;
-import hu.bme.aut.moodernize.c2j.util.TypeConverter;
-import hu.bme.aut.oogen.OOClass;
-import hu.bme.aut.oogen.OOMember;
-import hu.bme.aut.oogen.OOMethod;
-import hu.bme.aut.oogen.OOModel;
-import hu.bme.aut.oogen.OOVariable;
-import hu.bme.aut.oogen.OOVisibility;
-
-public class CdtToOOgenTransformer extends CdtBaseVisitor {
-	private String fileName;
+public class CdtToOOgenTransformer {
+	/*private String fileName;
 	private List<OOClass> structs = new ArrayList<OOClass>();
 	private static Callgraph callGraph = new Callgraph();
 
@@ -177,5 +142,5 @@ public class CdtToOOgenTransformer extends CdtBaseVisitor {
 
 	public static void resetCallgraph() {
 		callGraph.clear();
-	}
+	}*/
 }
