@@ -10,12 +10,8 @@ public class LiteralExpressionConverter {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 
 	public OOExpression convertLiteralExpression(IASTLiteralExpression literalExpression) {
-		return handleByKind(literalExpression, literalExpression.getKind());
-	}
-
-	private OOExpression handleByKind(IASTLiteralExpression literalExpression, int kind) {
 		String valueString = new String(literalExpression.getValue());
-		switch (kind) {
+		switch (literalExpression.getKind()) {
 		case IASTLiteralExpression.lk_integer_constant: {
 			int value = Integer.parseInt(valueString);
 			OOIntegerLiteral integerLiteral = factory.createOOIntegerLiteral();
