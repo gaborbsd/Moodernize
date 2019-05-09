@@ -9,7 +9,7 @@ import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOModel;
 
-public class StructTransformerTest extends AbstractTransformationTest {
+public class StructTransformationTest extends AbstractTransformationTest {
 	@Test
 	public void struct_shouldTransformToClassWithCorrespondingMembers() {
 		StringBuilder sourceCode = new StringBuilder();

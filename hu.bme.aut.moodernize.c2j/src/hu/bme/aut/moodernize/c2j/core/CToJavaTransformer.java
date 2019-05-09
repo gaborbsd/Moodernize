@@ -29,6 +29,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	private List<OOClass> classes = new ArrayList<OOClass>();
 	private Callgraph callGraph = new Callgraph();
 	
+	@Override
 	public OOModel transform(Set<IASTTranslationUnit> asts) {		
 		traverseAsts(asts);
 		assignFunctionsToClassesBySignature();
@@ -51,7 +52,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
 		visitors.add(new StructVisitor(containingFilename, classes));
 		visitors.add(new FunctionVisitor(containingFilename, model.getGlobalFunctions()));
-		visitors.add(new FunctionBodyVisitor(containingFilename, callGraph));
+		visitors.add(new FunctionBodyVisitor(containingFilename, callGraph, model.getGlobalFunctions()));
 		
 		for (AbstractBaseVisitor visitor : visitors) {
 			ast.accept(visitor);
@@ -99,7 +100,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		mainPackage.getClasses().add(mainClass);
 		
 		for (OOMethod globalFunction : model.getGlobalFunctions()) {
-			OOMethod method = (OOMethod)EcoreUtil.copy(globalFunction);
+			OOMethod method = EcoreUtil.copy(globalFunction);
 			mainClass.getMethods().add(method);
 		}
 		model.getGlobalFunctions().clear();
@@ -114,7 +115,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		model.getGlobalVariables().clear();
 		
 		for (OOClass s : classes) {
-			OOClass struct = (OOClass)EcoreUtil.copy(s);
+			OOClass struct = EcoreUtil.copy(s);
 			struct.setPackage(mainPackage);
 			mainPackage.getClasses().add(struct);
 		}

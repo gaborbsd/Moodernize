@@ -22,6 +22,7 @@ public class StructVisitor extends AbstractBaseVisitor {
 		shouldVisitNames = true;
 	}
 
+	@Override
 	public int visit(IASTName name) {
 		if (!isCorrectContainingFile(name)) {
 			return PROCESS_SKIP;

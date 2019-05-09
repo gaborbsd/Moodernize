@@ -26,6 +26,7 @@ public class Calledge {
 		this.target = target;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Calledge) {
 			Calledge other = (Calledge) obj;

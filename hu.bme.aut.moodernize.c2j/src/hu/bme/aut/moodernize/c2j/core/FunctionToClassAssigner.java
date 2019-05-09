@@ -85,19 +85,19 @@ public class FunctionToClassAssigner {
 	}
 
 	private void assignFunctionToClass(OOClass target, OOMethod function) {
-		OOMethod newMethod = (OOMethod) EcoreUtil.copy(function);
+		OOMethod newMethod = EcoreUtil.copy(function);
 		OOType returnType = newMethod.getReturnType();
 
 		if (returnType != null && TransformUtil.isReferenceType(returnType)) {
 			newMethod.setReturnType(null);
 		}
-		removeReferenceTypeParameter(newMethod, target);
+		removeTargetClassParameterFromFunction(newMethod, target);
 
 		target.getMethods().add(newMethod);
 		toRemove.add(function);
 	}
 
-	private void removeReferenceTypeParameter(OOMethod from, OOClass ref) {
+	private void removeTargetClassParameterFromFunction(OOMethod from, OOClass ref) {
 		if (from == null || ref == null) {
 			return;
 		}

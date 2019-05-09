@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.util;
 import java.util.List;
 
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
 
 public class TransformUtil {
@@ -17,6 +18,16 @@ public class TransformUtil {
 			}
 		}
 
+		return null;
+	}
+	
+	public static OOMethod getFunctionByName(List<OOMethod> functions, String name) {
+		for (OOMethod function : functions) {
+			if (function.getName().equals(name)) {
+				return function;
+			}
+		}
+		
 		return null;
 	}
 	
