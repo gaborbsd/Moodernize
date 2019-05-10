@@ -1,4 +1,4 @@
-package converter.expression;
+package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 

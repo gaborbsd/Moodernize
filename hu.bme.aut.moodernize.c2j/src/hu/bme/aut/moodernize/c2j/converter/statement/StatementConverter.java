@@ -1,9 +1,9 @@
-package converter.statement;
+package hu.bme.aut.moodernize.c2j.converter.statement;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-import converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.oogen.OOStatement;
 
 public class StatementConverter {

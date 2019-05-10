@@ -7,7 +7,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-import converter.statement.StatementConverter;
+import hu.bme.aut.moodernize.c2j.converter.statement.StatementConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
