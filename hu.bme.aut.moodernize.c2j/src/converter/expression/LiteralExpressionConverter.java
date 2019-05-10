@@ -1,4 +1,4 @@
-package converter;
+package converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 
@@ -19,9 +19,8 @@ public class LiteralExpressionConverter {
 			return integerLiteral;
 		}
 
-		// TODO: Throw NotSupportedException instead of returning null
 		default:
-			return null;
+			throw new UnsupportedOperationException("The following literal expression type is not yet supported: " + literalExpression);
 		}
 	}
 }

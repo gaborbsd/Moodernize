@@ -1,7 +1,8 @@
-package converter;
+package converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 
 import hu.bme.aut.oogen.OOExpression;
@@ -12,8 +13,11 @@ public class ExpressionConverter {
 			return convertBinaryExpression((IASTBinaryExpression) expression);
 		} else if (expression instanceof IASTLiteralExpression) {
 			return convertLiteralExpression((IASTLiteralExpression) expression);
+		} else if (expression instanceof IASTIdExpression) {
+			return convertIdExpression((IASTIdExpression) expression);
 		}
-		return null;
+		
+		throw new UnsupportedOperationException("The following expression type is not yet supported: " + expression);
 	}
 	
 	private OOExpression convertBinaryExpression(IASTBinaryExpression binaryExpression) {
@@ -24,5 +28,10 @@ public class ExpressionConverter {
 	private OOExpression convertLiteralExpression(IASTLiteralExpression literalExpression) {
 		LiteralExpressionConverter literalConverter = new LiteralExpressionConverter();
 		return literalConverter.convertLiteralExpression(literalExpression);
+	}
+	
+	private OOExpression convertIdExpression(IASTIdExpression idExpression) {
+		IdExpressionConverter idConverter = new IdExpressionConverter();
+		return idConverter.convertIdExpression(idExpression);
 	}
 }

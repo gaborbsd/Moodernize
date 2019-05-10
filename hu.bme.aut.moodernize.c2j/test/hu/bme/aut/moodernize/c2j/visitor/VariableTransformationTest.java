@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j;
+package hu.bme.aut.moodernize.c2j.visitor;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOModel;
@@ -14,7 +15,7 @@ public class VariableTransformationTest extends AbstractTransformationTest{
 	@Test
 	public void globalVariable_shouldTransformToGlobalVariable() throws CoreException {
 		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("int globalInt = 2;");
+		sourceCode.append("int globalInt;");
 		
 		OOModel model = getModelBySourceCode(sourceCode.toString());
 		

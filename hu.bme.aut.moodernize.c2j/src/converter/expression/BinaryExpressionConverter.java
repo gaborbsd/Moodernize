@@ -1,4 +1,4 @@
-package converter;
+package converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 
@@ -32,8 +32,7 @@ public class BinaryExpressionConverter {
 			additionExpression.setRightSide(rhs);
 			return additionExpression;
 			
-		//TODO: Throw NotSupportedException instead of returning null
-		default: return null;
+		default: throw new UnsupportedOperationException("The following binary expression is not yet supported: " + operator);
 		}
 	}
 }

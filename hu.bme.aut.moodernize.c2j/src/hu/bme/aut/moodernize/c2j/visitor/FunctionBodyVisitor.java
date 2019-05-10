@@ -4,27 +4,19 @@ import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
-import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-import converter.ExpressionConverter;
-import hu.bme.aut.moodernize.c2j.callchain.Calledge;
-import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
+import converter.statement.StatementConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
-import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOMethod;
+import hu.bme.aut.oogen.OOStatement;
 
 public class FunctionBodyVisitor extends AbstractBaseVisitor {
-	private Callgraph callGraph;
 	private List<OOMethod> functions;
 
-	public FunctionBodyVisitor(String fileName, Callgraph callGraph, List<OOMethod> functions) {
+	public FunctionBodyVisitor(String fileName,  List<OOMethod> functions) {
 		super(fileName);
-		this.callGraph = callGraph;
 		this.functions = functions;
 
 		shouldVisitDeclarations = true;
@@ -41,30 +33,21 @@ public class FunctionBodyVisitor extends AbstractBaseVisitor {
 			String functionName = func.getDeclarator().getName().resolveBinding().getName();
 
 			IASTStatement[] statements = ((IASTCompoundStatement) func.getBody()).getStatements();
+			StatementConverter converter = new StatementConverter();
 			for (IASTStatement statement : statements) {
-				if (statement instanceof IASTExpressionStatement) {
-					OOMethod currentFunction = TransformUtil.getFunctionByName(functions, functionName);
-					handleExpressionStatement(currentFunction, (IASTExpressionStatement) statement);
-				}
+				OOStatement convertedStatement = converter.convertStatement(statement);
+				TransformUtil.getFunctionByName(functions, functionName).getStatements().add(convertedStatement);
 			}
 		}
 		return PROCESS_CONTINUE;
 	}
 
-	private void handleExpressionStatement(OOMethod currentFunction, IASTExpressionStatement expressionStatement) {
-		IASTExpression expression = expressionStatement.getExpression();
-		ExpressionConverter converter = new ExpressionConverter();
-		OOExpression convertedExpression = converter.convertExpression(expression);
-		//TODO: Create the statement and add it to the current function.
-		
-	}
-
-	private void handleFunctionCallExpression(OOMethod currentFunction, IASTFunctionCallExpression functionCallExpression) {
+	/*private void handleFunctionCallExpression(OOMethod currentFunction, IASTFunctionCallExpression functionCallExpression) {
 		IASTExpression functionNameExpression = (IASTIdExpression) functionCallExpression.getFunctionNameExpression();
 		if (functionNameExpression != null && functionNameExpression instanceof IASTIdExpression) {
 			IASTIdExpression idExpression = (IASTIdExpression) functionNameExpression;
 			String calledName = idExpression.getName().resolveBinding().getName();
 			callGraph.add(new Calledge(currentFunction.getName(), calledName));
 		}
-	}
+	}*/
 }

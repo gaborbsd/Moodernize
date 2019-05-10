@@ -5,10 +5,21 @@ import java.util.List;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
+import hu.bme.aut.oogen.OOVariable;
 
 public class TransformUtil {
 	public static boolean isReferenceType(OOType type) {
 		return type == null ? false : type.getClassType() != null && !type.isArray();
+	}
+	
+	public static boolean listContainsVariable(List<OOVariable> variables, OOVariable var) {
+		for (OOVariable v : variables) {
+			if (v.getName().equals(var.getName())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public static OOClass getClassFromClasses(List<OOClass> classes, OOClass cl) {

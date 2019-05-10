@@ -1,10 +1,11 @@
-package hu.bme.aut.moodernize.c2j;
+package hu.bme.aut.moodernize.c2j.visitor;
 
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOVariable;

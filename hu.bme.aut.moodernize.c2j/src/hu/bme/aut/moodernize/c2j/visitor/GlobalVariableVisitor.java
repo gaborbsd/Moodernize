@@ -8,6 +8,7 @@ import org.eclipse.cdt.core.dom.ast.IField;
 import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IVariable;
 
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOVariable;
 
@@ -33,11 +34,13 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 				OOVariable var = factory.createOOVariable();
 				var.setName(variable.getName());
 				var.setType(TypeConverter.convertCDTTypeToOOgenType(variable.getType()));
-
-				globalVariables.add(var);
+				
+				if (!TransformUtil.listContainsVariable(globalVariables, var)) {
+					globalVariables.add(var);
+				}
 			}
 
-			return PROCESS_CONTINUE;
+			return PROCESS_SKIP;
 		}
 		
 		return PROCESS_SKIP;

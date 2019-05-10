@@ -7,7 +7,6 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import hu.bme.aut.moodernize.c2j.callchain.Callgraph;
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionBodyVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionVisitor;
@@ -27,7 +26,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	
 	private OOModel model = factory.createOOModel();
 	private List<OOClass> classes = new ArrayList<OOClass>();
-	private Callgraph callGraph = new Callgraph();
+	//private Callgraph callGraph = new Callgraph();
 	
 	@Override
 	public OOModel transform(Set<IASTTranslationUnit> asts) {		
@@ -52,7 +51,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
 		visitors.add(new StructVisitor(containingFilename, classes));
 		visitors.add(new FunctionVisitor(containingFilename, model.getGlobalFunctions()));
-		visitors.add(new FunctionBodyVisitor(containingFilename, callGraph, model.getGlobalFunctions()));
+		visitors.add(new FunctionBodyVisitor(containingFilename, model.getGlobalFunctions()));
 		
 		for (AbstractBaseVisitor visitor : visitors) {
 			ast.accept(visitor);
