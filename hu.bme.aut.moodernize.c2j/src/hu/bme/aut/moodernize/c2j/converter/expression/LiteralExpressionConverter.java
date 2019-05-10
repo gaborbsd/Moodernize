@@ -2,6 +2,8 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 
+import hu.bme.aut.oogen.OOBoolLiteral;
+import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OogenFactory;
@@ -12,13 +14,22 @@ public class LiteralExpressionConverter {
 	public OOExpression convertLiteralExpression(IASTLiteralExpression literalExpression) {
 		String valueString = new String(literalExpression.getValue());
 		switch (literalExpression.getKind()) {
-		case IASTLiteralExpression.lk_integer_constant: {
-			int value = Integer.parseInt(valueString);
+		case IASTLiteralExpression.lk_integer_constant:
+			int valueInt = Integer.parseInt(valueString);
 			OOIntegerLiteral integerLiteral = factory.createOOIntegerLiteral();
-			integerLiteral.setValue(value);
+			integerLiteral.setValue(valueInt);
 			return integerLiteral;
-		}
-
+		case IASTLiteralExpression.lk_false:
+		case IASTLiteralExpression.lk_true:
+			boolean valueBoolean = Boolean.parseBoolean(valueString);
+			OOBoolLiteral booleanLiteral = factory.createOOBoolLiteral();
+			booleanLiteral.setValue(valueBoolean);
+			return booleanLiteral;
+		case IASTLiteralExpression.lk_float_constant:
+			double valueDouble = Double.parseDouble(valueString);
+			OODoubleLiteral doubleLiteral = factory.createOODoubleLiteral();
+			doubleLiteral.setValue(valueDouble);
+			return doubleLiteral;
 		default:
 			throw new UnsupportedOperationException("The following literal expression type is not yet supported: " + literalExpression);
 		}
