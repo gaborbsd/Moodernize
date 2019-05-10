@@ -19,17 +19,20 @@ public class LiteralExpressionConverter {
 			OOIntegerLiteral integerLiteral = factory.createOOIntegerLiteral();
 			integerLiteral.setValue(valueInt);
 			return integerLiteral;
+			
 		case IASTLiteralExpression.lk_false:
 		case IASTLiteralExpression.lk_true:
 			boolean valueBoolean = Boolean.parseBoolean(valueString);
 			OOBoolLiteral booleanLiteral = factory.createOOBoolLiteral();
 			booleanLiteral.setValue(valueBoolean);
 			return booleanLiteral;
+			
 		case IASTLiteralExpression.lk_float_constant:
 			double valueDouble = Double.parseDouble(valueString);
 			OODoubleLiteral doubleLiteral = factory.createOODoubleLiteral();
 			doubleLiteral.setValue(valueDouble);
 			return doubleLiteral;
+			
 		default:
 			throw new UnsupportedOperationException("The following literal expression type is not yet supported: " + literalExpression);
 		}
