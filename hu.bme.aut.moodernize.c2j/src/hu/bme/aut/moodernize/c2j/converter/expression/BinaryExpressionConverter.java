@@ -58,13 +58,13 @@ public class BinaryExpressionConverter {
 
 		case IASTBinaryExpression.op_shiftLeft:
 			return setBothSidesAndReturn(factory.createOOBitWiseLeftShift(), lhs, rhs);
-			
+
 		case IASTBinaryExpression.op_shiftRight:
 			return setBothSidesAndReturn(factory.createOOBitWiseRightShift(), lhs, rhs);
 
 		default:
 			throw new UnsupportedOperationException(
-					"The following binary expression is not yet supported: " + operator);
+					"The following binary expression operator is not yet supported: " + operator);
 		}
 	}
 
@@ -72,19 +72,19 @@ public class BinaryExpressionConverter {
 			OOExpression rhs) {
 		expression.setLeftSide(lhs);
 		expression.setRightSide(rhs);
-		
+
 		return expression;
 	}
-	
+
 	private OOExpression setBothSidesAndReturn(OOTwoOperandLogicalExpression expression, OOExpression lhs,
 			OOExpression rhs) {
 		if (!(lhs instanceof OOLogicalExpression) || !(rhs instanceof OOLogicalExpression)) {
-			throw new IllegalArgumentException("Both sides of an AndExpression must be of type LogicalExpression.");
+			throw new IllegalArgumentException("Both sides of a TwoOperandLogicalExpression must be of type LogicalExpression.");
 		}
-		
+
 		expression.setLeftSide((OOLogicalExpression) lhs);
 		expression.setRightSide((OOLogicalExpression) rhs);
-		
+
 		return expression;
 	}
 }

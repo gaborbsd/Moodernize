@@ -8,8 +8,8 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
-import hu.bme.aut.moodernize.c2j.visitor.FunctionBodyVisitor;
-import hu.bme.aut.moodernize.c2j.visitor.FunctionVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.FunctionDefinitionVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.GlobalVariableVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.StructVisitor;
 import hu.bme.aut.oogen.OOClass;
@@ -26,14 +26,12 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	
 	private OOModel model = factory.createOOModel();
 	private List<OOClass> classes = new ArrayList<OOClass>();
-	//private Callgraph callGraph = new Callgraph();
 	
 	@Override
 	public OOModel transform(Set<IASTTranslationUnit> asts) {		
 		traverseAsts(asts);
 		assignFunctionsToClassesBySignature();
-		//analyzeCallchains();
-		createClasses(model, classes);
+		createProjectHierarchy(model, classes);
 		
 		return model;
 	}
@@ -50,8 +48,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		List<AbstractBaseVisitor> visitors = new ArrayList<AbstractBaseVisitor>();
 		visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
 		visitors.add(new StructVisitor(containingFilename, classes));
-		visitors.add(new FunctionVisitor(containingFilename, model.getGlobalFunctions()));
-		visitors.add(new FunctionBodyVisitor(containingFilename, model.getGlobalFunctions()));
+		visitors.add(new FunctionDeclarationVisitor(containingFilename, model.getGlobalFunctions()));
+		visitors.add(new FunctionDefinitionVisitor(containingFilename, model.getGlobalFunctions()));
 		
 		for (AbstractBaseVisitor visitor : visitors) {
 			ast.accept(visitor);
@@ -63,31 +61,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		assigner.assignFunctionsToClasses();
 	}
 	
-	/*private void analyzeCallchains() {
-		Callgraph callGraph = TransformationDataRepository.getCallGraph();
-		removeNonCustomFunctionsFromCallgraph(callGraph, model.getGlobalFunctions());
-		Set<OOClass> callChainClasses = CallChainAnalyzer.analyze(classes, model.getGlobalFunctions(), callGraph);
-		for (OOClass callChainClass : callChainClasses) {
-			classes.add(callChainClass);
-		}
-	}
-	
-	private void removeNonCustomFunctionsFromCallgraph(Callgraph cg, List<OOMethod> globalFunctions) {
-		for (String node : cg.getDistinctNodes()) {
-			boolean contains = false;
-			for (OOMethod m : globalFunctions) {
-				if (m.getName().equals(node)) {
-					contains = true;
-					break;
-				}
-			}
-			if (!contains) {
-				cg.removeNodeIfExists(node);
-			}
-		}
-	}*/
-	
-	private void createClasses(OOModel model, List<OOClass> classes) {
+	private void createProjectHierarchy(OOModel model, List<OOClass> classes) {
 		OOPackage mainPackage = factory.createOOPackage();
 		mainPackage.setName("prog");
 		model.getPackages().add(mainPackage);

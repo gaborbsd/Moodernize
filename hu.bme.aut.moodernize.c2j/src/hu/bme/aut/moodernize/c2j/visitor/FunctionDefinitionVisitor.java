@@ -12,10 +12,10 @@ import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
 
-public class FunctionBodyVisitor extends AbstractBaseVisitor {
+public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	private List<OOMethod> functions;
 
-	public FunctionBodyVisitor(String fileName,  List<OOMethod> functions) {
+	public FunctionDefinitionVisitor(String fileName,  List<OOMethod> functions) {
 		super(fileName);
 		this.functions = functions;
 

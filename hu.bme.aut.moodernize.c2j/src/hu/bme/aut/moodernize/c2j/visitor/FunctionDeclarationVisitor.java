@@ -16,10 +16,10 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
 
-public class FunctionVisitor extends AbstractBaseVisitor {	
+public class FunctionDeclarationVisitor extends AbstractBaseVisitor {	
 	private List<OOMethod> globalFunctions;
 	
-	public FunctionVisitor(String fileName, List<OOMethod> globalFunctions) {
+	public FunctionDeclarationVisitor(String fileName, List<OOMethod> globalFunctions) {
 		super(fileName);
 		this.globalFunctions = globalFunctions;
 		shouldVisitNames = true;

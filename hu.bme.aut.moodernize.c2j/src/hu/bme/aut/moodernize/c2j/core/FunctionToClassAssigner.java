@@ -97,15 +97,15 @@ public class FunctionToClassAssigner {
 		toRemove.add(function);
 	}
 
-	private void removeTargetClassParameterFromFunction(OOMethod from, OOClass ref) {
-		if (from == null || ref == null) {
+	private void removeTargetClassParameterFromFunction(OOMethod from, OOClass referenceType) {
+		if (from == null || referenceType == null) {
 			return;
 		}
-		Iterator<OOVariable> iter = from.getParameters().iterator();
-		while (iter.hasNext()) {
-			OOVariable param = iter.next();
-			if (TransformUtil.isReferenceType(param.getType()) && param.getType().getClassType().equals(ref)) {
-				iter.remove();
+		Iterator<OOVariable> iterator = from.getParameters().iterator();
+		while (iterator.hasNext()) {
+			OOVariable parameter = iterator.next();
+			if (TransformUtil.isReferenceType(parameter.getType()) && parameter.getType().getClassType().equals(referenceType)) {
+				iterator.remove();
 			}
 		}
 	}

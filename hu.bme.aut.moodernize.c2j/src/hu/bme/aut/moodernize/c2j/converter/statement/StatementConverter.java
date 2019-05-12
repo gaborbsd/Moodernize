@@ -11,12 +11,12 @@ public class StatementConverter {
 		if (statement instanceof IASTExpressionStatement) {
 			return convertExpressionStatement((IASTExpressionStatement) statement);
 		}
-		
+
 		throw new UnsupportedOperationException("The following statement type is not yet supported: " + statement);
 	}
-	
+
 	private OOStatement convertExpressionStatement(IASTExpressionStatement expressionStatement) {
-		ExpressionConverter converter = new ExpressionConverter();		
+		ExpressionConverter converter = new ExpressionConverter();
 		return converter.convertExpression(expressionStatement.getExpression());
 	}
 }
