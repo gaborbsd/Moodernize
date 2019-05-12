@@ -25,5 +25,5 @@ Require-Bundle: org.eclipse.cdt.core;bundle-version="6.2.0",
  org.opentest4j,
  org.apiguardian
 Export-Package: hu.bme.aut.moodernize.c2j,
- hu.bme.aut.moodernize.c2j.core
+ hu.bme.aut.moodernize.core
 Automatic-Module-Name: hu.bme.aut.moodernize.c2j

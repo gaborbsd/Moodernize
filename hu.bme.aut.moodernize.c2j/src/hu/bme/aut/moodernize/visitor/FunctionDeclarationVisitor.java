@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j.visitor;
+package hu.bme.aut.moodernize.visitor;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.eclipse.cdt.core.dom.ast.IFunction;
 import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IType;
 
-import hu.bme.aut.moodernize.c2j.util.TypeConverter;
+import hu.bme.aut.moodernize.util.TypeConverter;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVisibility;
