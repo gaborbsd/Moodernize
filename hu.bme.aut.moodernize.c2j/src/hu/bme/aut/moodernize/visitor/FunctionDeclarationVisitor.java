@@ -47,11 +47,11 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 				ooFunction.setReturnType(TypeConverter.convertCDTTypeToOOgenType(returnType));
 			}
 
-			for (IParameter p : cdtFunction.getParameters()) {
-				OOVariable param = factory.createOOVariable();
-				param.setName(p.getName());
-				param.setType(TypeConverter.convertCDTTypeToOOgenType(p.getType()));
-				ooFunction.getParameters().add(param);
+			for (IParameter cdtParameter : cdtFunction.getParameters()) {
+				OOVariable ooParameter = factory.createOOVariable();
+				ooParameter.setName(cdtParameter.getName());
+				ooParameter.setType(TypeConverter.convertCDTTypeToOOgenType(cdtParameter.getType()));
+				ooFunction.getParameters().add(ooParameter);
 			}
 			globalFunctions.add(ooFunction);
 			

@@ -31,12 +31,12 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 		if (binding instanceof IVariable && !(binding instanceof IParameter) && !(binding instanceof IField)) {
 			IVariable variable = (IVariable) binding;
 			if (variable.getOwner() == null) {
-				OOVariable var = factory.createOOVariable();
-				var.setName(variable.getName());
-				var.setType(TypeConverter.convertCDTTypeToOOgenType(variable.getType()));
+				OOVariable globalVariable = factory.createOOVariable();
+				globalVariable.setName(variable.getName());
+				globalVariable.setType(TypeConverter.convertCDTTypeToOOgenType(variable.getType()));
 				
-				if (!TransformUtil.listContainsVariable(globalVariables, var)) {
-					globalVariables.add(var);
+				if (!TransformUtil.listContainsVariable(globalVariables, globalVariable)) {
+					globalVariables.add(globalVariable);
 				}
 			}
 

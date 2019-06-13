@@ -25,13 +25,13 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	private static OogenFactory factory = OogenFactory.eINSTANCE;
 	
 	private OOModel model = factory.createOOModel();
-	private List<OOClass> classes = new ArrayList<OOClass>();
+	private List<OOClass> createdClasses = new ArrayList<OOClass>();
 	
 	@Override
 	public OOModel transform(Set<IASTTranslationUnit> asts) {		
 		traverseAsts(asts);
 		assignFunctionsToClassesBySignature();
-		createProjectHierarchy(model, classes);
+		createProjectHierarchy(model, createdClasses);
 		
 		return model;
 	}
@@ -47,7 +47,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	private void acceptVisitors(IASTTranslationUnit ast, String containingFilename) {
 		List<AbstractBaseVisitor> visitors = new ArrayList<AbstractBaseVisitor>();
 		visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
-		visitors.add(new StructVisitor(containingFilename, classes));
+		visitors.add(new StructVisitor(containingFilename, createdClasses));
 		visitors.add(new FunctionDeclarationVisitor(containingFilename, model.getGlobalFunctions()));
 		visitors.add(new FunctionDefinitionVisitor(containingFilename, model.getGlobalFunctions()));
 		
@@ -57,11 +57,11 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	}
 	
 	private void assignFunctionsToClassesBySignature() {
-		FunctionToClassAssigner assigner = new FunctionToClassAssigner(classes, model.getGlobalFunctions());
+		FunctionToClassAssigner assigner = new FunctionToClassAssigner(createdClasses, model.getGlobalFunctions());
 		assigner.assignFunctionsToClasses();
 	}
 	
-	private void createProjectHierarchy(OOModel model, List<OOClass> classes) {
+	private void createProjectHierarchy(OOModel model, List<OOClass> createdClasses) {
 		OOPackage mainPackage = factory.createOOPackage();
 		mainPackage.setName("prog");
 		model.getPackages().add(mainPackage);
@@ -73,24 +73,24 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		mainPackage.getClasses().add(mainClass);
 		
 		for (OOMethod globalFunction : model.getGlobalFunctions()) {
-			OOMethod method = EcoreUtil.copy(globalFunction);
-			mainClass.getMethods().add(method);
+			OOMethod globalFunctionCopy = EcoreUtil.copy(globalFunction);
+			mainClass.getMethods().add(globalFunctionCopy);
 		}
 		model.getGlobalFunctions().clear();
 		
 		for (OOVariable globalVariable : model.getGlobalVariables()) {
-			OOMember member = factory.createOOMember();
-			member.setName(globalVariable.getName());
-			member.setType(globalVariable.getType());
-			member.setVisibility(OOVisibility.PRIVATE);
-			mainClass.getMembers().add(member);
+			OOMember globalVariableCopy = factory.createOOMember();
+			globalVariableCopy.setName(globalVariable.getName());
+			globalVariableCopy.setType(globalVariable.getType());
+			globalVariableCopy.setVisibility(OOVisibility.PRIVATE);
+			mainClass.getMembers().add(globalVariableCopy);
 		}
 		model.getGlobalVariables().clear();
 		
-		for (OOClass s : classes) {
-			OOClass struct = EcoreUtil.copy(s);
-			struct.setPackage(mainPackage);
-			mainPackage.getClasses().add(struct);
+		for (OOClass newClass : createdClasses) {
+			OOClass newClassCopy = EcoreUtil.copy(newClass);
+			newClassCopy.setPackage(mainPackage);
+			mainPackage.getClasses().add(newClassCopy);
 		}
 	}
 }

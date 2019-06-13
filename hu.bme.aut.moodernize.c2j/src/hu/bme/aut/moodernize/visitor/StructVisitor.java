@@ -30,22 +30,22 @@ public class StructVisitor extends AbstractBaseVisitor {
 		
 		IBinding binding = name.resolveBinding();
 		if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
-			ICompositeType composite = (ICompositeType) binding;
+			ICompositeType struct = (ICompositeType) binding;
 			// TODO: What to do with incorrect class names? Replace all references or ignore?
-			if (!TransformUtil.isCorrectClassName(composite.getName())) {
+			if (!TransformUtil.isCorrectClassName(struct.getName())) {
 				return PROCESS_SKIP;
 			}
 
 			OOClass newClass = factory.createOOClass();
-			newClass.setName(composite.getName());
+			newClass.setName(struct.getName());
 			
-			IField[] members = composite.getFields();
-			for (IField var : members) {
-				OOMember member = factory.createOOMember();
-				member.setName(var.getName());
-				member.setType(TypeConverter.convertCDTTypeToOOgenType(var.getType()));
-				member.setVisibility(OOVisibility.PRIVATE);
-				newClass.getMembers().add(member);
+			IField[] members = struct.getFields();
+			for (IField structMember : members) {
+				OOMember classMember = factory.createOOMember();
+				classMember.setName(structMember.getName());
+				classMember.setType(TypeConverter.convertCDTTypeToOOgenType(structMember.getType()));
+				classMember.setVisibility(OOVisibility.PRIVATE);
+				newClass.getMembers().add(classMember);
 			}
 			
 			if (!classes.contains(newClass)) {

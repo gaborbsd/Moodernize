@@ -29,10 +29,10 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 		}
 
 		if (declaration instanceof IASTFunctionDefinition) {
-			IASTFunctionDefinition func = (IASTFunctionDefinition) declaration;
-			String functionName = func.getDeclarator().getName().resolveBinding().getName();
+			IASTFunctionDefinition function = (IASTFunctionDefinition) declaration;
+			String functionName = function.getDeclarator().getName().resolveBinding().getName();
 
-			IASTStatement[] statements = ((IASTCompoundStatement) func.getBody()).getStatements();
+			IASTStatement[] statements = ((IASTCompoundStatement) function.getBody()).getStatements();
 			StatementConverter converter = new StatementConverter();
 			for (IASTStatement statement : statements) {
 				OOStatement convertedStatement = converter.convertStatement(statement);
