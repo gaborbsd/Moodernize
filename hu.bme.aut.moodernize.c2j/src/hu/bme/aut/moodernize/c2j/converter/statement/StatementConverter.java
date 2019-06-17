@@ -1,5 +1,7 @@
 package hu.bme.aut.moodernize.c2j.converter.statement;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.IASTBreakStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
@@ -20,10 +22,17 @@ import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOIf;
+import hu.bme.aut.oogen.OOLogicalExpression;
+import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
+import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class StatementConverter {
+    private static OogenFactory factory = OogenFactory.eINSTANCE;
+
     public OOStatement convertStatement(IASTStatement statement) {
 	if (statement instanceof IASTBreakStatement) {
 	    return convertBreakStatement((IASTBreakStatement) statement);
@@ -108,7 +117,31 @@ public class StatementConverter {
     }
 
     private OOStatement convertIfStatement(IASTIfStatement statement) {
-	throw new NotImplementedException();
+	OOLogicalExpression conditionExpression = (OOLogicalExpression) (new ExpressionConverter()
+		.convertExpression(statement.getConditionExpression()));
+	IASTCompoundStatement thenStatementBlock = (IASTCompoundStatement) statement.getThenClause();
+	IASTCompoundStatement elseStatementBlock = (IASTCompoundStatement) statement.getElseClause();
+
+	OOIf ifStatement = factory.createOOIf();
+	ifStatement.setCondition(conditionExpression);
+
+	List<OOStatement> ooThenStatementBlock = ifStatement.getBodyStatements();
+	for (IASTStatement thenStatement : thenStatementBlock.getStatements()) {
+	    if (thenStatement != null) {
+		ooThenStatementBlock.add(convertStatement(thenStatement));
+	    }
+	}
+
+	List<OOStatement> ooElseStatementBlock = ifStatement.getElseStatements();
+	if (elseStatementBlock != null) {
+	    for (IASTStatement elseStatement : elseStatementBlock.getStatements()) {
+		if (elseStatement != null) {
+		    ooElseStatementBlock.add(convertStatement(elseStatement));
+		}
+	    }
+	}
+
+	return ifStatement;
     }
 
     private OOStatement convertLabelStatement(IASTLabelStatement statement) {
@@ -124,7 +157,10 @@ public class StatementConverter {
     }
 
     private OOStatement convertReturnStatement(IASTReturnStatement statement) {
-	throw new NotImplementedException();
+	OOExpression returnExpression = new ExpressionConverter().convertExpression(statement.getReturnValue());
+	OOReturn returnStatement = factory.createOOReturn();
+	returnStatement.setReturnedExpresssion(returnExpression);
+	return returnStatement;
     }
 
     private OOStatement convertSwitchStatement(IASTSwitchStatement statement) {
