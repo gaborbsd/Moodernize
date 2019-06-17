@@ -12,23 +12,23 @@ import hu.bme.aut.oogen.OOVariableReferenceExpression;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class IdExpressionConverter {
-	private static OogenFactory factory = OogenFactory.eINSTANCE;
-	
-	public OOExpression convertIdExpression(IASTIdExpression idExpression) {
-		return handleByType(idExpression.getExpressionType(), idExpression.getName().resolveBinding().getName());
+    private static OogenFactory factory = OogenFactory.eINSTANCE;
+
+    public OOExpression convertIdExpression(IASTIdExpression idExpression) {
+	return handleByType(idExpression.getExpressionType(), idExpression.getName().resolveBinding().getName());
+    }
+
+    private OOExpression handleByType(IType type, String id) {
+	if (type instanceof ICBasicType || type instanceof ICArrayType) {
+	    OOVariable referredVariable = factory.createOOVariable();
+	    referredVariable.setName(id);
+	    referredVariable.setType(TypeConverter.convertCDTTypeToOOgenType(type));
+
+	    OOVariableReferenceExpression referenceExpression = factory.createOOVariableReferenceExpression();
+	    referenceExpression.setVariable(referredVariable);
+
+	    return referenceExpression;
 	}
-	
-	private OOExpression handleByType(IType type, String id) {
-		if (type instanceof ICBasicType || type instanceof ICArrayType) {
-			OOVariable referredVariable = factory.createOOVariable();
-			referredVariable.setName(id);
-			referredVariable.setType(TypeConverter.convertCDTTypeToOOgenType(type));
-			
-			OOVariableReferenceExpression referenceExpression = factory.createOOVariableReferenceExpression();
-			referenceExpression.setVariable(referredVariable);
-			
-			return referenceExpression;
-		}
-		throw new UnsupportedOperationException("The following type of id expression is not yet supported: " + type);
-	}
+	throw new UnsupportedOperationException("Unsupported IdExpression type encountered: " + type);
+    }
 }

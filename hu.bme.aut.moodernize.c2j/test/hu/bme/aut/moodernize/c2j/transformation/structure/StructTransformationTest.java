@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j.visitor;
+package hu.bme.aut.moodernize.c2j.transformation.structure;
 
 import java.util.List;
 

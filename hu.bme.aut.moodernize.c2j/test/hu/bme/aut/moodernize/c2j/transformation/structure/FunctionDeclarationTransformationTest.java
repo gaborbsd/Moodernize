@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j.visitor;
+package hu.bme.aut.moodernize.c2j.transformation.structure;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOVariable;
 
-public class FunctionTransformationTest extends AbstractTransformationTest {
+public class FunctionDeclarationTransformationTest extends AbstractTransformationTest {
 	@Test
 	public void function_shouldTransformToCorrespondingSignature() {
 		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("void someFunction(int a){}\n");
+		sourceCode.append("void someFunction(int a);\n");
 		sourceCode.append("int anotherFunction(){return 65535;}\n");
 		sourceCode.append("int main(void) {return 0;}\\n\");");
 

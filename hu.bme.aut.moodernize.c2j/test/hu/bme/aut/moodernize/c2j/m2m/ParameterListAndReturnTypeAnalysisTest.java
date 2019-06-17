@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j.core;
+package hu.bme.aut.moodernize.c2j.m2m;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 
-public class FunctionToClassAssignerTest extends AbstractTransformationTest {
+public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformationTest {
 	@Test
 	public void noStructType_shouldNotTransformToAClass() {
 		StringBuilder sourceCode = new StringBuilder();
