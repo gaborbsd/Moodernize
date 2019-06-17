@@ -27,6 +27,7 @@ import hu.bme.aut.oogen.OOIf;
 import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
+import hu.bme.aut.oogen.OOWhile;
 import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -38,8 +39,6 @@ public class StatementConverter {
 	    return convertBreakStatement((IASTBreakStatement) statement);
 	} else if (statement instanceof IASTCaseStatement) {
 	    return convertCaseStatement((IASTCaseStatement) statement);
-	} else if (statement instanceof IASTCompoundStatement) {
-	    return convertCompoundStatement((IASTCompoundStatement) statement);
 	} else if (statement instanceof IASTContinueStatement) {
 	    return convertContinueStatement((IASTContinueStatement) statement);
 	} else if (statement instanceof IASTDeclarationStatement) {
@@ -88,16 +87,13 @@ public class StatementConverter {
 	throw new NotImplementedException();
     }
 
-    private OOStatement convertCompoundStatement(IASTCompoundStatement statement) {
-	throw new NotImplementedException();
-    }
-
     private OOStatement convertContinueStatement(IASTContinueStatement statement) {
 	throw new NotImplementedException();
     }
 
     private OOStatement convertDeclarationStatement(IASTDeclarationStatement statement) {
-	throw new NotImplementedException();
+	DeclarationStatementConverter converter = new DeclarationStatementConverter();
+	return converter.convertDeclarationStatement(statement);
     }
 
     private OOStatement convertDefaultStatement(IASTDefaultStatement statement) {
@@ -168,6 +164,20 @@ public class StatementConverter {
     }
 
     private OOStatement convertWhileStatement(IASTWhileStatement statement) {
-	throw new NotImplementedException();
+	OOLogicalExpression conditionExpression = (OOLogicalExpression) (new ExpressionConverter()
+		.convertExpression(statement.getCondition()));
+	IASTCompoundStatement body = (IASTCompoundStatement) statement.getBody();
+
+	OOWhile whileStatement = factory.createOOWhile();
+	whileStatement.setCondition(conditionExpression);
+
+	List<OOStatement> ooBody = whileStatement.getBodyStatements();
+	for (IASTStatement bodyStatement : body.getStatements()) {
+	    if (bodyStatement != null) {
+		ooBody.add(convertStatement(bodyStatement));
+	    }
+	}
+
+	return whileStatement;
     }
 }
