@@ -14,9 +14,9 @@ public class FunctionDeclarationTransformationTest extends AbstractTransformatio
 	@Test
 	public void function_shouldTransformToCorrespondingSignature() {
 		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("void someFunction(int a);\n");
-		sourceCode.append("int anotherFunction(){return 65535;}\n");
-		sourceCode.append("int main(void) {return 0;}\\n\");");
+		sourceCode.append("void someFunction(int a);");
+		sourceCode.append("int anotherFunction(){return 65535;}");
+		sourceCode.append("int main(void){return 0;}");
 
 		OOModel model = getModelBySourceCode(sourceCode.toString());
 
