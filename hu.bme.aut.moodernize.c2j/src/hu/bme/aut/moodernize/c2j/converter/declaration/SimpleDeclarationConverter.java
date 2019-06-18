@@ -2,11 +2,15 @@ package hu.bme.aut.moodernize.c2j.converter.declaration;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTElaboratedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 
+import hu.bme.aut.moodernize.c2j.util.TypeConverter;
+import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOStatement;
+import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -37,6 +41,19 @@ public class SimpleDeclarationConverter {
     private void handleSpecifier(OOVariable declaredVariable, IASTDeclSpecifier specifier) {
 	if (specifier instanceof IASTSimpleDeclSpecifier) {
 	    throw new NotImplementedException();
+	} else if (specifier instanceof IASTElaboratedTypeSpecifier) {
+	    IASTElaboratedTypeSpecifier elaboratedSpecifier = (IASTElaboratedTypeSpecifier) specifier;
+	    String typeName = elaboratedSpecifier.getName().resolveBinding().getName();	
+	    //TODO: Enum and union?
+	    switch (elaboratedSpecifier.getKind()) {
+	    case IASTElaboratedTypeSpecifier.k_struct:
+		OOType type = factory.createOOType();
+		TypeConverter.setOOReferenceType(type, typeName);
+		declaredVariable.setType(type);
+		break;
+	    default:
+		break;
+	    }
 	}
     }
 }

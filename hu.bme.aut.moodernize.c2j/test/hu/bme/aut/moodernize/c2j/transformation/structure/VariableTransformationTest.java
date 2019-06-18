@@ -27,7 +27,7 @@ public class VariableTransformationTest extends AbstractTransformationTest {
     @Test
     public void localVariable_shouldNotTransformToGlobalVariable() throws CoreException {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct Fuge {int x;}");
+	sourceCode.append("struct Fuge { int x;};");
 	sourceCode.append("int main(void) { struct Fuge localFuge; return 0;}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());

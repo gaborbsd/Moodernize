@@ -14,9 +14,9 @@ import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class TypeConverter {
+    private static OogenFactory factory = OogenFactory.eINSTANCE;
 
     public static OOType convertCDTTypeToOOgenType(IType cdtType) {
-	OogenFactory factory = OogenFactory.eINSTANCE;
 	OOType ooType = factory.createOOType();
 
 	// More dimensions not implemented yet in OOGen
@@ -36,12 +36,12 @@ public class TypeConverter {
 	    handleType(ooType, ((IPointerType) cdtType).getType());
 	}
 
-	else if (cdtType instanceof IBasicType) {
+	if (cdtType instanceof IBasicType) {
 	    setOOBaseType(ooType, (IBasicType) cdtType);
 	} else if (cdtType instanceof ICompositeType) {
-	    setOOReferenceType(ooType, (ICompositeType) cdtType);
+	    setOOReferenceType(ooType, ((ICompositeType) cdtType).getName());
 	} else if (cdtType instanceof ITypedef && (((ITypedef) cdtType).getType()) instanceof ICompositeType) {
-	    setOOReferenceType(ooType, (ICompositeType) (((ITypedef) cdtType).getType()));
+	    setOOReferenceType(ooType, ((ICompositeType) (((ITypedef) cdtType).getType())).getName());
 	} else {
 	    ooType.setBaseType(OOBaseType.OBJECT);
 	}
@@ -67,11 +67,10 @@ public class TypeConverter {
 	}
     }
 
-    private static void setOOReferenceType(OOType ooType, ICompositeType struct) {
-	OogenFactory factory = OogenFactory.eINSTANCE;
+    public static void setOOReferenceType(OOType ooType, String className) {
 	ooType.setBaseType(OOBaseType.OBJECT);
 	OOClass classType = factory.createOOClass();
-	classType.setName(struct.getName());
+	classType.setName(className);
 	ooType.setClassType(classType);
     }
 }
