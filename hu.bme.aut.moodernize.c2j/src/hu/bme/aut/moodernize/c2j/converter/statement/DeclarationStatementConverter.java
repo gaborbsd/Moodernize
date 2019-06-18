@@ -1,26 +1,28 @@
 package hu.bme.aut.moodernize.c2j.converter.statement;
 
 import org.eclipse.cdt.core.dom.ast.IASTASMDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTProblemDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 
+import hu.bme.aut.moodernize.c2j.converter.declaration.SimpleDeclarationConverter;
 import hu.bme.aut.oogen.OOStatement;
-import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DeclarationStatementConverter {
-    private static OogenFactory factory = OogenFactory.eINSTANCE;
+    
 
     public OOStatement convertDeclarationStatement(IASTDeclarationStatement statement) {
-	if (statement instanceof IASTASMDeclaration) {
-	    return convertASMDeclaration((IASTASMDeclaration) statement);
-	} else if (statement instanceof IASTProblemDeclaration) {
-	    return convertProblemDeclaration((IASTProblemDeclaration) statement);
-	} else if (statement instanceof IASTSimpleDeclaration) {
-	    return convertSimpleDeclaration((IASTSimpleDeclaration) statement);
+	IASTDeclaration declaration = statement.getDeclaration();
+	if (declaration instanceof IASTASMDeclaration) {
+	    return convertASMDeclaration((IASTASMDeclaration) declaration);
+	} else if (declaration instanceof IASTProblemDeclaration) {
+	    return convertProblemDeclaration((IASTProblemDeclaration) declaration);
+	} else if (declaration instanceof IASTSimpleDeclaration) {
+	   return convertSimpleDeclaration((IASTSimpleDeclaration) declaration);
 	} else {
-	    throw new UnsupportedOperationException("Unsupported DeclarationStatement encountered: " + statement);
+	    throw new UnsupportedOperationException("Unsupported DeclarationStatement encountered: " + declaration);
 	}
     }
 
@@ -33,6 +35,7 @@ public class DeclarationStatementConverter {
     }
 
     private OOStatement convertSimpleDeclaration(IASTSimpleDeclaration declaration) {
-	throw new NotImplementedException();
+	SimpleDeclarationConverter converter = new SimpleDeclarationConverter();
+	return converter.convertSimpleDeclaration(declaration);
     }
 }

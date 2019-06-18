@@ -13,41 +13,44 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
 
 public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
-	private List<OOMethod> functions;
+    private List<OOMethod> functions;
 
-	public FunctionDefinitionVisitor(String fileName,  List<OOMethod> functions) {
-		super(fileName);
-		this.functions = functions;
+    public FunctionDefinitionVisitor(String fileName, List<OOMethod> functions) {
+	super(fileName);
+	this.functions = functions;
 
-		shouldVisitDeclarations = true;
+	shouldVisitDeclarations = true;
+    }
+
+    @Override
+    public int visit(IASTDeclaration declaration) {
+	if (!isCorrectContainingFile(declaration)) {
+	    return PROCESS_SKIP;
 	}
 
-	@Override
-	public int visit(IASTDeclaration declaration) {
-		if (!isCorrectContainingFile(declaration)) {
-			return PROCESS_SKIP;
-		}
+	if (declaration instanceof IASTFunctionDefinition) {
+	    IASTFunctionDefinition function = (IASTFunctionDefinition) declaration;
+	    String functionName = function.getDeclarator().getName().resolveBinding().getName();
 
-		if (declaration instanceof IASTFunctionDefinition) {
-			IASTFunctionDefinition function = (IASTFunctionDefinition) declaration;
-			String functionName = function.getDeclarator().getName().resolveBinding().getName();
-
-			IASTStatement[] statements = ((IASTCompoundStatement) function.getBody()).getStatements();
-			StatementConverter converter = new StatementConverter();
-			for (IASTStatement statement : statements) {
-				OOStatement convertedStatement = converter.convertStatement(statement);
-				TransformUtil.getFunctionByName(functions, functionName).getStatements().add(convertedStatement);
-			}
-		}
-		return PROCESS_CONTINUE;
+	    IASTStatement[] statements = ((IASTCompoundStatement) function.getBody()).getStatements();
+	    StatementConverter converter = new StatementConverter();
+	    for (IASTStatement statement : statements) {
+		OOStatement convertedStatement = converter.convertStatement(statement);
+		TransformUtil.getFunctionByName(functions, functionName).getStatements().add(convertedStatement);
+	    }
 	}
+	return PROCESS_CONTINUE;
+    }
 
-	/*private void handleFunctionCallExpression(OOMethod currentFunction, IASTFunctionCallExpression functionCallExpression) {
-		IASTExpression functionNameExpression = (IASTIdExpression) functionCallExpression.getFunctionNameExpression();
-		if (functionNameExpression != null && functionNameExpression instanceof IASTIdExpression) {
-			IASTIdExpression idExpression = (IASTIdExpression) functionNameExpression;
-			String calledName = idExpression.getName().resolveBinding().getName();
-			callGraph.add(new Calledge(currentFunction.getName(), calledName));
-		}
-	}*/
+    /*
+     * private void handleFunctionCallExpression(OOMethod currentFunction,
+     * IASTFunctionCallExpression functionCallExpression) { IASTExpression
+     * functionNameExpression = (IASTIdExpression)
+     * functionCallExpression.getFunctionNameExpression(); if
+     * (functionNameExpression != null && functionNameExpression instanceof
+     * IASTIdExpression) { IASTIdExpression idExpression = (IASTIdExpression)
+     * functionNameExpression; String calledName =
+     * idExpression.getName().resolveBinding().getName(); callGraph.add(new
+     * Calledge(currentFunction.getName(), calledName)); } }
+     */
 }
