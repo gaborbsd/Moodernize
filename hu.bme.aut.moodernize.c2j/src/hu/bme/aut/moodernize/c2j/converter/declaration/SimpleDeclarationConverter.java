@@ -40,20 +40,11 @@ public class SimpleDeclarationConverter {
 
     private void handleSpecifier(OOVariable declaredVariable, IASTDeclSpecifier specifier) {
 	if (specifier instanceof IASTSimpleDeclSpecifier) {
-	    throw new NotImplementedException();
+	    OOType type = TypeConverter.convertSimpleDeclSpecifierType((IASTSimpleDeclSpecifier) specifier);
+	    declaredVariable.setType(type);
 	} else if (specifier instanceof IASTElaboratedTypeSpecifier) {
-	    IASTElaboratedTypeSpecifier elaboratedSpecifier = (IASTElaboratedTypeSpecifier) specifier;
-	    String typeName = elaboratedSpecifier.getName().resolveBinding().getName();	
-	    //TODO: Enum and union?
-	    switch (elaboratedSpecifier.getKind()) {
-	    case IASTElaboratedTypeSpecifier.k_struct:
-		OOType type = factory.createOOType();
-		TypeConverter.setOOReferenceType(type, typeName);
-		declaredVariable.setType(type);
-		break;
-	    default:
-		break;
-	    }
+	    OOType type = TypeConverter.convertElaboratedTypeSpecifierType((IASTElaboratedTypeSpecifier) specifier);
+	    declaredVariable.setType(type);
 	}
     }
 }
