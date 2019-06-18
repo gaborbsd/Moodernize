@@ -7,5 +7,5 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import hu.bme.aut.oogen.OOModel;
 
 public interface ICToJavaTransformer {
-	public OOModel transform(Set<IASTTranslationUnit> sources);
+    public OOModel transform(Set<IASTTranslationUnit> sources);
 }

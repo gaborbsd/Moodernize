@@ -11,7 +11,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DeclarationStatementConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-    
+
     public OOStatement convertDeclarationStatement(IASTDeclarationStatement statement) {
 	if (statement instanceof IASTASMDeclaration) {
 	    return convertASMDeclaration((IASTASMDeclaration) statement);
@@ -23,15 +23,15 @@ public class DeclarationStatementConverter {
 	    throw new UnsupportedOperationException("Unsupported DeclarationStatement encountered: " + statement);
 	}
     }
-    
+
     private OOStatement convertASMDeclaration(IASTASMDeclaration declaration) {
 	throw new NotImplementedException();
     }
-    
+
     private OOStatement convertProblemDeclaration(IASTProblemDeclaration declaration) {
 	throw new NotImplementedException();
     }
-    
+
     private OOStatement convertSimpleDeclaration(IASTSimpleDeclaration declaration) {
 	throw new NotImplementedException();
     }

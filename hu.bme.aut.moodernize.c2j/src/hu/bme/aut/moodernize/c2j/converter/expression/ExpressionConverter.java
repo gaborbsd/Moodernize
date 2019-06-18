@@ -57,54 +57,54 @@ public class ExpressionConverter {
     private OOExpression convertArraySubscriptExpression(IASTArraySubscriptExpression expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertBinaryExpression(IASTBinaryExpression expression) {
 	BinaryExpressionConverter binaryConverter = new BinaryExpressionConverter();
 	return binaryConverter.convertBinaryExpression(expression);
     }
-    
+
     private OOExpression convertBinaryTypeIdExpression(IASTBinaryExpression expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertCastExpression(IASTCastExpression expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertConditionalExpression(IASTConditionalExpression expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertExpressionList(IASTExpressionList expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertFieldReference(IASTFieldReference expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertFunctionCallExpression(IASTFunctionCallExpression expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertIdExpression(IASTIdExpression expression) {
 	IdExpressionConverter idConverter = new IdExpressionConverter();
 	return idConverter.convertIdExpression(expression);
     }
-    
+
     private OOExpression convertLiteralExpression(IASTLiteralExpression expression) {
 	LiteralExpressionConverter literalConverter = new LiteralExpressionConverter();
 	return literalConverter.convertLiteralExpression(expression);
     }
-    
+
     private OOExpression convertProblemExpression(IASTProblemExpression expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertTypeIdExpression(IASTTypeIdExpression expression) {
 	throw new NotImplementedException();
     }
-    
+
     private OOExpression convertTypeIdInitializerExpression(IASTTypeIdInitializerExpression expression) {
 	throw new NotImplementedException();
     }

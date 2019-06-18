@@ -11,81 +11,81 @@ import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOModel;
 
 public class BaseTypeTransformationTest extends AbstractTransformationTest {
-	@Test
-	public void intType_shouldTransformToInt() {
-		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("int a; short b; unsigned int c; unsigned short d;");
-		
-		OOModel model = getModelBySourceCode(sourceCode.toString());
-		
-		List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
-		for (OOMember m : globalVariables) {
-			Assert.assertTrue(m.getType().getBaseType() == OOBaseType.INT);
-		}
+    @Test
+    public void intType_shouldTransformToInt() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("int a; short b; unsigned int c; unsigned short d;");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	for (OOMember m : globalVariables) {
+	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.INT);
 	}
-	
-	@Test
-	public void longType_shouldTransformToLong() {
-		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("long a; unsigned long b;");
-		
-		OOModel model = getModelBySourceCode(sourceCode.toString());
-		
-		List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
-		for (OOMember m : globalVariables) {
-			Assert.assertTrue(m.getType().getBaseType() == OOBaseType.LONG);
-		}
+    }
+
+    @Test
+    public void longType_shouldTransformToLong() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("long a; unsigned long b;");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	for (OOMember m : globalVariables) {
+	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.LONG);
 	}
-	
-	@Test
-	public void byteType_shouldTransformToByte() {
-		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("char a; unsigned char b; signed char c;");
-		
-		OOModel model = getModelBySourceCode(sourceCode.toString());
-		
-		List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
-		for (OOMember m : globalVariables) {
-			Assert.assertTrue(m.getType().getBaseType() == OOBaseType.BYTE);
-		}
+    }
+
+    @Test
+    public void byteType_shouldTransformToByte() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("char a; unsigned char b; signed char c;");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	for (OOMember m : globalVariables) {
+	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.BYTE);
 	}
-	
-	@Test
-	public void doubleType_shouldTransformToDouble() {
-		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("float a; double b; long double c;");
-		
-		OOModel model = getModelBySourceCode(sourceCode.toString());
-		
-		List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
-		for (OOMember m : globalVariables) {
-			Assert.assertTrue(m.getType().getBaseType() == OOBaseType.DOUBLE);
-		}
+    }
+
+    @Test
+    public void doubleType_shouldTransformToDouble() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("float a; double b; long double c;");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	for (OOMember m : globalVariables) {
+	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.DOUBLE);
 	}
-	
-	@Test
-	public void voidPointer_shouldTransformToObject() {
-		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("void *a;");
-		
-		OOModel model = getModelBySourceCode(sourceCode.toString());
-		
-		List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
-		for (OOMember m : globalVariables) {
-			Assert.assertTrue(m.getType().getBaseType() == OOBaseType.OBJECT);
-		}
+    }
+
+    @Test
+    public void voidPointer_shouldTransformToObject() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("void *a;");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	for (OOMember m : globalVariables) {
+	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.OBJECT);
 	}
-	
-	@Test
-	public void array_shouldTransformToArray() {
-		StringBuilder sourceCode = new StringBuilder();
-		sourceCode.append("float a[200]; int b[] = {0}; double *t[10];");
-		
-		OOModel model = getModelBySourceCode(sourceCode.toString());
-		
-		List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
-		for (OOMember m : globalVariables) {
-			Assert.assertTrue(m.getType().isArray());
-		}
+    }
+
+    @Test
+    public void array_shouldTransformToArray() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("float a[200]; int b[] = {0}; double *t[10];");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	for (OOMember m : globalVariables) {
+	    Assert.assertTrue(m.getType().isArray());
 	}
+    }
 }

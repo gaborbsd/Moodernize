@@ -23,32 +23,33 @@ import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
 import hu.bme.aut.oogen.OOModel;
 
 public abstract class AbstractTransformationTest {
-	protected ICToJavaTransformer transformer;
-	@Before
-	public void setup() {
-		transformer = new CToJavaTransformer();
-	}
-	
-	protected OOModel getModelBySourceCode(String sourceCode) {
-		try {
-			IASTTranslationUnit ast = getIASTTranslationUnit(sourceCode.toString().toCharArray());
-			return transformer.transform(new HashSet<IASTTranslationUnit>(Arrays.asList(ast)));
-		} catch(CoreException ex) {
-			ex.printStackTrace();
-			return null;
-		}
-	}
-	
-	private IASTTranslationUnit getIASTTranslationUnit(char[] code) throws CoreException {
-		FileContent fc = FileContent.create("", code);
-		Map<String, String> macroDefinitions = new HashMap<>();
-		String[] includeSearchPaths = new String[0];
-		IScannerInfo si = new ScannerInfo(macroDefinitions, includeSearchPaths);
-		IncludeFileContentProvider ifcp = IncludeFileContentProvider.getEmptyFilesProvider();
-		IIndex idx = null;
-		int options = ILanguage.OPTION_IS_SOURCE_UNIT;
-		IParserLogService log = new DefaultLogService();
+    protected ICToJavaTransformer transformer;
 
-		return GPPLanguage.getDefault().getASTTranslationUnit(fc, si, ifcp, idx, options, log);
+    @Before
+    public void setup() {
+	transformer = new CToJavaTransformer();
+    }
+
+    protected OOModel getModelBySourceCode(String sourceCode) {
+	try {
+	    IASTTranslationUnit ast = getIASTTranslationUnit(sourceCode.toString().toCharArray());
+	    return transformer.transform(new HashSet<IASTTranslationUnit>(Arrays.asList(ast)));
+	} catch (CoreException ex) {
+	    ex.printStackTrace();
+	    return null;
 	}
+    }
+
+    private IASTTranslationUnit getIASTTranslationUnit(char[] code) throws CoreException {
+	FileContent fc = FileContent.create("", code);
+	Map<String, String> macroDefinitions = new HashMap<>();
+	String[] includeSearchPaths = new String[0];
+	IScannerInfo si = new ScannerInfo(macroDefinitions, includeSearchPaths);
+	IncludeFileContentProvider ifcp = IncludeFileContentProvider.getEmptyFilesProvider();
+	IIndex idx = null;
+	int options = ILanguage.OPTION_IS_SOURCE_UNIT;
+	IParserLogService log = new DefaultLogService();
+
+	return GPPLanguage.getDefault().getASTTranslationUnit(fc, si, ifcp, idx, options, log);
+    }
 }
