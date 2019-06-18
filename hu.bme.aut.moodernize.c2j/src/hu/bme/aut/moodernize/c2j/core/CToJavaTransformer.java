@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.core;
+package hu.bme.aut.moodernize.c2j.core;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,11 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import hu.bme.aut.moodernize.visitor.AbstractBaseVisitor;
-import hu.bme.aut.moodernize.visitor.FunctionDeclarationVisitor;
-import hu.bme.aut.moodernize.visitor.FunctionDefinitionVisitor;
-import hu.bme.aut.moodernize.visitor.GlobalVariableVisitor;
-import hu.bme.aut.moodernize.visitor.StructVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.FunctionDefinitionVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.GlobalVariableVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.StructVisitor;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;

@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.visitor;
+package hu.bme.aut.moodernize.c2j.visitor;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.eclipse.cdt.core.dom.ast.IField;
 import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IVariable;
 
-import hu.bme.aut.moodernize.util.TransformUtil;
-import hu.bme.aut.moodernize.util.TypeConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOVariable;
 
 public class GlobalVariableVisitor extends AbstractBaseVisitor {

@@ -5,7 +5,7 @@ import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.core.dom.ast.c.ICArrayType;
 
-import hu.bme.aut.moodernize.util.TypeConverter;
+import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableReferenceExpression;

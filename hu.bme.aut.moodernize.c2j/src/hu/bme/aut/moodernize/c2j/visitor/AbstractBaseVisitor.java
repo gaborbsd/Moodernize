@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.visitor;
+package hu.bme.aut.moodernize.c2j.visitor;
 
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTNode;

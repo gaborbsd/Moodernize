@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.util;
+package hu.bme.aut.moodernize.c2j.util;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.visitor;
+package hu.bme.aut.moodernize.c2j.visitor;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IField;
 
-import hu.bme.aut.moodernize.util.TransformUtil;
-import hu.bme.aut.moodernize.util.TypeConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOVisibility;
