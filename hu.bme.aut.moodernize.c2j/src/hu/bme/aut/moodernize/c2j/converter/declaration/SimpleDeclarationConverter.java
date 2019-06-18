@@ -8,12 +8,10 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
-import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OogenFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class SimpleDeclarationConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
