@@ -32,7 +32,7 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 	}
 
 	IBinding binding = name.resolveBinding();
-	if (binding instanceof IFunction && name.getRoleOfName(true) == IASTNameOwner.r_declaration) {
+	if (binding instanceof IFunction) {
 	    IFunction cdtFunction = (IFunction) binding;
 
 	    OOMethod ooFunction = factory.createOOMethod();
