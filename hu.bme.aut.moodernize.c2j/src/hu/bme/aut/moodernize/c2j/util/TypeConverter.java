@@ -1,6 +1,7 @@
 package hu.bme.aut.moodernize.c2j.util;
 
 import org.eclipse.cdt.core.dom.ast.IASTElaboratedTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
@@ -124,7 +125,7 @@ public class TypeConverter {
 	default:
 	    throw new UnsupportedOperationException("Unsupported SimpleDeclSpecifier type" + specifier.getType());
 	}
-	
+
 	return type;
     }
 
@@ -139,5 +140,12 @@ public class TypeConverter {
 	default:
 	    throw new NotImplementedException();
 	}
+    }
+
+    public static OOType convertNamedTypeSpecifierType(IASTNamedTypeSpecifier specifier) {
+	OOType type = factory.createOOType();
+	String typeName = specifier.getName().resolveBinding().getName();
+	setOOReferenceType(type, typeName);
+	return type;
     }
 }

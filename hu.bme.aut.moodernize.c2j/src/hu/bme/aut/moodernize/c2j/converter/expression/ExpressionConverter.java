@@ -16,10 +16,15 @@ import org.eclipse.cdt.core.dom.ast.IASTTypeIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTTypeIdInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
+import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorConverter;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOTypeCast;
+import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class ExpressionConverter {
+    private static OogenFactory factory = OogenFactory.eINSTANCE;
+
     public OOExpression convertExpression(IASTExpression expression) {
 	if (expression instanceof IASTArraySubscriptExpression) {
 	    return convertArraySubscriptExpression((IASTArraySubscriptExpression) expression);
@@ -68,7 +73,10 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertCastExpression(IASTCastExpression expression) {
-	throw new NotImplementedException();
+	OOTypeCast typeCast = factory.createOOTypeCast();
+	typeCast.setExpression(convertExpression(expression.getOperand()));
+	typeCast.setType(new DeclaratorConverter().convertSpecifier(expression.getTypeId().getDeclSpecifier()));
+	return typeCast;
     }
 
     private OOExpression convertConditionalExpression(IASTConditionalExpression expression) {
