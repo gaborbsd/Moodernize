@@ -25,7 +25,7 @@ public class ReturnStatementTransformationTest extends AbstractTransformationTes
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMethod> functions = model.getPackages().get(0).getClasses().get(0).getMethods();
+	List<OOMethod> functions = getDefaultClass(model).getMethods();
 	Assert.assertEquals(1, functions.size());
 
 	OOMethod function = functions.get(0);
@@ -49,7 +49,7 @@ public class ReturnStatementTransformationTest extends AbstractTransformationTes
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMethod> functions = model.getPackages().get(0).getClasses().get(0).getMethods();
+	List<OOMethod> functions = getDefaultClass(model).getMethods();
 	Assert.assertEquals(1, functions.size());
 
 	OOMethod function = functions.get(0);
@@ -71,7 +71,7 @@ public class ReturnStatementTransformationTest extends AbstractTransformationTes
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMethod> functions = model.getPackages().get(0).getClasses().get(0).getMethods();
+	List<OOMethod> functions = getDefaultClass(model).getMethods();
 	Assert.assertEquals(1, functions.size());
 
 	OOMethod function = functions.get(0);
