@@ -35,7 +35,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOAdditionExpression);
 	Assert.assertTrue(((OOAdditionExpression) expression).getLeftSide() instanceof OOIntegerLiteral);
@@ -52,7 +52,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0))
 		.getRightSide();
 	Assert.assertTrue(expression instanceof OOSubtractionExpression);
@@ -71,7 +71,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOStatement expression = someFunction.getStatements().get(0);
 	Assert.assertTrue(
 		((OOAssignmentExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
@@ -89,7 +89,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression multiplicationExpression = ((OOAssignmentExpression) someFunction.getStatements().get(0))
 		.getRightSide();
 	Assert.assertTrue(multiplicationExpression instanceof OOMultiplicationExpression);
@@ -109,7 +109,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OODivisionExpression);
 	Assert.assertTrue(((OODivisionExpression) expression).getLeftSide() instanceof OOIntegerLiteral);
@@ -126,7 +126,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOAndExpression);
 	Assert.assertTrue(((OOAndExpression) expression).getLeftSide() instanceof OOBoolLiteral);
@@ -143,7 +143,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOOrExpression);
 	Assert.assertTrue(((OOOrExpression) expression).getLeftSide() instanceof OOBoolLiteral);
@@ -160,7 +160,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOBitwiseAndExpression);
 	Assert.assertTrue(((OOBitwiseAndExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
@@ -177,7 +177,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOBitwiseOrExpression);
 	Assert.assertTrue(((OOBitwiseOrExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
@@ -194,7 +194,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOBitwiseXorExpression);
 	Assert.assertTrue(((OOBitwiseXorExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
@@ -211,7 +211,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOBitWiseLeftShift);
 	Assert.assertTrue(((OOBitWiseLeftShift) expression).getLeftSide() instanceof OOVariableReferenceExpression);
@@ -228,7 +228,7 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod someFunction = model.getPackages().get(0).getClasses().get(0).getMethods().get(0);
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOBitWiseRightShift);
 	Assert.assertTrue(((OOBitWiseRightShift) expression).getLeftSide() instanceof OOVariableReferenceExpression);

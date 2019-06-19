@@ -19,7 +19,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMethod> globalFunctions = model.getPackages().get(0).getClasses().get(0).getMethods();
+	List<OOMethod> globalFunctions = getDefaultClass(model).getMethods();
 	Assert.assertEquals(1, globalFunctions.size());
 	Assert.assertEquals("someFunction", globalFunctions.get(0).getName());
     }

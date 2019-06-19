@@ -45,7 +45,7 @@ public class StructTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (int i = 0; i < globalVariables.size(); i++) {
 	    OOMember m = globalVariables.get(i);
 	    String typeName = m.getType().getClassType().getName();

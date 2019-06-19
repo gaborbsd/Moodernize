@@ -18,7 +18,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.INT);
 	}
@@ -31,7 +31,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.LONG);
 	}
@@ -44,7 +44,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.BYTE);
 	}
@@ -57,7 +57,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.DOUBLE);
 	}
@@ -70,7 +70,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.OBJECT);
 	}
@@ -83,7 +83,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().isArray());
 	}

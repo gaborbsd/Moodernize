@@ -26,7 +26,7 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	sourceCode.append("return 0; }");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	List<OOStatement> statements = model.getPackages().get(0).getClasses().get(0).getMethods().get(0)
+	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0)
 		.getStatements();
 	int index = 0;
 	for (OOStatement statement : statements) {
@@ -67,7 +67,7 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	sourceCode.append("return 0; }");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	List<OOStatement> statements = model.getPackages().get(0).getClasses().get(0).getMethods().get(0)
+	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0)
 		.getStatements();
 	int index = 0;
 	for (OOStatement statement : statements) {
@@ -108,7 +108,7 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	sourceCode.append("struct S2 struct3;}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	List<OOStatement> statements = model.getPackages().get(0).getClasses().get(0).getMethods().get(0)
+	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0)
 		.getStatements();
 	Assert.assertEquals(3, statements.size());
 

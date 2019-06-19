@@ -18,7 +18,7 @@ public class VariableTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	Assert.assertEquals(1, globalVariables.size());
 	OOMember globalVariable = globalVariables.get(0);
 	Assert.assertEquals("globalInt", globalVariable.getName());
@@ -31,7 +31,7 @@ public class VariableTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	List<OOMember> globalVariables = model.getPackages().get(0).getClasses().get(0).getMembers();
+	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	Assert.assertEquals(0, globalVariables.size());
     }
 }
