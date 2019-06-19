@@ -34,8 +34,7 @@ public class LiteralExpressionConverter {
 	    return doubleLiteral;
 
 	default:
-	    throw new UnsupportedOperationException(
-		    "The following literal expression type is not yet supported: " + literalExpression);
+	    throw new UnsupportedOperationException("Unsupported LiteralExpression encountered: " + literalExpression);
 	}
     }
 }

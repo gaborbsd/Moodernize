@@ -15,7 +15,6 @@ import org.eclipse.cdt.core.dom.ast.IASTGotoStatement;
 import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
 import org.eclipse.cdt.core.dom.ast.IASTLabelStatement;
 import org.eclipse.cdt.core.dom.ast.IASTNullStatement;
-import org.eclipse.cdt.core.dom.ast.IASTProblemStatement;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
@@ -59,8 +58,6 @@ public class StatementConverter {
 	    return convertLabelStatement((IASTLabelStatement) statement);
 	} else if (statement instanceof IASTNullStatement) {
 	    return convertNullStatement((IASTNullStatement) statement);
-	} else if (statement instanceof IASTProblemStatement) {
-	    return convertProblemStatement((IASTProblemStatement) statement);
 	} else if (statement instanceof IASTReturnStatement) {
 	    return convertReturnStatement((IASTReturnStatement) statement);
 	} else if (statement instanceof IASTSwitchStatement) {
@@ -145,10 +142,6 @@ public class StatementConverter {
     }
 
     private OOStatement convertNullStatement(IASTNullStatement statement) {
-	throw new NotImplementedException();
-    }
-
-    private OOStatement convertProblemStatement(IASTProblemStatement statement) {
 	throw new NotImplementedException();
     }
 

@@ -27,7 +27,6 @@ public class SimpleDeclarationConverter {
 	return declaredVariables;
     }*/
     
-    
     public OOStatement convertSimpleDeclaration(IASTSimpleDeclaration declaration) {
 	OOVariable declaredVariable = factory.createOOVariable();
 	handleDeclarator(declaredVariable, declaration.getDeclarators()[0]);

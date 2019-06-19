@@ -135,6 +135,5 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	    }
 	    index++;
 	}
-
     }
 }
