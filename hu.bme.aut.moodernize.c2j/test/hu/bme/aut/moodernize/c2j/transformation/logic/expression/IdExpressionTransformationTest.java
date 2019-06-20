@@ -4,7 +4,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
+import hu.bme.aut.oogen.OOAssignmentExpression;
+import hu.bme.aut.oogen.OOBaseType;
+import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOModel;
+import hu.bme.aut.oogen.OOReturn;
+import hu.bme.aut.oogen.OOStatement;
+import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableReferenceExpression;
 
 public class IdExpressionTransformationTest extends AbstractTransformationTest {
     @Test
@@ -16,26 +23,37 @@ public class IdExpressionTransformationTest extends AbstractTransformationTest {
 	sourceCode.append("}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	Assert.fail();
+
+	OOStatement assignmentStatement = getDefaultClass(model).getMethods().get(0).getStatements().get(0);
+	Assert.assertTrue(assignmentStatement instanceof OOAssignmentExpression);
+	
+	OOExpression lhs = ((OOAssignmentExpression) assignmentStatement).getLeftSide();
+	Assert.assertTrue(lhs instanceof OOVariableReferenceExpression);
+	
+	OOVariable referredVariable = ((OOVariableReferenceExpression)lhs).getVariable();
+	Assert.assertTrue(referredVariable.getName().equals("globalInt"));
+	Assert.assertTrue(referredVariable.getType().getBaseType() == OOBaseType.INT);
     }
 
     @Test
     public void structTypeVariableReference_shouldTransformToReferenceTypeOOVariableReference() {
-	Assert.fail();
-    }
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("struct S {int x; };");
+	sourceCode.append("int someFunction(void) {");
+	sourceCode.append("	struct S s;");
+	sourceCode.append("	return s;");
+	sourceCode.append("}");
 
-    @Test
-    public void localVariableReference_shouldTransformToVariableReference() {
-	Assert.fail();
-    }
+	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-    @Test
-    public void globalVariableReference_shouldTransformToVariableReference() {
-	Assert.fail();
-    }
-
-    @Test
-    public void parameterReference_shouldTransformToVariableReference() {
-	Assert.fail();
+	OOStatement returnStatement = getDefaultClass(model).getMethods().get(0).getStatements().get(1);
+	Assert.assertTrue(returnStatement instanceof OOReturn);
+	
+	OOExpression returnedExpression = ((OOReturn) returnStatement).getReturnedExpresssion();
+	Assert.assertTrue(returnedExpression instanceof OOVariableReferenceExpression);
+	
+	OOVariable referredVariable = ((OOVariableReferenceExpression)returnedExpression).getVariable();
+	Assert.assertTrue(referredVariable.getName().equals("s"));
+	Assert.assertTrue(referredVariable.getType().getClassType().getName().equals("S"));
     }
 }
