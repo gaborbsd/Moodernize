@@ -2,13 +2,7 @@ package hu.bme.aut.moodernize.c2j.util;
 
 import java.util.List;
 
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-
-import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.oogen.OOClass;
-import hu.bme.aut.oogen.OOExpression;
-import hu.bme.aut.oogen.OOIntegerLiteral;
-import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
@@ -63,14 +57,5 @@ public class TransformUtil {
 		|| name.equals("TRANSIENT") || name.equals("TRY") || name.equals("VOLATILE") || name.equals("");
 
 	return !isIncorrect;
-    }
-    
-    public static OOLogicalExpression convertConditionExpression(IASTExpression conditionExpression) {
-	OOExpression convertedExpression = new ExpressionConverter().convertExpression(conditionExpression);
-	if (convertedExpression instanceof OOIntegerLiteral) {
-	    convertedExpression = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral) convertedExpression);
-	}
-	
-	return (OOLogicalExpression) convertedExpression;
     }
 }

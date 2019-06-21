@@ -1,7 +1,5 @@
 package hu.bme.aut.moodernize.c2j.converter.statement;
 
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.IASTBreakStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
@@ -9,6 +7,7 @@ import org.eclipse.cdt.core.dom.ast.IASTContinueStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDefaultStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDoStatement;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTGotoStatement;
@@ -21,11 +20,9 @@ import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
-import hu.bme.aut.moodernize.c2j.util.TransformUtil;
-import hu.bme.aut.oogen.OOEmptyStatement;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFor;
 import hu.bme.aut.oogen.OOIf;
-import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOWhile;
@@ -73,11 +70,6 @@ public class StatementConverter {
 	}
     }
 
-    private OOStatement convertExpressionStatement(IASTExpressionStatement statement) {
-	ExpressionConverter converter = new ExpressionConverter();
-	return converter.convertExpression(statement.getExpression());
-    }
-
     private OOStatement convertBreakStatement(IASTBreakStatement statement) {
 	throw new NotImplementedException();
     }
@@ -103,8 +95,25 @@ public class StatementConverter {
 	throw new NotImplementedException();
     }
 
+    private OOStatement convertExpressionStatement(IASTExpressionStatement statement) {
+	ExpressionConverter converter = new ExpressionConverter();
+	return converter.convertExpression(statement.getExpression());
+    }
+
     private OOStatement convertForStatetement(IASTForStatement statement) {
-	throw new NotImplementedException();
+	CompoundStatementConverter converter = new CompoundStatementConverter();
+	ExpressionConverter expressionConverter = new ExpressionConverter();
+	OOFor forStatement = factory.createOOFor();
+
+	forStatement.setCondition(converter.convertConditionExpression(statement.getConditionExpression()));
+	converter.addStatementsToBody(statement.getBody(), forStatement.getBodyStatements());
+	forStatement.setIncrementExpression(expressionConverter.convertExpression(statement.getIterationExpression()));
+
+	IASTExpression initExpression = ((IASTExpressionStatement) (statement.getInitializerStatement()))
+		.getExpression();
+	forStatement.setInitExpression(expressionConverter.convertExpression(initExpression));
+
+	return forStatement;
     }
 
     private OOStatement convertGotoStatement(IASTGotoStatement statement) {
@@ -112,28 +121,12 @@ public class StatementConverter {
     }
 
     private OOStatement convertIfStatement(IASTIfStatement statement) {
-	OOLogicalExpression conditionExpression = TransformUtil.convertConditionExpression(statement.getConditionExpression());
-	IASTCompoundStatement thenStatementBlock = (IASTCompoundStatement) statement.getThenClause();
-	IASTCompoundStatement elseStatementBlock = (IASTCompoundStatement) statement.getElseClause();
-
+	CompoundStatementConverter converter = new CompoundStatementConverter();
 	OOIf ifStatement = factory.createOOIf();
-	ifStatement.setCondition(conditionExpression);
 
-	List<OOStatement> ooThenStatementBlock = ifStatement.getBodyStatements();
-	for (IASTStatement thenStatement : thenStatementBlock.getStatements()) {
-	    if (thenStatement != null) {
-		ooThenStatementBlock.add(convertStatement(thenStatement));
-	    }
-	}
-
-	List<OOStatement> ooElseStatementBlock = ifStatement.getElseStatements();
-	if (elseStatementBlock != null) {
-	    for (IASTStatement elseStatement : elseStatementBlock.getStatements()) {
-		if (elseStatement != null) {
-		    ooElseStatementBlock.add(convertStatement(elseStatement));
-		}
-	    }
-	}
+	ifStatement.setCondition(converter.convertConditionExpression(statement.getConditionExpression()));
+	converter.addStatementsToBody(statement.getThenClause(), ifStatement.getBodyStatements());
+	converter.addStatementsToBody(statement.getElseClause(), ifStatement.getElseStatements());
 
 	return ifStatement;
     }
@@ -158,18 +151,11 @@ public class StatementConverter {
     }
 
     private OOStatement convertWhileStatement(IASTWhileStatement statement) {
-	OOLogicalExpression conditionExpression = TransformUtil.convertConditionExpression(statement.getCondition());
-	IASTCompoundStatement body = (IASTCompoundStatement) statement.getBody();
-
+	CompoundStatementConverter converter = new CompoundStatementConverter();
 	OOWhile whileStatement = factory.createOOWhile();
-	whileStatement.setCondition(conditionExpression);
 
-	List<OOStatement> ooBody = whileStatement.getBodyStatements();
-	for (IASTStatement bodyStatement : body.getStatements()) {
-	    if (bodyStatement != null) {
-		ooBody.add(convertStatement(bodyStatement));
-	    }
-	}
+	whileStatement.setCondition(converter.convertConditionExpression(statement.getCondition()));
+	converter.addStatementsToBody(statement.getBody(), whileStatement.getBodyStatements());
 
 	return whileStatement;
     }
