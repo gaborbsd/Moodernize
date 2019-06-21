@@ -2,7 +2,6 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 
-import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;

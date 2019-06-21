@@ -12,7 +12,6 @@ import hu.bme.aut.oogen.OOBitWiseRightShift;
 import hu.bme.aut.oogen.OOBitwiseAndExpression;
 import hu.bme.aut.oogen.OOBitwiseOrExpression;
 import hu.bme.aut.oogen.OOBitwiseXorExpression;
-import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OODivisionExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;

@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
-import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;

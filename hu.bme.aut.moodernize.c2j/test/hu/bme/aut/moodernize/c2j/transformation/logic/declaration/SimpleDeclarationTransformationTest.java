@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOBaseType;
-import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOModel;
