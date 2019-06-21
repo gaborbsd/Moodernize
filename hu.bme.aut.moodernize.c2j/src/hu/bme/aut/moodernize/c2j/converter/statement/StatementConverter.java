@@ -21,6 +21,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIf;
 import hu.bme.aut.oogen.OOLogicalExpression;
@@ -110,8 +111,7 @@ public class StatementConverter {
     }
 
     private OOStatement convertIfStatement(IASTIfStatement statement) {
-	OOLogicalExpression conditionExpression = (OOLogicalExpression) (new ExpressionConverter()
-		.convertExpression(statement.getConditionExpression()));
+	OOLogicalExpression conditionExpression = TransformUtil.convertConditionExpression(statement.getConditionExpression());
 	IASTCompoundStatement thenStatementBlock = (IASTCompoundStatement) statement.getThenClause();
 	IASTCompoundStatement elseStatementBlock = (IASTCompoundStatement) statement.getElseClause();
 
@@ -157,8 +157,7 @@ public class StatementConverter {
     }
 
     private OOStatement convertWhileStatement(IASTWhileStatement statement) {
-	OOLogicalExpression conditionExpression = (OOLogicalExpression) (new ExpressionConverter()
-		.convertExpression(statement.getCondition()));
+	OOLogicalExpression conditionExpression = TransformUtil.convertConditionExpression(statement.getCondition());
 	IASTCompoundStatement body = (IASTCompoundStatement) statement.getBody();
 
 	OOWhile whileStatement = factory.createOOWhile();

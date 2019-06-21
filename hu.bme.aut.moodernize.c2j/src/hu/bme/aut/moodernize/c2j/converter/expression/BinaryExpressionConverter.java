@@ -2,12 +2,12 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 
+import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOComparatorExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalExpression;
-import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOTwoOperandLogicalExpression;
 import hu.bme.aut.oogen.OogenFactory;
@@ -52,22 +52,22 @@ public class BinaryExpressionConverter {
 
 	case IASTBinaryExpression.op_equals:
 	    return setBothSidesAndReturn(factory.createOOEqualsExpression(), lhs, rhs);
-	    
+
 	case IASTBinaryExpression.op_notequals:
 	    return setBothSidesAndReturn(factory.createOONotEqualsExpression(), lhs, rhs);
-	    
+
 	case IASTBinaryExpression.op_greaterThan:
 	    return setBothSidesAndReturn(factory.createOOGreaterThanExpression(), lhs, rhs);
-	    
+
 	case IASTBinaryExpression.op_greaterEqual:
 	    return setBothSidesAndReturn(factory.createOOGreaterEqualsExpression(), lhs, rhs);
-	    
+
 	case IASTBinaryExpression.op_lessThan:
 	    return setBothSidesAndReturn(factory.createOOLessThanExpression(), lhs, rhs);
-	    
+
 	case IASTBinaryExpression.op_lessEqual:
 	    return setBothSidesAndReturn(factory.createOOLessEqualsExpression(), lhs, rhs);
-	    
+
 	case IASTBinaryExpression.op_binaryAnd:
 	    return setBothSidesAndReturn(factory.createOOBitwiseAndExpression(), lhs, rhs);
 
@@ -108,10 +108,10 @@ public class BinaryExpressionConverter {
 	    OOExpression rhs) {
 	if (lhs instanceof OOIntegerLiteral) {
 
-	    lhs = createBoolFromLogicalInt((OOIntegerLiteral) lhs);
+	    lhs = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral) lhs);
 	}
 	if (rhs instanceof OOIntegerLiteral) {
-	    rhs = createBoolFromLogicalInt((OOIntegerLiteral) rhs);
+	    rhs = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral) rhs);
 	}
 	if (!(lhs instanceof OOLogicalExpression) || !(rhs instanceof OOLogicalExpression)) {
 	    throw new IllegalArgumentException(
@@ -122,16 +122,5 @@ public class BinaryExpressionConverter {
 	expression.setRightSide((OOLogicalExpression) rhs);
 
 	return expression;
-    }
-
-    private OOLogicalExpression createBoolFromLogicalInt(OOIntegerLiteral integerLiteral) {
-	OOLogicalLiteral logicalLiteral = factory.createOOLogicalLiteral();
-	if (((OOIntegerLiteral) integerLiteral).getValue() == 0) {
-	    logicalLiteral.setValue(false);
-	} else {
-	    logicalLiteral.setValue(true);
-	}
-
-	return logicalLiteral;
     }
 }

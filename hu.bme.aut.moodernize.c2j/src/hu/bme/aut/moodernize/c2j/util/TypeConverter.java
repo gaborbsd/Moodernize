@@ -12,6 +12,9 @@ import org.eclipse.cdt.core.dom.ast.ITypedef;
 
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOIntegerLiteral;
+import hu.bme.aut.oogen.OOLogicalExpression;
+import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -147,5 +150,16 @@ public class TypeConverter {
 	String typeName = specifier.getName().resolveBinding().getName();
 	setOOReferenceType(type, typeName);
 	return type;
+    }
+    
+    public static OOLogicalExpression createBoolFromLogicalInt(OOIntegerLiteral integerLiteral) {
+	OOLogicalLiteral logicalLiteral = factory.createOOLogicalLiteral();
+	if (((OOIntegerLiteral) integerLiteral).getValue() == 0) {
+	    logicalLiteral.setValue(false);
+	} else {
+	    logicalLiteral.setValue(true);
+	}
+
+	return logicalLiteral;
     }
 }
