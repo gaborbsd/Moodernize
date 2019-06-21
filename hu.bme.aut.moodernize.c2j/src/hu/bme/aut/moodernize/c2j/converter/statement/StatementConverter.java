@@ -22,6 +22,7 @@ import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.oogen.OOEmptyStatement;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIf;
 import hu.bme.aut.oogen.OOLogicalExpression;
@@ -142,7 +143,7 @@ public class StatementConverter {
     }
 
     private OOStatement convertNullStatement(IASTNullStatement statement) {
-	throw new NotImplementedException();
+	return factory.createOOEmptyStatement();
     }
 
     private OOStatement convertReturnStatement(IASTReturnStatement statement) {
