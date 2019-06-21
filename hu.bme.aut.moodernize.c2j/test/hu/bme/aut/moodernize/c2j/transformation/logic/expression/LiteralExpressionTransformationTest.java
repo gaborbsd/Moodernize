@@ -8,6 +8,7 @@ import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
+import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
@@ -39,8 +40,8 @@ public class LiteralExpressionTransformationTest extends AbstractTransformationT
 
 	OOStatement returnStatement = getDefaultClass(model).getMethods().get(0).getStatements().get(0);
 	OOExpression returnExpression = ((OOReturn) returnStatement).getReturnedExpresssion();
-	Assert.assertTrue(returnExpression instanceof OOBoolLiteral);
-	Assert.assertFalse(((OOBoolLiteral) returnExpression).isValue());
+	Assert.assertTrue(returnExpression instanceof OOLogicalLiteral);
+	Assert.assertFalse(((OOLogicalLiteral) returnExpression).isValue());
     }
 
     @Test
@@ -54,8 +55,8 @@ public class LiteralExpressionTransformationTest extends AbstractTransformationT
 
 	OOStatement returnStatement = getDefaultClass(model).getMethods().get(0).getStatements().get(0);
 	OOExpression returnExpression = ((OOReturn) returnStatement).getReturnedExpresssion();
-	Assert.assertTrue(returnExpression instanceof OOBoolLiteral);
-	Assert.assertTrue(((OOBoolLiteral) returnExpression).isValue());
+	Assert.assertTrue(returnExpression instanceof OOLogicalLiteral);
+	Assert.assertTrue(((OOLogicalLiteral) returnExpression).isValue());
     }
 
     @Test
@@ -64,7 +65,7 @@ public class LiteralExpressionTransformationTest extends AbstractTransformationT
 	sourceCode.append("float someFunction() {");
 	sourceCode.append("	return 3.27114f;");
 	sourceCode.append("}");
-	
+
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	OOStatement returnStatement = getDefaultClass(model).getMethods().get(0).getStatements().get(0);

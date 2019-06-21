@@ -6,6 +6,7 @@ import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
+import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class LiteralExpressionConverter {
@@ -23,9 +24,9 @@ public class LiteralExpressionConverter {
 	case IASTLiteralExpression.lk_false:
 	case IASTLiteralExpression.lk_true:
 	    boolean valueBoolean = Boolean.parseBoolean(valueString);
-	    OOBoolLiteral booleanLiteral = factory.createOOBoolLiteral();
-	    booleanLiteral.setValue(valueBoolean);
-	    return booleanLiteral;
+	    OOLogicalLiteral logicalLiteral = factory.createOOLogicalLiteral();
+	    logicalLiteral.setValue(valueBoolean);
+	    return logicalLiteral;
 
 	case IASTLiteralExpression.lk_float_constant:
 	    double valueDouble = Double.parseDouble(valueString);

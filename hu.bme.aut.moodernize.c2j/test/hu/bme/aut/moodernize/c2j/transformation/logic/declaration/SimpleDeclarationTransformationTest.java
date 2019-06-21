@@ -9,6 +9,7 @@ import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OOIntegerLiteral;
+import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOSubtractionExpression;
@@ -26,8 +27,7 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	sourceCode.append("return 0; }");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0)
-		.getStatements();
+	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0).getStatements();
 	int index = 0;
 	for (OOStatement statement : statements) {
 	    switch (index) {
@@ -67,8 +67,7 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	sourceCode.append("return 0; }");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0)
-		.getStatements();
+	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0).getStatements();
 	int index = 0;
 	for (OOStatement statement : statements) {
 	    switch (index) {
@@ -77,7 +76,7 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 		Assert.assertTrue(boolVar.getType().getBaseType() == OOBaseType.BOOLEAN);
 		Assert.assertTrue(boolVar.getName().equals("b"));
 
-		OOBoolLiteral boolVarValue = (OOBoolLiteral) boolVar.getInitializerExpression();
+		OOLogicalLiteral boolVarValue = (OOLogicalLiteral) boolVar.getInitializerExpression();
 		Assert.assertFalse(boolVarValue.isValue());
 		break;
 	    case 1:
@@ -108,8 +107,7 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	sourceCode.append("struct S2 struct3;}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0)
-		.getStatements();
+	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0).getStatements();
 	Assert.assertEquals(3, statements.size());
 
 	int index = 0;

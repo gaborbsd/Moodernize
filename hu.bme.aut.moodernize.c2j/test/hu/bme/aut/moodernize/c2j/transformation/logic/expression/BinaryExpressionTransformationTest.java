@@ -16,6 +16,7 @@ import hu.bme.aut.oogen.OOBoolLiteral;
 import hu.bme.aut.oogen.OODivisionExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
+import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOMultiplicationExpression;
@@ -129,8 +130,8 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOAndExpression);
-	Assert.assertTrue(((OOAndExpression) expression).getLeftSide() instanceof OOBoolLiteral);
-	Assert.assertTrue(((OOAndExpression) expression).getRightSide() instanceof OOBoolLiteral);
+	Assert.assertTrue(((OOAndExpression) expression).getLeftSide() instanceof OOLogicalLiteral);
+	Assert.assertTrue(((OOAndExpression) expression).getRightSide() instanceof OOLogicalLiteral);
     }
 
     @Test
@@ -146,8 +147,8 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
 	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
 	Assert.assertTrue(expression instanceof OOOrExpression);
-	Assert.assertTrue(((OOOrExpression) expression).getLeftSide() instanceof OOBoolLiteral);
-	Assert.assertTrue(((OOOrExpression) expression).getRightSide() instanceof OOBoolLiteral);
+	Assert.assertTrue(((OOOrExpression) expression).getLeftSide() instanceof OOLogicalLiteral);
+	Assert.assertTrue(((OOOrExpression) expression).getRightSide() instanceof OOLogicalLiteral);
     }
 
     @Test
