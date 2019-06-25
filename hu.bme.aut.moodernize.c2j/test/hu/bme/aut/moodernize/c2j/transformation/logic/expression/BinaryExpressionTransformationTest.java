@@ -13,13 +13,20 @@ import hu.bme.aut.oogen.OOBitwiseAndExpression;
 import hu.bme.aut.oogen.OOBitwiseOrExpression;
 import hu.bme.aut.oogen.OOBitwiseXorExpression;
 import hu.bme.aut.oogen.OODivisionExpression;
+import hu.bme.aut.oogen.OOEqualsExpression;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOGreaterEqualsExpression;
+import hu.bme.aut.oogen.OOGreaterThanExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
+import hu.bme.aut.oogen.OOLessEqualsExpression;
+import hu.bme.aut.oogen.OOLessThanExpression;
 import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOMultiplicationExpression;
+import hu.bme.aut.oogen.OONotEqualsExpression;
 import hu.bme.aut.oogen.OOOrExpression;
+import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOSubtractionExpression;
 import hu.bme.aut.oogen.OOVariableReferenceExpression;
@@ -233,5 +240,107 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 	Assert.assertTrue(expression instanceof OOBitWiseRightShift);
 	Assert.assertTrue(((OOBitWiseRightShift) expression).getLeftSide() instanceof OOVariableReferenceExpression);
 	Assert.assertTrue(((OOBitWiseRightShift) expression).getRightSide() instanceof OOIntegerLiteral);
+    }
+    
+    @Test
+    public void operatorEquals_shouldTransformToOOEquals() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("unsigned int globalInt;");
+	sourceCode.append("bool someFunction(int x) {");
+	sourceCode.append("	return x == globalInt;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
+	OOExpression expression = ((OOReturn) someFunction.getStatements().get(0)).getReturnedExpresssion();
+	Assert.assertTrue(expression instanceof OOEqualsExpression);
+	Assert.assertTrue(((OOEqualsExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(((OOEqualsExpression) expression).getRightSide() instanceof OOVariableReferenceExpression);
+    }
+    
+    @Test
+    public void operatorNotEquals_shouldTransformToOONotEquals() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("unsigned int globalInt;");
+	sourceCode.append("bool someFunction(int x) {");
+	sourceCode.append("	return x != globalInt;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
+	OOExpression expression = ((OOReturn) someFunction.getStatements().get(0)).getReturnedExpresssion();
+	Assert.assertTrue(expression instanceof OONotEqualsExpression);
+	Assert.assertTrue(((OONotEqualsExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(((OONotEqualsExpression) expression).getRightSide() instanceof OOVariableReferenceExpression);
+    }
+    
+    @Test
+    public void operatorGreaterThan_shouldTransformToOOGreaterThan() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("unsigned int globalInt;");
+	sourceCode.append("bool someFunction(int x) {");
+	sourceCode.append("	return x > globalInt;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
+	OOExpression expression = ((OOReturn) someFunction.getStatements().get(0)).getReturnedExpresssion();
+	Assert.assertTrue(expression instanceof OOGreaterThanExpression);
+	Assert.assertTrue(((OOGreaterThanExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(((OOGreaterThanExpression) expression).getRightSide() instanceof OOVariableReferenceExpression);
+    }
+    
+    @Test
+    public void operatorGreaterEquals_shouldTransformToOOGreaterEquals() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("unsigned int globalInt;");
+	sourceCode.append("bool someFunction(int x) {");
+	sourceCode.append("	return x >= globalInt;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
+	OOExpression expression = ((OOReturn) someFunction.getStatements().get(0)).getReturnedExpresssion();
+	Assert.assertTrue(expression instanceof OOGreaterEqualsExpression);
+	Assert.assertTrue(((OOGreaterEqualsExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(((OOGreaterEqualsExpression) expression).getRightSide() instanceof OOVariableReferenceExpression);
+    }
+    
+    @Test
+    public void operatorLessThan_shouldTransformToOOLessThan() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("unsigned int globalInt;");
+	sourceCode.append("bool someFunction(int x) {");
+	sourceCode.append("	return x < globalInt;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
+	OOExpression expression = ((OOReturn) someFunction.getStatements().get(0)).getReturnedExpresssion();
+	Assert.assertTrue(expression instanceof OOLessThanExpression);
+	Assert.assertTrue(((OOLessThanExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(((OOLessThanExpression) expression).getRightSide() instanceof OOVariableReferenceExpression);
+    }
+    
+    @Test
+    public void operatorLessEquals_shouldTransformToOOLessEquals() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("unsigned int globalInt;");
+	sourceCode.append("bool someFunction(int x) {");
+	sourceCode.append("	return x <= globalInt;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
+	OOExpression expression = ((OOReturn) someFunction.getStatements().get(0)).getReturnedExpresssion();
+	Assert.assertTrue(expression instanceof OOLessEqualsExpression);
+	Assert.assertTrue(((OOLessEqualsExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(((OOLessEqualsExpression) expression).getRightSide() instanceof OOVariableReferenceExpression);
     }
 }

@@ -2,12 +2,10 @@ package hu.bme.aut.moodernize.c2j.converter.statement;
 
 import org.eclipse.cdt.core.dom.ast.IASTBreakStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
-import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTContinueStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDefaultStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDoStatement;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTGotoStatement;
@@ -108,10 +106,7 @@ public class StatementConverter {
 	forStatement.setCondition(converter.convertConditionExpression(statement.getConditionExpression()));
 	converter.addStatementsToBody(statement.getBody(), forStatement.getBodyStatements());
 	forStatement.setIncrementExpression(expressionConverter.convertExpression(statement.getIterationExpression()));
-
-	IASTExpression initExpression = ((IASTExpressionStatement) (statement.getInitializerStatement()))
-		.getExpression();
-	forStatement.setInitExpression(expressionConverter.convertExpression(initExpression));
+	forStatement.setInitStatement(convertStatement(statement.getInitializerStatement()));
 
 	return forStatement;
     }
