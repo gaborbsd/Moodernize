@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOEqualsExpression;
-import hu.bme.aut.oogen.OOIf;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOWhile;

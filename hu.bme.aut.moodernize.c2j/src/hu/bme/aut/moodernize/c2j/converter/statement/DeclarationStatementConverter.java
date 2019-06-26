@@ -11,7 +11,6 @@ import hu.bme.aut.oogen.OOStatement;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DeclarationStatementConverter {
-    
 
     public OOStatement convertDeclarationStatement(IASTDeclarationStatement statement) {
 	IASTDeclaration declaration = statement.getDeclaration();
@@ -20,7 +19,7 @@ public class DeclarationStatementConverter {
 	} else if (declaration instanceof IASTProblemDeclaration) {
 	    return convertProblemDeclaration((IASTProblemDeclaration) declaration);
 	} else if (declaration instanceof IASTSimpleDeclaration) {
-	   return convertSimpleDeclaration((IASTSimpleDeclaration) declaration);
+	    return convertSimpleDeclaration((IASTSimpleDeclaration) declaration);
 	} else {
 	    throw new UnsupportedOperationException("Unsupported DeclarationStatement encountered: " + declaration);
 	}
