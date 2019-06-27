@@ -9,6 +9,7 @@ import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
+import hu.bme.aut.oogen.OOTwoOperandAssignableExpression;
 import hu.bme.aut.oogen.OOTwoOperandLogicalExpression;
 import hu.bme.aut.oogen.OogenFactory;
 
@@ -43,6 +44,24 @@ public class BinaryExpressionConverter {
 
 	case IASTBinaryExpression.op_divide:
 	    return setBothSidesAndReturn(factory.createOODivisionExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_modulo:
+	    return setBothSidesAndReturn(factory.createOOModuloExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_plusAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOAdditionExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_minusAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOSubtractionExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_multiplyAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOMultiplicationExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_divideAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOODivisionExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_moduloAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOModuloExpression(), lhs, rhs);
 
 	case IASTBinaryExpression.op_logicalAnd:
 	    return setBothSidesAndReturn(factory.createOOAndExpression(), lhs, rhs);
@@ -83,6 +102,36 @@ public class BinaryExpressionConverter {
 	case IASTBinaryExpression.op_shiftRight:
 	    return setBothSidesAndReturn(factory.createOOBitWiseRightShift(), lhs, rhs);
 
+	case IASTBinaryExpression.op_binaryAndAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOBitwiseAndExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_binaryOrAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOBitwiseOrExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_binaryXorAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOBitwiseXorExpression(), lhs, rhs);
+
+	case IASTBinaryExpression.op_shiftLeftAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOBitWiseLeftShift(), lhs, rhs);
+
+	case IASTBinaryExpression.op_shiftRightAssign:
+	    return setBothSidesWithAssignmentAndReturn(factory.createOOBitWiseRightShift(), lhs, rhs);
+
+	case IASTBinaryExpression.op_ellipses:
+	    return null;
+
+	case IASTBinaryExpression.op_max:
+	    return null;
+
+	case IASTBinaryExpression.op_min:
+	    return null;
+
+	case IASTBinaryExpression.op_pmarrow:
+	    return null;
+
+	case IASTBinaryExpression.op_pmdot:
+	    return null;
+
 	default:
 	    throw new UnsupportedOperationException(
 		    "The following binary expression operator is not yet supported: " + operator);
@@ -122,5 +171,11 @@ public class BinaryExpressionConverter {
 	expression.setRightSide((OOLogicalExpression) rhs);
 
 	return expression;
+    }
+
+    private OOExpression setBothSidesWithAssignmentAndReturn(OOTwoOperandAssignableExpression expression,
+	    OOExpression lhs, OOExpression rhs) {
+	expression.setAssigned(true);
+	return setBothSidesAndReturn(expression, lhs, rhs);
     }
 }
