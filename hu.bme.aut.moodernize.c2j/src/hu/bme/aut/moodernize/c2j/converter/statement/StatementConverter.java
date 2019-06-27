@@ -81,7 +81,7 @@ public class StatementConverter {
     }
 
     private OOStatement convertContinueStatement(IASTContinueStatement statement) {
-	throw new NotImplementedException();
+	return factory.createOOContinueStatement();
     }
 
     private OOStatement convertDeclarationStatement(IASTDeclarationStatement statement) {
