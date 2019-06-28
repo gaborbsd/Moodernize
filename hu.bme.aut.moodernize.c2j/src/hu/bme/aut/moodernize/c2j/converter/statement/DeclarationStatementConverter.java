@@ -3,7 +3,6 @@ package hu.bme.aut.moodernize.c2j.converter.statement;
 import org.eclipse.cdt.core.dom.ast.IASTASMDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
-import org.eclipse.cdt.core.dom.ast.IASTProblemDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.SimpleDeclarationConverter;
@@ -16,8 +15,6 @@ public class DeclarationStatementConverter {
 	IASTDeclaration declaration = statement.getDeclaration();
 	if (declaration instanceof IASTASMDeclaration) {
 	    return convertASMDeclaration((IASTASMDeclaration) declaration);
-	} else if (declaration instanceof IASTProblemDeclaration) {
-	    return convertProblemDeclaration((IASTProblemDeclaration) declaration);
 	} else if (declaration instanceof IASTSimpleDeclaration) {
 	    return convertSimpleDeclaration((IASTSimpleDeclaration) declaration);
 	} else {
@@ -26,10 +23,6 @@ public class DeclarationStatementConverter {
     }
 
     private OOStatement convertASMDeclaration(IASTASMDeclaration declaration) {
-	throw new NotImplementedException();
-    }
-
-    private OOStatement convertProblemDeclaration(IASTProblemDeclaration declaration) {
 	throw new NotImplementedException();
     }
 

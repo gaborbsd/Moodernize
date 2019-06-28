@@ -14,11 +14,12 @@ import hu.bme.aut.oogen.OOLessThanExpression;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableDeclarationList;
 import hu.bme.aut.oogen.OOVariableReferenceExpression;
 
 public class ForStatementTransformationTest extends AbstractTransformationTest {
-    //TODO: Foreach on collections
-    //TODO: i = i + 1 -> i++;
+    // TODO: Foreach on collections
+    // TODO: i = i + 1 -> i++;
     @Test
     public void initStatementVariableDeclaration_shouldTransformToOOVariable() {
 	StringBuilder sourceCode = new StringBuilder();
@@ -31,8 +32,9 @@ public class ForStatementTransformationTest extends AbstractTransformationTest {
 	OOStatement statement = getDefaultClass(model).getMethods().get(0).getStatements().get(0);
 	Assert.assertTrue(statement instanceof OOFor);
 	OOFor forStatement = (OOFor) statement;
-	Assert.assertTrue(forStatement.getInitStatement() instanceof OOVariable);
-	OOVariable declaredVariable = (OOVariable) forStatement.getInitStatement();
+	Assert.assertTrue(forStatement.getInitStatement() instanceof OOVariableDeclarationList);
+	OOVariable declaredVariable = (OOVariable) ((OOVariableDeclarationList) forStatement.getInitStatement())
+		.getVariableDeclarations().get(0);
 	Assert.assertEquals("i", declaredVariable.getName());
 	Assert.assertTrue(declaredVariable.getType().getBaseType() == OOBaseType.INT);
     }
@@ -57,7 +59,7 @@ public class ForStatementTransformationTest extends AbstractTransformationTest {
 	Assert.assertEquals("i", referredVariable.getName());
 	Assert.assertTrue(referredVariable.getType().getBaseType() == OOBaseType.INT);
     }
-    
+
     @Test
     public void initStatementEmptyStatement_shouldTransformToOOEmptyStatement() {
 	StringBuilder sourceCode = new StringBuilder();
@@ -73,7 +75,7 @@ public class ForStatementTransformationTest extends AbstractTransformationTest {
 	OOFor forStatement = (OOFor) statement;
 	Assert.assertTrue(forStatement.getInitStatement() instanceof OOEmptyStatement);
     }
-    
+
     @Test
     public void oneStatementWithoutBraces_shouldTransformToOneStatementFor() {
 	StringBuilder sourceCode = new StringBuilder();
@@ -89,7 +91,7 @@ public class ForStatementTransformationTest extends AbstractTransformationTest {
 	OOFor forStatement = (OOFor) statement;
 	Assert.assertEquals(1, forStatement.getBodyStatements().size());
     }
-    
+
     @Test
     public void oneStatementWithBraces_shouldTransformToOneStatementFor() {
 	StringBuilder sourceCode = new StringBuilder();
@@ -105,7 +107,7 @@ public class ForStatementTransformationTest extends AbstractTransformationTest {
 	OOFor forStatement = (OOFor) statement;
 	Assert.assertEquals(1, forStatement.getBodyStatements().size());
     }
-    
+
     @Test
     public void comprehensive_shouldTransformToCorrespondingForStatement() {
 	StringBuilder sourceCode = new StringBuilder();
@@ -118,9 +120,9 @@ public class ForStatementTransformationTest extends AbstractTransformationTest {
 
 	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0).getStatements();
 	Assert.assertEquals(2, statements.size());
-	
+
 	OOFor forStatement = (OOFor) statements.get(1);
-	Assert.assertTrue(forStatement.getInitStatement() instanceof OOVariable);
+	Assert.assertTrue(forStatement.getInitStatement() instanceof OOVariableDeclarationList);
 	Assert.assertTrue(forStatement.getCondition() instanceof OOLessThanExpression);
 	Assert.assertTrue(forStatement.getIncrementExpression() instanceof OOAssignmentExpression);
 	Assert.assertEquals(2, forStatement.getBodyStatements().size());

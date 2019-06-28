@@ -2,6 +2,7 @@ package hu.bme.aut.moodernize.c2j.visitor;
 
 import java.util.List;
 
+import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IField;
@@ -19,6 +20,11 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	super(fileName);
 	this.globalVariables = globalVariables;
 	shouldVisitNames = true;
+	shouldVisitStatements = true;
+    }
+    
+    public int visit(IASTDeclarationStatement declarationStatement) {
+	return PROCESS_SKIP;
     }
 
     @Override

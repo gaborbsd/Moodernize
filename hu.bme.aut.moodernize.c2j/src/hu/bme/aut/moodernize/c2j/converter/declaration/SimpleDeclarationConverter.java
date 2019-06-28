@@ -5,29 +5,23 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 
-import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableDeclarationList;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class SimpleDeclarationConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-    /*
-    public List<OOStatement> convertSimpleDeclaration(IASTSimpleDeclaration declaration) {
-	List<OOStatement> declaredVariables = new ArrayList<OOStatement>();
+    
+    public OOVariableDeclarationList convertSimpleDeclaration(IASTSimpleDeclaration declaration) {
+	OOVariableDeclarationList declarationList = factory.createOOVariableDeclarationList();
 	for (IASTDeclarator declarator : declaration.getDeclarators()) {
 	    OOVariable declaredVariable = factory.createOOVariable();
 	    handleDeclarator(declaredVariable, declarator);
 	    handleSpecifier(declaredVariable, declaration.getDeclSpecifier());
-	    declaredVariables.add(declaredVariable);
+	    declarationList.getVariableDeclarations().add(declaredVariable);
 	}
-	return declaredVariables;
-    }*/
-    
-    public OOStatement convertSimpleDeclaration(IASTSimpleDeclaration declaration) {
-	OOVariable declaredVariable = factory.createOOVariable();
-	handleDeclarator(declaredVariable, declaration.getDeclarators()[0]);
-	handleSpecifier(declaredVariable, declaration.getDeclSpecifier());
-	return declaredVariable;
+		
+	return declarationList;
     }
 
     // TODO: Handle declarators: arraydeclarator, pointeroperator, nested declarator

@@ -15,6 +15,7 @@ import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOSwitch;
 import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableDeclarationList;
 
 public class CaseStatementTransformationTest extends AbstractTransformationTest {
     @Test
@@ -57,7 +58,7 @@ public class CaseStatementTransformationTest extends AbstractTransformationTest 
 	    case 100:
 		Assert.assertEquals(3, body.size());
 		Assert.assertTrue(body.get(0) instanceof OODivisionExpression);
-		Assert.assertTrue(body.get(1) instanceof OOVariable);
+		Assert.assertTrue(body.get(1) instanceof OOVariableDeclarationList);
 		Assert.assertTrue(body.get(2) instanceof OOBreak);
 		break;
 	    case 1024:
