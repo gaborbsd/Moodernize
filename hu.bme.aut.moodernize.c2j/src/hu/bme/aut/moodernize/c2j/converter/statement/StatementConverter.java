@@ -18,7 +18,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
-import hu.bme.aut.oogen.OOCaseStatement;
+import hu.bme.aut.oogen.OOCase;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFor;
 import hu.bme.aut.oogen.OOIf;
@@ -70,18 +70,18 @@ public class StatementConverter {
     }
 
     private OOStatement convertBreakStatement(IASTBreakStatement statement) {
-	return factory.createOOBreakStatement();
+	return factory.createOOBreak();
     }
 
     private OOStatement convertCaseStatement(IASTCaseStatement statement) {
-	OOCaseStatement caseStatement = factory.createOOCaseStatement();
+	OOCase caseStatement = factory.createOOCase();
 	caseStatement.setExpression(new ExpressionConverter().convertExpression(statement.getExpression()));
 	
 	return caseStatement;
     }
 
     private OOStatement convertContinueStatement(IASTContinueStatement statement) {
-	return factory.createOOContinueStatement();
+	return factory.createOOContinue();
     }
 
     private OOStatement convertDeclarationStatement(IASTDeclarationStatement statement) {
@@ -90,7 +90,7 @@ public class StatementConverter {
     }
 
     private OOStatement convertDefaultStatement(IASTDefaultStatement statement) {
-	return factory.createOODefaultStatement();
+	return factory.createOODefault();
     }
 
     private OOStatement convertDoStatement(IASTDoStatement statement) {

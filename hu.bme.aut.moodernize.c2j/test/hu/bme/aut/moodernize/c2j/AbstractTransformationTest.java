@@ -8,7 +8,6 @@ import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage;
 import org.eclipse.cdt.core.index.IIndex;
-import org.eclipse.cdt.core.model.ILanguage;
 import org.eclipse.cdt.core.parser.DefaultLogService;
 import org.eclipse.cdt.core.parser.FileContent;
 import org.eclipse.cdt.core.parser.IParserLogService;
@@ -52,9 +51,8 @@ public abstract class AbstractTransformationTest {
 	IScannerInfo si = new ScannerInfo(macroDefinitions, includeSearchPaths);
 	IncludeFileContentProvider ifcp = IncludeFileContentProvider.getEmptyFilesProvider();
 	IIndex idx = null;
-	int options = ILanguage.OPTION_IS_SOURCE_UNIT;
 	IParserLogService log = new DefaultLogService();
 
-	return GPPLanguage.getDefault().getASTTranslationUnit(fc, si, ifcp, idx, options, log);
+	return GPPLanguage.getDefault().getASTTranslationUnit(fc, si, ifcp, idx, 0, log);
     }
 }

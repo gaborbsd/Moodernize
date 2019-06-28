@@ -11,22 +11,22 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
-import hu.bme.aut.oogen.OOCaseStatement;
+import hu.bme.aut.oogen.OOCase;
 import hu.bme.aut.oogen.OOCompoundStatement;
-import hu.bme.aut.oogen.OODefaultStatement;
+import hu.bme.aut.oogen.OODefault;
 import hu.bme.aut.oogen.OOStatement;
-import hu.bme.aut.oogen.OOSwitchStatement;
+import hu.bme.aut.oogen.OOSwitch;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class SwitchStatementConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 
     private IASTSwitchStatement cdtSwitch;
-    private OOSwitchStatement ooSwitch = factory.createOOSwitchStatement();
+    private OOSwitch ooSwitch = factory.createOOSwitch();
 
     private Map<OOCompoundStatement, List<OOStatement>> statementBodies = new HashMap<OOCompoundStatement, List<OOStatement>>();
 
-    public OOSwitchStatement convertSwitchStatement(IASTSwitchStatement statement) {
+    public OOSwitch convertSwitchStatement(IASTSwitchStatement statement) {
 	this.cdtSwitch = statement;
 	collectCaseAndDefaultStatements();
 	handleControllerExpression();
@@ -47,7 +47,7 @@ public class SwitchStatementConverter {
 	for (IASTStatement bodyStatement : bodyStatements) {
 	    if (bodyStatement != null) {
 		OOStatement convertedStatement = converter.convertStatement(bodyStatement);
-		if (convertedStatement instanceof OOCaseStatement || convertedStatement instanceof OODefaultStatement) {
+		if (convertedStatement instanceof OOCase || convertedStatement instanceof OODefault) {
 		    OOCompoundStatement compoundStatement = (OOCompoundStatement) convertedStatement;
 		    statementBodies.putIfAbsent(compoundStatement, new ArrayList<OOStatement>());
 		    key = compoundStatement;
@@ -64,10 +64,10 @@ public class SwitchStatementConverter {
 	    for (OOStatement statement : entry.getValue()) {
 		compoundStatement.getBodyStatements().add(statement);
 	    }
-	    if (compoundStatement instanceof OODefaultStatement) {
-		ooSwitch.setDefaultStatement((OODefaultStatement) compoundStatement);
-	    } else if (compoundStatement instanceof OOCaseStatement) {
-		ooSwitch.getCaseStatements().add((OOCaseStatement) compoundStatement);
+	    if (compoundStatement instanceof OODefault) {
+		ooSwitch.setDefaultStatement((OODefault) compoundStatement);
+	    } else if (compoundStatement instanceof OOCase) {
+		ooSwitch.getCaseStatements().add((OOCase) compoundStatement);
 	    } else {
 		throw new InvalidParameterException(
 			"Invalid compound statement found in switch body: " + compoundStatement);

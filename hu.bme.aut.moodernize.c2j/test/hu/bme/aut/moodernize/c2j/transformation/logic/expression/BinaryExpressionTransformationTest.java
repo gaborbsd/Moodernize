@@ -23,6 +23,7 @@ import hu.bme.aut.oogen.OOLessThanExpression;
 import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
+import hu.bme.aut.oogen.OOModuloExpression;
 import hu.bme.aut.oogen.OOMultiplicationExpression;
 import hu.bme.aut.oogen.OONotEqualsExpression;
 import hu.bme.aut.oogen.OOOrExpression;
@@ -121,6 +122,23 @@ public class BinaryExpressionTransformationTest extends AbstractTransformationTe
 	Assert.assertTrue(expression instanceof OODivisionExpression);
 	Assert.assertTrue(((OODivisionExpression) expression).getLeftSide() instanceof OOIntegerLiteral);
 	Assert.assertTrue(((OODivisionExpression) expression).getRightSide() instanceof OOIntegerLiteral);
+    }
+    
+    @Test
+    public void operatorModulo_shouldTransformToOOModulo() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("int globalInt;");
+	sourceCode.append("void someFunction() {");
+	sourceCode.append("	globalInt = globalint % 12;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOMethod someFunction = getDefaultClass(model).getMethods().get(0);
+	OOExpression expression = ((OOAssignmentExpression) someFunction.getStatements().get(0)).getRightSide();
+	Assert.assertTrue(expression instanceof OOModuloExpression);
+	Assert.assertTrue(((OOModuloExpression) expression).getLeftSide() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(((OOModuloExpression) expression).getRightSide() instanceof OOIntegerLiteral);
     }
 
     @Test
