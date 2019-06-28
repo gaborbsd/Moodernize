@@ -133,8 +133,7 @@ public class BinaryExpressionConverter {
 	    return null;
 
 	default:
-	    throw new UnsupportedOperationException(
-		    "The following binary expression operator is not yet supported: " + operator);
+	    throw new UnsupportedOperationException("Unsupported binary expression operator encountered " + operator);
 	}
     }
 
