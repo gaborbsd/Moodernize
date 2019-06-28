@@ -118,6 +118,7 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertUnaryExpression(IASTUnaryExpression expression) {
-	throw new NotImplementedException();
+	UnaryExpressionConverter converter = new UnaryExpressionConverter();
+	return converter.convertUnaryExpression(expression);
     }
 }

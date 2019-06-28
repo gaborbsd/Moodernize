@@ -4,6 +4,7 @@ import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOOneOperandArithmeticExpression;
 import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -20,7 +21,7 @@ public class UnaryExpressionConverter {
 	case IASTUnaryExpression.op_amper:
 	    throw new NotImplementedException();
 	case IASTUnaryExpression.op_bracketedPrimary:
-	    throw new NotImplementedException();
+	    return setOperandAndReturn(factory.createOOBracketedExpression(), operand);
 	case IASTUnaryExpression.op_minus:
 	    throw new NotImplementedException();
 	case IASTUnaryExpression.op_not:
@@ -44,5 +45,10 @@ public class UnaryExpressionConverter {
 	default:
 	    throw new UnsupportedOperationException("Unsupported unary expression operator encountered " + operator);
 	}
+    }
+    
+    private OOExpression setOperandAndReturn(OOOneOperandArithmeticExpression expression, OOExpression operand) {
+	expression.setOperand(operand);
+	return expression;
     }
 }
