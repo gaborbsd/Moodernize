@@ -29,13 +29,13 @@ public class UnaryExpressionConverter {
 	case IASTUnaryExpression.op_plus:
 	    throw new NotImplementedException();
 	case IASTUnaryExpression.op_postFixDecr:
-	    throw new NotImplementedException();
+	    return setOperandAndReturn(factory.createOOPostfixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_postFixIncr:
-	    throw new NotImplementedException();
+	    return setOperandAndReturn(factory.createOOPostfixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixDecr:
-	    throw new NotImplementedException();
+	    return setOperandAndReturn(factory.createOOPrefixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixIncr:
-	    throw new NotImplementedException();
+	    return setOperandAndReturn(factory.createOOPrefixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_sizeof:
 	    throw new NotImplementedException();
 	case IASTUnaryExpression.op_star:
