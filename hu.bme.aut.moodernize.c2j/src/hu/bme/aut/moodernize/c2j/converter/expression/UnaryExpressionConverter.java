@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
+import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalExpression;
@@ -50,6 +51,11 @@ public class UnaryExpressionConverter {
 	    throw new UnsupportedOperationException("Unsupported unary expression operator encountered " + operator);
 	}
     }
+    
+    private OOExpression setOperandAndReturn(OOBracketedExpression expression, OOExpression operand) {
+	expression.setOperand(operand);
+	return expression;
+    }
 
     private OOExpression setOperandAndReturn(OOOneOperandArithmeticExpression expression, OOExpression operand) {
 	expression.setOperand(operand);
@@ -58,13 +64,10 @@ public class UnaryExpressionConverter {
 
     private OOExpression setOperandAndReturn(OOOneOperandLogicalExpression expression, OOExpression operand) {
 	if (operand instanceof OOIntegerLiteral) {
-	    operand = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral) operand);
+	    operand = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral )operand);
 	}
-	if (!(operand instanceof OOLogicalExpression)) {
-	    throw new IllegalArgumentException(
-		    "The operand of a OneOperandLogicalExpression must be of type LogicalExpression.");
-	}
-	expression.setLogicalOperand((OOLogicalExpression)operand);
+	
+	expression.setOperand(operand);
 	return expression;
     }
 }

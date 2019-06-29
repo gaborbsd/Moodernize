@@ -167,13 +167,9 @@ public class BinaryExpressionConverter {
 	if (rhs instanceof OOIntegerLiteral) {
 	    rhs = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral) rhs);
 	}
-	if (!(lhs instanceof OOLogicalExpression) || !(rhs instanceof OOLogicalExpression)) {
-	    throw new IllegalArgumentException(
-		    "Both sides of a TwoOperandLogicalExpression must be of type LogicalExpression.");
-	}
 
-	expression.setLeftSide((OOLogicalExpression) lhs);
-	expression.setRightSide((OOLogicalExpression) rhs);
+	expression.setLeftSide(lhs);
+	expression.setRightSide(rhs);
 
 	return expression;
     }
