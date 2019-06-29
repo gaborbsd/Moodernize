@@ -14,7 +14,6 @@ import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOSwitch;
-import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableDeclarationList;
 
 public class CaseStatementTransformationTest extends AbstractTransformationTest {

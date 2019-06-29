@@ -12,6 +12,7 @@ import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOTwoOperandAssignableExpression;
 import hu.bme.aut.oogen.OOTwoOperandLogicalExpression;
 import hu.bme.aut.oogen.OogenFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class BinaryExpressionConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
@@ -118,19 +119,24 @@ public class BinaryExpressionConverter {
 	    return setBothSidesWithAssignmentAndReturn(factory.createOOBitWiseRightShift(), lhs, rhs);
 
 	case IASTBinaryExpression.op_ellipses:
-	    return null;
+	    // gcc only: (...) range
+	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_max:
-	    return null;
+	    //g++ only: >?
+	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_min:
-	    return null;
+	    //g++ only: <?
+	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmarrow:
-	    return null;
+	    //C++ only
+	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmdot:
-	    return null;
+	    // C== only
+	    throw new NotImplementedException();
 
 	default:
 	    throw new UnsupportedOperationException("Unsupported binary expression operator encountered " + operator);
