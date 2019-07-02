@@ -13,9 +13,23 @@ import hu.bme.aut.oogen.OOStatement;
 public class CompoundStatementConverter {
     public OOExpression convertConditionExpression(IASTExpression conditionExpression) {
 	OOExpression convertedExpression = new ExpressionConverter().convertExpression(conditionExpression);
-	//TODO: Kell?
+	// TODO: Convert IntLiteral to BoolLiteral
 
 	return convertedExpression;
+    }
+
+    public void addStatementsToBody(IASTStatement[] statements, List<OOStatement> body) {
+	if (statements == null || body == null) {
+	    return;
+	}
+	StatementConverter converter = new StatementConverter();
+
+	for (IASTStatement statement : statements) {
+	    if (statement != null) {
+		body.add(converter.convertStatement(statement));
+	    }
+	}
+
     }
 
     public void addStatementsToBody(IASTStatement statements, List<OOStatement> body) {
@@ -25,11 +39,7 @@ public class CompoundStatementConverter {
 	StatementConverter converter = new StatementConverter();
 
 	if (statements instanceof IASTCompoundStatement) {
-	    for (IASTStatement statement : ((IASTCompoundStatement) statements).getStatements()) {
-		if (statement != null) {
-		    body.add(converter.convertStatement(statement));
-		}
-	    }
+	    addStatementsToBody(((IASTCompoundStatement) statements).getStatements(), body);
 	} else {
 	    body.add(converter.convertStatement(statements));
 	}

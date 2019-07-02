@@ -2,6 +2,7 @@ package hu.bme.aut.moodernize.c2j.converter.statement;
 
 import org.eclipse.cdt.core.dom.ast.IASTBreakStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTContinueStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDefaultStatement;
@@ -19,6 +20,7 @@ import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.oogen.OOCase;
+import hu.bme.aut.oogen.OOCompoundStatement;
 import hu.bme.aut.oogen.OODoWhile;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFor;
@@ -37,6 +39,8 @@ public class StatementConverter {
 	    return convertBreakStatement((IASTBreakStatement) statement);
 	} else if (statement instanceof IASTCaseStatement) {
 	    return convertCaseStatement((IASTCaseStatement) statement);
+	} else if (statement instanceof IASTCompoundStatement) {
+	    return convertCompoundStatement((IASTCompoundStatement) statement);
 	} else if (statement instanceof IASTContinueStatement) {
 	    return convertContinueStatement((IASTContinueStatement) statement);
 	} else if (statement instanceof IASTDeclarationStatement) {
@@ -77,8 +81,15 @@ public class StatementConverter {
     private OOStatement convertCaseStatement(IASTCaseStatement statement) {
 	OOCase caseStatement = factory.createOOCase();
 	caseStatement.setExpression(new ExpressionConverter().convertExpression(statement.getExpression()));
-	
+
 	return caseStatement;
+    }
+    
+    private OOStatement convertCompoundStatement(IASTCompoundStatement statement) {
+	OOCompoundStatement compoundStatement = factory.createOOCompoundStatement();
+	new CompoundStatementConverter().addStatementsToBody(statement.getStatements(), compoundStatement.getBodyStatements());
+	
+	return compoundStatement;
     }
 
     private OOStatement convertContinueStatement(IASTContinueStatement statement) {
@@ -96,12 +107,12 @@ public class StatementConverter {
 
     private OOStatement convertDoStatement(IASTDoStatement statement) {
 	CompoundStatementConverter converter = new CompoundStatementConverter();
-    	OODoWhile doWhile = factory.createOODoWhile();
-    	
-    	doWhile.setCondition(converter.convertConditionExpression(statement.getCondition()));
-    	converter.addStatementsToBody(statement.getBody(), doWhile.getBodyStatements());
-    	
-    	return doWhile;
+	OODoWhile doWhile = factory.createOODoWhile();
+
+	doWhile.setCondition(converter.convertConditionExpression(statement.getCondition()));
+	converter.addStatementsToBody(statement.getBody(), doWhile.getBodyStatements());
+
+	return doWhile;
     }
 
     private OOStatement convertExpressionStatement(IASTExpressionStatement statement) {
