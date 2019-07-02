@@ -20,7 +20,6 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	super(fileName);
 	this.globalVariables = globalVariables;
 	shouldVisitNames = true;
-	shouldVisitStatements = true;
     }
     
     public int visit(IASTDeclarationStatement declarationStatement) {

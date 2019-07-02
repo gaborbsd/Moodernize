@@ -2,7 +2,6 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTArraySubscriptExpression;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
-import org.eclipse.cdt.core.dom.ast.IASTBinaryTypeIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.IASTConditionalExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -11,13 +10,12 @@ import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
-import org.eclipse.cdt.core.dom.ast.IASTProblemExpression;
-import org.eclipse.cdt.core.dom.ast.IASTTypeIdExpression;
-import org.eclipse.cdt.core.dom.ast.IASTTypeIdInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorConverter;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFieldReferenceExpression;
+import hu.bme.aut.oogen.OOTernaryOperator;
 import hu.bme.aut.oogen.OOTypeCast;
 import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -30,8 +28,6 @@ public class ExpressionConverter {
 	    return convertArraySubscriptExpression((IASTArraySubscriptExpression) expression);
 	} else if (expression instanceof IASTBinaryExpression) {
 	    return convertBinaryExpression((IASTBinaryExpression) expression);
-	} else if (expression instanceof IASTBinaryTypeIdExpression) {
-	    return convertBinaryTypeIdExpression((IASTBinaryExpression) expression);
 	} else if (expression instanceof IASTCastExpression) {
 	    return convertCastExpression((IASTCastExpression) expression);
 	} else if (expression instanceof IASTConditionalExpression) {
@@ -46,12 +42,6 @@ public class ExpressionConverter {
 	    return convertIdExpression((IASTIdExpression) expression);
 	} else if (expression instanceof IASTLiteralExpression) {
 	    return convertLiteralExpression((IASTLiteralExpression) expression);
-	} else if (expression instanceof IASTProblemExpression) {
-	    return convertProblemExpression((IASTProblemExpression) expression);
-	} else if (expression instanceof IASTTypeIdExpression) {
-	    return convertTypeIdExpression((IASTTypeIdExpression) expression);
-	} else if (expression instanceof IASTTypeIdInitializerExpression) {
-	    return convertTypeIdInitializerExpression((IASTTypeIdInitializerExpression) expression);
 	} else if (expression instanceof IASTUnaryExpression) {
 	    return convertUnaryExpression((IASTUnaryExpression) expression);
 	} else {
@@ -68,10 +58,6 @@ public class ExpressionConverter {
 	return binaryConverter.convertBinaryExpression(expression);
     }
 
-    private OOExpression convertBinaryTypeIdExpression(IASTBinaryExpression expression) {
-	throw new NotImplementedException();
-    }
-
     private OOExpression convertCastExpression(IASTCastExpression expression) {
 	OOTypeCast typeCast = factory.createOOTypeCast();
 	typeCast.setExpression(convertExpression(expression.getOperand()));
@@ -80,7 +66,14 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertConditionalExpression(IASTConditionalExpression expression) {
-	throw new NotImplementedException();
+	OOTernaryOperator ternary = factory.createOOTernaryOperator();
+	ExpressionConverter converter = new ExpressionConverter();
+	
+	ternary.setCondition(converter.convertExpression(expression.getLogicalConditionExpression()));
+	ternary.setPositiveBranch(converter.convertExpression(expression.getPositiveResultExpression()));
+	ternary.setNegativeBranch(converter.convertExpression(expression.getNegativeResultExpression()));
+	
+	return ternary;
     }
 
     private OOExpression convertExpressionList(IASTExpressionList expression) {
@@ -88,7 +81,11 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertFieldReference(IASTFieldReference expression) {
-	throw new NotImplementedException();
+	OOFieldReferenceExpression fieldReference = factory.createOOFieldReferenceExpression();
+	fieldReference.setFieldOwner(new ExpressionConverter().convertExpression(expression.getFieldOwner()));
+	fieldReference.setFieldName(expression.getFieldName().resolveBinding().getName());
+	
+	return fieldReference;
     }
 
     private OOExpression convertFunctionCallExpression(IASTFunctionCallExpression expression) {
@@ -103,18 +100,6 @@ public class ExpressionConverter {
     private OOExpression convertLiteralExpression(IASTLiteralExpression expression) {
 	LiteralExpressionConverter literalConverter = new LiteralExpressionConverter();
 	return literalConverter.convertLiteralExpression(expression);
-    }
-
-    private OOExpression convertProblemExpression(IASTProblemExpression expression) {
-	throw new NotImplementedException();
-    }
-
-    private OOExpression convertTypeIdExpression(IASTTypeIdExpression expression) {
-	throw new NotImplementedException();
-    }
-
-    private OOExpression convertTypeIdInitializerExpression(IASTTypeIdInitializerExpression expression) {
-	throw new NotImplementedException();
     }
 
     private OOExpression convertUnaryExpression(IASTUnaryExpression expression) {

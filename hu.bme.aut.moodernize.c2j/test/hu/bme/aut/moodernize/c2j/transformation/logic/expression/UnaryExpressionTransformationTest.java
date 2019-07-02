@@ -13,7 +13,6 @@ import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOGreaterThanExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLessThanExpression;
-import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOMinusExpression;

@@ -51,7 +51,7 @@ public class SwitchStatementConverter {
 		    OOCompoundStatement compoundStatement = (OOCompoundStatement) convertedStatement;
 		    statementBodies.putIfAbsent(compoundStatement, new ArrayList<OOStatement>());
 		    key = compoundStatement;
-		}  else {
+		} else {
 		    statementBodies.get(key).add(convertedStatement);
 		}
 	    }

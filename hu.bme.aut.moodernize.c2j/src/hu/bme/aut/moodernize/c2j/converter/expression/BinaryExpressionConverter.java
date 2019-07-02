@@ -2,12 +2,9 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 
-import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOComparatorExpression;
 import hu.bme.aut.oogen.OOExpression;
-import hu.bme.aut.oogen.OOIntegerLiteral;
-import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOTwoOperandAssignableExpression;
 import hu.bme.aut.oogen.OOTwoOperandLogicalExpression;
@@ -160,17 +157,9 @@ public class BinaryExpressionConverter {
 
     private OOExpression setBothSidesAndReturn(OOTwoOperandLogicalExpression expression, OOExpression lhs,
 	    OOExpression rhs) {
-	if (lhs instanceof OOIntegerLiteral) {
-
-	    lhs = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral) lhs);
-	}
-	if (rhs instanceof OOIntegerLiteral) {
-	    rhs = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral) rhs);
-	}
-
 	expression.setLeftSide(lhs);
 	expression.setRightSide(rhs);
-
+	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(expression);
 	return expression;
     }
 

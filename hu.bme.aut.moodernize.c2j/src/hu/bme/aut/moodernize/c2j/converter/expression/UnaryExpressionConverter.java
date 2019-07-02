@@ -2,11 +2,8 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
-import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOExpression;
-import hu.bme.aut.oogen.OOIntegerLiteral;
-import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOOneOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOOneOperandLogicalExpression;
 import hu.bme.aut.oogen.OogenFactory;
@@ -63,11 +60,8 @@ public class UnaryExpressionConverter {
     }
 
     private OOExpression setOperandAndReturn(OOOneOperandLogicalExpression expression, OOExpression operand) {
-	if (operand instanceof OOIntegerLiteral) {
-	    operand = TypeConverter.createBoolFromLogicalInt((OOIntegerLiteral )operand);
-	}
-	
 	expression.setOperand(operand);
+	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(expression);
 	return expression;
     }
 }

@@ -2,7 +2,6 @@ package hu.bme.aut.moodernize.c2j.util;
 
 import java.util.List;
 
-import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;

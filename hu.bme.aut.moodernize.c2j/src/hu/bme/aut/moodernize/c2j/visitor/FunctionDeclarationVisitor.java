@@ -52,8 +52,10 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 		ooParameter.setType(TypeConverter.convertCDTTypeToOOgenType(cdtParameter.getType()));
 		ooFunction.getParameters().add(ooParameter);
 	    }
-	    globalFunctions.add(ooFunction);
-
+	    if (!globalFunctions.contains(ooFunction)) {
+		globalFunctions.add(ooFunction);
+	    }
+	    
 	    return PROCESS_CONTINUE;
 	}
 

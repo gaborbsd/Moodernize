@@ -14,46 +14,47 @@ import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOVisibility;
 
 public class StructVisitor extends AbstractBaseVisitor {
-	private List<OOClass> classes;
-	
-	public StructVisitor(String fileName, List<OOClass> classes) {
-		super(fileName);
-		this.classes = classes;
-		shouldVisitNames = true;
+    private List<OOClass> classes;
+
+    public StructVisitor(String fileName, List<OOClass> classes) {
+	super(fileName);
+	this.classes = classes;
+	shouldVisitNames = true;
+    }
+
+    @Override
+    public int visit(IASTName name) {
+	if (!isCorrectContainingFile(name)) {
+	    return PROCESS_SKIP;
 	}
 
-	@Override
-	public int visit(IASTName name) {
-		if (!isCorrectContainingFile(name)) {
-			return PROCESS_SKIP;
-		}
-		
-		IBinding binding = name.resolveBinding();
-		if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
-			ICompositeType struct = (ICompositeType) binding;
-			// TODO: What to do with incorrect class names? Replace all references or ignore?
-			if (!TransformUtil.isCorrectClassName(struct.getName())) {
-				return PROCESS_SKIP;
-			}
-
-			OOClass newClass = factory.createOOClass();
-			newClass.setName(struct.getName());
-			
-			IField[] members = struct.getFields();
-			for (IField structMember : members) {
-				OOMember classMember = factory.createOOMember();
-				classMember.setName(structMember.getName());
-				classMember.setType(TypeConverter.convertCDTTypeToOOgenType(structMember.getType()));
-				classMember.setVisibility(OOVisibility.PRIVATE);
-				newClass.getMembers().add(classMember);
-			}
-			
-			if (!classes.contains(newClass)) {
-				classes.add(newClass);
-			}
-			return PROCESS_CONTINUE;
-		}
-
+	IBinding binding = name.resolveBinding();
+	if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
+	    ICompositeType struct = (ICompositeType) binding;
+	    // TODO: What to do with incorrect class names? Replace all references or
+	    // ignore?
+	    if (!TransformUtil.isCorrectClassName(struct.getName())) {
 		return PROCESS_SKIP;
+	    }
+
+	    OOClass newClass = factory.createOOClass();
+	    newClass.setName(struct.getName());
+
+	    IField[] members = struct.getFields();
+	    for (IField structMember : members) {
+		OOMember classMember = factory.createOOMember();
+		classMember.setName(structMember.getName());
+		classMember.setType(TypeConverter.convertCDTTypeToOOgenType(structMember.getType()));
+		classMember.setVisibility(OOVisibility.PRIVATE);
+		newClass.getMembers().add(classMember);
+	    }
+
+	    if (!classes.contains(newClass)) {
+		classes.add(newClass);
+	    }
+	    return PROCESS_CONTINUE;
 	}
+
+	return PROCESS_SKIP;
+    }
 }

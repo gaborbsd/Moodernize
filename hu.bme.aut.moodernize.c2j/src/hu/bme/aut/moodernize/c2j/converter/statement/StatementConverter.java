@@ -19,6 +19,7 @@ import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.oogen.OOCase;
+import hu.bme.aut.oogen.OODoWhile;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFor;
 import hu.bme.aut.oogen.OOIf;
@@ -94,7 +95,13 @@ public class StatementConverter {
     }
 
     private OOStatement convertDoStatement(IASTDoStatement statement) {
-	throw new NotImplementedException();
+	CompoundStatementConverter converter = new CompoundStatementConverter();
+    	OODoWhile doWhile = factory.createOODoWhile();
+    	
+    	doWhile.setCondition(converter.convertConditionExpression(statement.getCondition()));
+    	converter.addStatementsToBody(statement.getBody(), doWhile.getBodyStatements());
+    	
+    	return doWhile;
     }
 
     private OOStatement convertExpressionStatement(IASTExpressionStatement statement) {
