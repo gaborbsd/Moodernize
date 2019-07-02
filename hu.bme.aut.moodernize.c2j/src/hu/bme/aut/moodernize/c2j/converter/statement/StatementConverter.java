@@ -24,7 +24,6 @@ import hu.bme.aut.oogen.OOCompoundStatement;
 import hu.bme.aut.oogen.OODoWhile;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFor;
-import hu.bme.aut.oogen.OOIf;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOWhile;
@@ -84,11 +83,12 @@ public class StatementConverter {
 
 	return caseStatement;
     }
-    
+
     private OOStatement convertCompoundStatement(IASTCompoundStatement statement) {
 	OOCompoundStatement compoundStatement = factory.createOOCompoundStatement();
-	new CompoundStatementConverter().addStatementsToBody(statement.getStatements(), compoundStatement.getBodyStatements());
-	
+	new CompoundStatementConverter().addStatementsToBody(statement.getStatements(),
+		compoundStatement.getBodyStatements());
+
 	return compoundStatement;
     }
 
@@ -138,14 +138,8 @@ public class StatementConverter {
     }
 
     private OOStatement convertIfStatement(IASTIfStatement statement) {
-	CompoundStatementConverter converter = new CompoundStatementConverter();
-	OOIf ifStatement = factory.createOOIf();
-
-	ifStatement.setCondition(converter.convertConditionExpression(statement.getConditionExpression()));
-	converter.addStatementsToBody(statement.getThenClause(), ifStatement.getBodyStatements());
-	converter.addStatementsToBody(statement.getElseClause(), ifStatement.getElseStatements());
-
-	return ifStatement;
+	IfStatementConverter converter = new IfStatementConverter();
+	return converter.convertIfStatement(statement);
     }
 
     private OOStatement convertLabelStatement(IASTLabelStatement statement) {
