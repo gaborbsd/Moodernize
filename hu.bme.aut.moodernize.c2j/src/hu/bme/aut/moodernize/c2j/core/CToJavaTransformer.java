@@ -83,6 +83,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	    globalVariableCopy.setName(globalVariable.getName());
 	    globalVariableCopy.setType(globalVariable.getType());
 	    globalVariableCopy.setVisibility(OOVisibility.PRIVATE);
+	    globalVariableCopy.setTransient(globalVariable.isTransient());
+	    globalVariableCopy.setInitializerExpression(globalVariable.getInitializerExpression());
 	    mainClass.getMembers().add(globalVariableCopy);
 	}
 	model.getGlobalVariables().clear();

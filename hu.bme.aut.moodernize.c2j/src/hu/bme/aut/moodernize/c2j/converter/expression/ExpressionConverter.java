@@ -9,11 +9,11 @@ import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
-import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorConverter;
+import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
 import hu.bme.aut.oogen.OOCollectionIndex;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFieldReferenceExpression;
@@ -52,15 +52,11 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertArraySubscriptExpression(IASTArraySubscriptExpression expression) {
-	IASTInitializerClause argument = expression.getArgument();
-	if (!(argument instanceof IASTExpression)) {
-	    throw new UnsupportedOperationException(
-		    "The argument of an ArraySubscriptException must be of type Expression but found: " + argument);
-	}
 	OOCollectionIndex collectionIndex = factory.createOOCollectionIndex();
 	collectionIndex.setCollectionExpression(convertExpression(expression.getArrayExpression()));
-	collectionIndex.setIndexExpression(convertExpression((IASTExpression) argument));
-	
+	collectionIndex
+		.setIndexExpression(new InitializerConverter().convertInitializerClause(expression.getArgument()));
+
 	return collectionIndex;
     }
 

@@ -23,18 +23,23 @@ public class InitializerConverter {
 	}
     }
     
-    private OOExpression convertEqualsInitializer(IASTEqualsInitializer equalsInit) {
-	IASTInitializerClause initClause = equalsInit.getInitializerClause();
+    public OOExpression convertInitializerClause(IASTInitializerClause initClause) {
 	if (initClause instanceof IASTExpression) {
 	    ExpressionConverter converter = new ExpressionConverter();
 	    return converter.convertExpression((IASTExpression) initClause);
+	} else if (initClause instanceof IASTInitializerList) {
+	    return convertInitializerList((IASTInitializerList) initClause);
 	} else {
-	    throw new InvalidParameterException("The following initializer is not a valid expression: " + initClause);
+	    throw new InvalidParameterException("Invalid Initializer encountered " + initClause);
 	}
     }
-    
-    //TODO: Support Initlists in OOGen
+
+    private OOExpression convertEqualsInitializer(IASTEqualsInitializer equalsInit) {
+	return convertInitializerClause(equalsInit.getInitializerClause());
+    }
+
+    // TODO: Support Initlists in OOGen
     private OOExpression convertInitializerList(IASTInitializerList initList) {
 	throw new NotImplementedException();
-    }    
+    }
 }

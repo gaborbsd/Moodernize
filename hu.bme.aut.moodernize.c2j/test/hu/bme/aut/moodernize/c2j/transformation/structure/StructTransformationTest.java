@@ -50,7 +50,7 @@ public class StructTransformationTest extends AbstractTransformationTest {
 	    OOMember m = globalVariables.get(i);
 	    String typeName = m.getType().getClassType().getName();
 	    if (i == 0) {
-		Assert.assertTrue(typeName.equals("S1"));
+		Assert.assertTrue(typeName.equals("S1Ref"));
 	    } else if (i == 1) {
 		Assert.assertTrue(typeName.equals("S2"));
 	    }

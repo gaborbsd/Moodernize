@@ -19,6 +19,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
+	Assert.assertEquals(4, globalVariables.size());
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.INT);
 	}

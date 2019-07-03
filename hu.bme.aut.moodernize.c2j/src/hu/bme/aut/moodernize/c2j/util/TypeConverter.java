@@ -93,7 +93,26 @@ public class TypeConverter {
     public static OOType convertSimpleDeclSpecifierType(IASTSimpleDeclSpecifier specifier) {
 	OOType type = factory.createOOType();
 	type.setClassType(null);
+	
+	//TODO: handle specifier.isXy()-s
 	switch (specifier.getType()) {
+	case IASTSimpleDeclSpecifier.t_auto:
+	    break;
+	case IASTSimpleDeclSpecifier.t_decltype:
+	    break;
+	case IASTSimpleDeclSpecifier.t_decltype_auto:
+	    break;
+	case IASTSimpleDeclSpecifier.t_typeof:
+	    break;
+	case IASTSimpleDeclSpecifier.t_unspecified:
+	    if (specifier.isLong()) {
+		type.setBaseType(OOBaseType.LONG);
+	    } else if (specifier.isShort()) {
+		type.setBaseType(OOBaseType.INT);
+	    }
+	    break;
+	case IASTSimpleDeclSpecifier.t_wchar_t:
+	    break;
 	case IASTSimpleDeclSpecifier.t_bool:
 	    type.setBaseType(OOBaseType.BOOLEAN);
 	    break;
@@ -120,6 +139,7 @@ public class TypeConverter {
 	    break;
 	case IASTSimpleDeclSpecifier.t_void:
 	    type.setBaseType(OOBaseType.OBJECT);
+	    break;
 	default:
 	    throw new UnsupportedOperationException("Unsupported SimpleDeclSpecifier type" + specifier.getType());
 	}

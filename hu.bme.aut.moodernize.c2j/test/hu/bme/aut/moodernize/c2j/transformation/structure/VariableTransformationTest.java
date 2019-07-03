@@ -14,7 +14,7 @@ public class VariableTransformationTest extends AbstractTransformationTest {
     @Test
     public void globalVariable_shouldTransformToGlobalVariable() throws CoreException {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("int globalInt;");
+	sourceCode.append("int globalInt = 2;");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
