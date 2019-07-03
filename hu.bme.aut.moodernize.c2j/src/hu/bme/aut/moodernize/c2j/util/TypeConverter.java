@@ -22,10 +22,8 @@ public class TypeConverter {
     public static OOType convertCDTTypeToOOgenType(IType cdtType) {
 	OOType ooType = factory.createOOType();
 
-	// TODO: More dimensions not implemented yet in OOGen
-	// To process all dimensions, use while instead of if
-	if (cdtType instanceof IArrayType) {
-	    ooType.setArray(true);
+	while (cdtType instanceof IArrayType) {
+	    ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
 	    cdtType = ((IArrayType) cdtType).getType();
 	}
 	handleType(ooType, cdtType);

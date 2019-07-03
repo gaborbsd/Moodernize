@@ -85,7 +85,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 
 	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
 	for (OOMember m : globalVariables) {
-	    Assert.assertTrue(m.getType().isArray());
+	    Assert.assertEquals(1, (m.getType().getArrayDimensions()));
 	}
     }
 }

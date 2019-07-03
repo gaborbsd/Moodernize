@@ -9,7 +9,7 @@ import hu.bme.aut.oogen.OOVariable;
 
 public class TransformUtil {
     public static boolean isReferenceType(OOType type) {
-	return type == null ? false : type.getClassType() != null && !type.isArray();
+	return type == null ? false : type.getClassType() != null && type.getArrayDimensions() == 0;
     }
 
     public static boolean listContainsVariable(List<OOVariable> variables, OOVariable var) {
