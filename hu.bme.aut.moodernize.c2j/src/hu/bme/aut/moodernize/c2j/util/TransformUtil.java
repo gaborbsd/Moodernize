@@ -14,7 +14,27 @@ public class TransformUtil {
 
     public static boolean listContainsVariable(List<OOVariable> variables, OOVariable var) {
 	for (OOVariable v : variables) {
-	    if (v.getName().equals(var.getName())) {
+	    if (v.getName().toUpperCase().equals(var.getName().toUpperCase())) {
+		return true;
+	    }
+	}
+
+	return false;
+    }
+    
+    public static boolean listContainsClass(List<OOClass> classes, OOClass cl) {
+	for (OOClass c : classes) {
+	    if (c.getName().toUpperCase().equals(cl.getName().toUpperCase())) {
+		return true;
+	    }
+	}
+
+	return false;
+    }
+    
+    public static boolean listContainsMethod(List<OOMethod> methods, OOMethod method) {
+	for (OOMethod m : methods) {
+	    if (m.getName().toUpperCase().equals(method.getName().toUpperCase())) {
 		return true;
 	    }
 	}
@@ -24,7 +44,7 @@ public class TransformUtil {
 
     public static OOClass getClassFromClasses(List<OOClass> classes, OOClass cl) {
 	for (OOClass c : classes) {
-	    if (c.equals(cl)) {
+	    if (c.getName().toUpperCase().equals(cl.getName().toUpperCase())) {
 		return c;
 	    }
 	}

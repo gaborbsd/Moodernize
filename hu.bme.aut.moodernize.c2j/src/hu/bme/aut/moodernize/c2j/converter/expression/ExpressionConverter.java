@@ -9,10 +9,12 @@ import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
+import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorConverter;
+import hu.bme.aut.oogen.OOCollectionIndex;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOTernaryOperator;
@@ -50,7 +52,16 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertArraySubscriptExpression(IASTArraySubscriptExpression expression) {
-	throw new NotImplementedException();
+	IASTInitializerClause argument = expression.getArgument();
+	if (!(argument instanceof IASTExpression)) {
+	    throw new UnsupportedOperationException(
+		    "The argument of an ArraySubscriptException must be of type Expression but found: " + argument);
+	}
+	OOCollectionIndex collectionIndex = factory.createOOCollectionIndex();
+	collectionIndex.setCollectionExpression(convertExpression(expression.getArrayExpression()));
+	collectionIndex.setIndexExpression(convertExpression((IASTExpression) argument));
+	
+	return collectionIndex;
     }
 
     private OOExpression convertBinaryExpression(IASTBinaryExpression expression) {
@@ -68,11 +79,11 @@ public class ExpressionConverter {
     private OOExpression convertConditionalExpression(IASTConditionalExpression expression) {
 	OOTernaryOperator ternary = factory.createOOTernaryOperator();
 	ExpressionConverter converter = new ExpressionConverter();
-	
+
 	ternary.setCondition(converter.convertExpression(expression.getLogicalConditionExpression()));
 	ternary.setPositiveBranch(converter.convertExpression(expression.getPositiveResultExpression()));
 	ternary.setNegativeBranch(converter.convertExpression(expression.getNegativeResultExpression()));
-	
+
 	return ternary;
     }
 
@@ -84,7 +95,7 @@ public class ExpressionConverter {
 	OOFieldReferenceExpression fieldReference = factory.createOOFieldReferenceExpression();
 	fieldReference.setFieldOwner(new ExpressionConverter().convertExpression(expression.getFieldOwner()));
 	fieldReference.setFieldName(expression.getFieldName().resolveBinding().getName());
-	
+
 	return fieldReference;
     }
 

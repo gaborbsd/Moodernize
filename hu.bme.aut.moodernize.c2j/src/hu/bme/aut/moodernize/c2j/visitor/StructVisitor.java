@@ -49,7 +49,7 @@ public class StructVisitor extends AbstractBaseVisitor {
 		newClass.getMembers().add(classMember);
 	    }
 
-	    if (!classes.contains(newClass)) {
+	    if (!TransformUtil.listContainsClass(classes, newClass)) {
 		classes.add(newClass);
 	    }
 	    return PROCESS_CONTINUE;
