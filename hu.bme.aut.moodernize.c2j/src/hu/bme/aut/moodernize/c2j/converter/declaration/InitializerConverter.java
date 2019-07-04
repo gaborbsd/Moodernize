@@ -10,9 +10,12 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializerList;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.oogen.OOExpression;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import hu.bme.aut.oogen.OOInitializerList;
+import hu.bme.aut.oogen.OogenFactory;
 
 public class InitializerConverter {
+    private static OogenFactory factory = OogenFactory.eINSTANCE;
+    
     public OOExpression convertInitializer(IASTInitializer init) {
 	if (init instanceof IASTEqualsInitializer) {
 	    return convertEqualsInitializer((IASTEqualsInitializer) init);
@@ -38,8 +41,12 @@ public class InitializerConverter {
 	return convertInitializerClause(equalsInit.getInitializerClause());
     }
 
-    // TODO: Support Initlists in OOGen
     private OOExpression convertInitializerList(IASTInitializerList initList) {
-	throw new NotImplementedException();
+	OOInitializerList initializerList = factory.createOOInitializerList();
+	for (IASTInitializerClause clause : initList.getClauses()) {
+	    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+	}
+	
+	return initializerList;
     }
 }

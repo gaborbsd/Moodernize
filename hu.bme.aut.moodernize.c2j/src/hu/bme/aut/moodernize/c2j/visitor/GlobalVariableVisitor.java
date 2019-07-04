@@ -42,7 +42,7 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	if (declarators.length == 0) {
 	    return PROCESS_SKIP;
 	}
-	boolean isGlobal = (declarators[0].getName().resolveBinding().getOwner()) == null;
+	boolean isGlobal = declarators[0].getName().resolveBinding().getOwner() == null;
 	if (!isGlobal) {
 	    return PROCESS_SKIP;
 	}
@@ -51,8 +51,7 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 
 	for (OOVariable variable : declaredVariables.getVariableDeclarations()) {
 	    if (!TransformUtil.listContainsVariable(globalVariables, variable)) {
-		OOVariable copy = EcoreUtil.copy(variable);
-		globalVariables.add(copy);
+		globalVariables.add(EcoreUtil.copy(variable));
 	    }
 	}
 
