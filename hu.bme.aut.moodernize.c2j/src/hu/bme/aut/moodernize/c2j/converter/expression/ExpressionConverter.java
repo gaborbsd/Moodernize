@@ -12,7 +12,7 @@ import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
-import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorConverter;
+import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorSpecifierConverter;
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
 import hu.bme.aut.oogen.OOCollectionIndex;
 import hu.bme.aut.oogen.OOExpression;
@@ -68,7 +68,7 @@ public class ExpressionConverter {
     private OOExpression convertCastExpression(IASTCastExpression expression) {
 	OOTypeCast typeCast = factory.createOOTypeCast();
 	typeCast.setExpression(convertExpression(expression.getOperand()));
-	typeCast.setType(new DeclaratorConverter().convertSpecifier(expression.getTypeId().getDeclSpecifier()));
+	typeCast.setType(new DeclaratorSpecifierConverter().convertSpecifier(expression.getTypeId().getDeclSpecifier()));
 	return typeCast;
     }
 

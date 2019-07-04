@@ -8,7 +8,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOType;
 
-public class DeclaratorConverter {
+public class DeclaratorSpecifierConverter {
     public OOType convertSpecifier(IASTDeclSpecifier specifier) {
 	if (specifier instanceof IASTSimpleDeclSpecifier) {
 	    return TypeConverter.convertSimpleDeclSpecifierType((IASTSimpleDeclSpecifier) specifier);

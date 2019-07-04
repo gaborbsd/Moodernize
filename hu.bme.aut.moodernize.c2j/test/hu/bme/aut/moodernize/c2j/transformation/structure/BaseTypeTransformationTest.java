@@ -80,7 +80,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
     @Test
     public void array_shouldTransformToArray() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("float a[200]; int b[] = {0}; double *t[10];");
+	sourceCode.append("float a[200]; int b[] = {0}; double *t[10 * 3 + 1];");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
