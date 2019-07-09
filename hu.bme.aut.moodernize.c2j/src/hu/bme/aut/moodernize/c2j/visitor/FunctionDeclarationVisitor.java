@@ -24,13 +24,14 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 	this.globalFunctions = globalFunctions;
 	shouldVisitNames = true;
     }
-
+   
     @Override
     public int visit(IASTName name) {
 	if (!isCorrectContainingFile(name)) {
 	    return PROCESS_SKIP;
 	}
 
+	
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof IFunction) {
 	    IFunction cdtFunction = (IFunction) binding;

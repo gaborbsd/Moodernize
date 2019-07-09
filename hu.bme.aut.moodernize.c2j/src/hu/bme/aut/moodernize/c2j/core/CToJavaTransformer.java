@@ -7,6 +7,7 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import hu.bme.aut.moodernize.c2j.util.RemovedParameterRepository;
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDefinitionVisitor;
@@ -23,17 +24,24 @@ import hu.bme.aut.oogen.OogenFactory;
 
 public class CToJavaTransformer implements ICToJavaTransformer {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
+    public static String DEFAULTCLASSNAME = "ModernizedCProgram";
 
     private OOModel model = factory.createOOModel();
     private List<OOClass> createdClasses = new ArrayList<OOClass>();
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
+	clearDataStructures();
 	traverseAsts(asts);
 	assignFunctionsToClassesBySignature();
+	collectFunctionDefinitions(asts);
 	createProjectHierarchy(model, createdClasses);
 
 	return model;
+    }
+    
+    private void clearDataStructures() {
+	RemovedParameterRepository.clearEntries();
     }
 
     private void traverseAsts(Set<IASTTranslationUnit> asts) {
@@ -49,7 +57,6 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
 	visitors.add(new StructVisitor(containingFilename, createdClasses));
 	visitors.add(new FunctionDeclarationVisitor(containingFilename, model.getGlobalFunctions()));
-	visitors.add(new FunctionDefinitionVisitor(containingFilename, model.getGlobalFunctions()));
 
 	for (AbstractBaseVisitor visitor : visitors) {
 	    ast.accept(visitor);
@@ -61,13 +68,30 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	assigner.assignFunctionsToClasses();
     }
 
+    private void collectFunctionDefinitions(Set<IASTTranslationUnit> asts) {
+	List<OOMethod> functions = new ArrayList<OOMethod>();
+	for (OOMethod function : model.getGlobalFunctions()) {
+	    functions.add(function);
+	}
+	for (OOClass cl : createdClasses) {
+	    for (OOMethod method : cl.getMethods()) {
+		functions.add(method);
+	    }
+	}
+	for (IASTTranslationUnit ast : asts) {
+	    if (ast != null) {
+		ast.accept(new FunctionDefinitionVisitor(ast.getContainingFilename(), functions));
+	    }
+	}
+    }
+
     private void createProjectHierarchy(OOModel model, List<OOClass> createdClasses) {
 	OOPackage mainPackage = factory.createOOPackage();
 	mainPackage.setName("prog");
 	model.getPackages().add(mainPackage);
 
 	OOClass mainClass = factory.createOOClass();
-	mainClass.setName("ModernizedCProgram");
+	mainClass.setName(DEFAULTCLASSNAME);
 	mainClass.setPackage(mainPackage);
 
 	mainPackage.getClasses().add(mainClass);

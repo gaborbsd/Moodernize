@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import hu.bme.aut.moodernize.c2j.util.RemovedParameterRepository;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
@@ -16,6 +17,7 @@ public class FunctionToClassAssigner {
     private List<OOClass> classes;
     private List<OOMethod> functions;
     private List<OOMethod> toRemove = new ArrayList<OOMethod>();
+    private boolean transformed = false;
 
     public FunctionToClassAssigner(List<OOClass> classes, List<OOMethod> functions) {
 	super();
@@ -25,30 +27,24 @@ public class FunctionToClassAssigner {
 
     public void assignFunctionsToClasses() {
 	for (OOMethod function : functions) {
-	    boolean transformedByReturnType = checkReturnType(function);
-	    if (!transformedByReturnType) {
-		checkParameterList(function);
-	    }
+	    checkReturnType(function);
+	    checkParameterList(function);
 	}
 	removeAssignedFunctionsFromGlobalFunctions();
     }
 
-    private boolean checkReturnType(OOMethod function) {
-	boolean transformedByReturnType = false;
-
+    private void checkReturnType(OOMethod function) {
 	OOType returnType = function.getReturnType();
 	if (returnType != null) {
 	    OOClass referenceReturnType = returnType.getClassType();
 	    if (referenceReturnType != null) {
 		OOClass target = getTargetClass(referenceReturnType);
 		if (target != null) {
-		    assignFunctionToClass(TransformUtil.getClassFromClasses(classes, target), function);
-		    transformedByReturnType = true;
+		    assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
+		    transformed = true;
 		}
 	    }
 	}
-
-	return transformedByReturnType;
     }
 
     private void checkParameterList(OOMethod function) {
@@ -63,7 +59,16 @@ public class FunctionToClassAssigner {
 
 	if (parameterReferenceTypes.size() == 1) {
 	    OOClass target = parameterReferenceTypes.get(0);
-	    assignFunctionToClass(TransformUtil.getClassFromClasses(classes, target), function);
+	    if (transformed) {
+		OOClass returnClassType = function.getReturnType().getClassType();
+		if (returnClassType != null && target.getName().equals(returnClassType.getName())) {
+		    removeTargetClassParameterFromMethod(target, function);
+		}
+	    } else {
+		assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
+		removeTargetClassParameterFromMethod(target, function);
+	    }
+
 	}
     }
 
@@ -83,30 +88,34 @@ public class FunctionToClassAssigner {
 	}
     }
 
-    private void assignFunctionToClass(OOClass target, OOMethod function) {
-	OOMethod newMethod = EcoreUtil.copy(function);
-	OOType returnType = newMethod.getReturnType();
-
-	if (returnType != null && TransformUtil.isReferenceType(returnType)) {
-	    newMethod.setReturnType(null);
-	}
-	removeTargetClassParameterFromFunction(newMethod, target);
-
-	target.getMethods().add(newMethod);
+    private void assignFunctionToClass(OOMethod function, OOClass target) {
+	target.getMethods().add(EcoreUtil.copy(function));
 	toRemove.add(function);
     }
 
-    private void removeTargetClassParameterFromFunction(OOMethod from, OOClass referenceType) {
-	if (from == null || referenceType == null) {
+    private void removeTargetClassParameterFromMethod(OOClass toRemove, OOMethod from) {
+	if (from == null || toRemove == null) {
 	    return;
 	}
-	Iterator<OOVariable> iterator = from.getParameters().iterator();
+
+	OOMethod method = TransformUtil.findAndGetMethodFromClasses(classes, from.getName());
+	if (method == null) {
+	    method = TransformUtil.getFunctionByName(functions, from.getName());
+	}
+
+	Iterator<OOVariable> iterator = method.getParameters().iterator();
 	while (iterator.hasNext()) {
 	    OOVariable parameter = iterator.next();
 	    if (TransformUtil.isReferenceType(parameter.getType())
-		    && parameter.getType().getClassType().equals(referenceType)) {
+		    && parameter.getType().getClassType().getName().equals(toRemove.getName())) {
+		storeRemovedParameter(from.getName(), parameter.getName());
 		iterator.remove();
+		break;
 	    }
 	}
+    }
+    
+    private void storeRemovedParameter(String functionName, String parameterName) {
+	RemovedParameterRepository.addEntry(functionName, parameterName);
     }
 }

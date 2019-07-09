@@ -2,6 +2,9 @@ package hu.bme.aut.moodernize.c2j.util;
 
 import java.util.List;
 
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
+
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
@@ -77,5 +80,29 @@ public class TransformUtil {
 		|| name.equals("TRANSIENT") || name.equals("TRY") || name.equals("VOLATILE") || name.equals("");
 
 	return !isIncorrect;
+    }
+    
+    public static String getContainingFunctionName(IASTNode node) {
+	while (node != null && !(node instanceof IASTFunctionDefinition)) {
+	    node = node.getParent();
+	}
+	
+	if (node != null) {
+	    return ((IASTFunctionDefinition) node).getDeclarator().getName().resolveBinding().getName();
+	} else {
+	    return null;
+	}
+    }
+    
+    public static OOMethod findAndGetMethodFromClasses(List<OOClass> classes, String methodName) {
+	for (OOClass cl : classes) {
+	    for (OOMethod method : cl.getMethods()) {
+		if (method.getName().equals(methodName)) {
+		    return method;
+		}
+	    }
+	}
+
+	return null;
     }
 }

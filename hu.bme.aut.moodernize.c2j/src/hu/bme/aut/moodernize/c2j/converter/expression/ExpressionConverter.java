@@ -16,7 +16,6 @@ import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorSpecifierConver
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
 import hu.bme.aut.oogen.OOCollectionIndex;
 import hu.bme.aut.oogen.OOExpression;
-import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOTernaryOperator;
 import hu.bme.aut.oogen.OOTypeCast;
 import hu.bme.aut.oogen.OogenFactory;
@@ -88,11 +87,8 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertFieldReference(IASTFieldReference expression) {
-	OOFieldReferenceExpression fieldReference = factory.createOOFieldReferenceExpression();
-	fieldReference.setFieldOwner(new ExpressionConverter().convertExpression(expression.getFieldOwner()));
-	fieldReference.setFieldName(expression.getFieldName().resolveBinding().getName());
-
-	return fieldReference;
+	FieldReferenceConverter converter = new FieldReferenceConverter();
+	return converter.convertFieldReference(expression);
     }
 
     private OOExpression convertFunctionCallExpression(IASTFunctionCallExpression expression) {
