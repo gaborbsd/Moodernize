@@ -12,7 +12,6 @@ import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOStatement;
 
 public class IfStatementTransformationTest extends AbstractTransformationTest {
-    // TODO: Elseif tests
     @Test
     public void oneStatementWithoutBraces_shouldTransformToOneStatementIf() {
 	StringBuilder sourceCode = new StringBuilder();
@@ -43,6 +42,24 @@ public class IfStatementTransformationTest extends AbstractTransformationTest {
 	Assert.assertTrue(statement instanceof OOIf);
 	OOIf ifStatement = (OOIf) statement;
 	Assert.assertEquals(1, ifStatement.getBodyStatements().size());
+	Assert.assertEquals(0, ifStatement.getElseStatements().size());
+    }
+    
+    @Test
+    public void elseStatement_shouldTransformToElseBranch() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("int main(void) {");
+	sourceCode.append("	int i;");
+	sourceCode.append("	if (i < 0){ i = i + 1;} else { i = 0; }");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOStatement statement = getDefaultClass(model).getMethods().get(0).getStatements().get(1);
+	Assert.assertTrue(statement instanceof OOIf);
+	OOIf ifStatement = (OOIf) statement;
+	Assert.assertEquals(1, ifStatement.getBodyStatements().size());
+	Assert.assertEquals(1, ifStatement.getElseStatements().size());
     }
     
     @Test
@@ -61,5 +78,24 @@ public class IfStatementTransformationTest extends AbstractTransformationTest {
 	OOIf ifStatement = (OOIf) statements.get(1);
 	Assert.assertTrue(ifStatement.getCondition() instanceof OOEqualsExpression);
 	Assert.assertEquals(2, ifStatement.getBodyStatements().size());
+    }
+    
+    @Test
+    public void elseIfBranch_shouldTransformToElseIf() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("int main(void) {");
+	sourceCode.append("	int i;");
+	sourceCode.append("	if (i < 0) i = i + 1; else if (i > 0) { i = 0; }");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOStatement statement = getDefaultClass(model).getMethods().get(0).getStatements().get(1);
+	Assert.assertTrue(statement instanceof OOIf);
+	OOIf ifStatement = (OOIf) statement;
+	Assert.assertEquals(1, ifStatement.getBodyStatements().size());
+	OOIf elseIf = ifStatement.getElseIf();
+	Assert.assertNotNull(elseIf);
+	Assert.assertEquals(1, elseIf.getBodyStatements().size());
     }
 }
