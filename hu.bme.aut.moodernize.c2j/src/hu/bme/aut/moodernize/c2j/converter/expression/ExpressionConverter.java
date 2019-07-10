@@ -14,8 +14,8 @@ import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorSpecifierConverter;
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
-import hu.bme.aut.oogen.OOCollectionIndex;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOTernaryOperator;
 import hu.bme.aut.oogen.OOTypeCast;
 import hu.bme.aut.oogen.OogenFactory;
@@ -51,7 +51,7 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertArraySubscriptExpression(IASTArraySubscriptExpression expression) {
-	OOCollectionIndex collectionIndex = factory.createOOCollectionIndex();
+	OOIndexing collectionIndex = factory.createOOIndexing();
 	collectionIndex.setCollectionExpression(convertExpression(expression.getArrayExpression()));
 	collectionIndex
 		.setIndexExpression(new InitializerConverter().convertInitializerClause(expression.getArgument()));
