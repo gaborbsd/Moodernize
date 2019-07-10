@@ -204,12 +204,10 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
     private void checkIfGivenFunctionBelongsOnlyToGivenClass(OOModel model, String functionName, String className) {
 	for (OOClass cl : model.getPackages().get(0).getClasses()) {
-	    List<OOMethod> methods = cl.getMethods();
 	    if (cl.getName().equals(className)) {
-		Assert.assertEquals(1, methods.size());
-		Assert.assertEquals(functionName, methods.get(0).getName());
+		Assert.assertTrue(TransformUtil.functionBelongsToClass(functionName, cl));
 	    } else {
-		Assert.assertEquals(0, methods.size());
+		Assert.assertFalse(TransformUtil.functionBelongsToClass(functionName, cl));
 	    }
 	}
     }

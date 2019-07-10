@@ -11,6 +11,15 @@ import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 
 public class TransformUtil {
+    
+    public static String capitalizeFirstCharacter(String s) {
+	if (s.length() == 1) {
+	    return s.substring(0, 1).toUpperCase();
+	}
+	return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+    
+    
     public static boolean isReferenceType(OOType type) {
 	return type == null ? false : type.getClassType() != null && type.getArrayDimensions() == 0;
     }
@@ -104,5 +113,15 @@ public class TransformUtil {
 	}
 
 	return null;
+    }
+    
+    public static boolean functionBelongsToClass(String functionName, OOClass cl) {
+	for (OOMethod method : cl.getMethods()) {
+	    if (method.getName().equals(functionName)) {
+		return true;
+	    }
+	}
+	
+	return false;
     }
 }

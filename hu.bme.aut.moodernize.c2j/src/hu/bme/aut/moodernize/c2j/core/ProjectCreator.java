@@ -4,12 +4,17 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOPackage;
+import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableReferenceExpression;
 import hu.bme.aut.oogen.OOVisibility;
 import hu.bme.aut.oogen.OogenFactory;
 
@@ -64,12 +69,64 @@ public class ProjectCreator {
     
     private void createAllClasses(OOPackage mainPackage, List<OOClass> createdClasses) {
 	for (OOClass newClass : createdClasses) {
-	    addClassToPackage(EcoreUtil.copy(newClass), mainPackage);
+	    OOClass classCopy = EcoreUtil.copy(newClass);
+	    createGettersAndSetters(classCopy);
+	    addClassToPackage(classCopy, mainPackage);
 	}
     }
     
     private void addClassToPackage(OOClass newClass, OOPackage pack) {
 	newClass.setPackage(pack);
 	pack.getClasses().add(newClass);
+    }
+    
+    private void createGettersAndSetters(OOClass cl) {
+	List<OOMethod> methods = cl.getMethods();
+	for (OOMember member : cl.getMembers()) {
+	    methods.add(createGetter(member));
+	    methods.add(createSetter(member));
+	}
+    }
+    
+    private OOMethod createGetter(OOMember member) {
+	OOMethod getter = factory.createOOMethod();
+	getter.setName("get" + TransformUtil.capitalizeFirstCharacter(member.getName()));
+	getter.setReturnType(member.getType());
+	getter.setVisibility(OOVisibility.PUBLIC);
+	
+	OOVariableReferenceExpression reference = factory.createOOVariableReferenceExpression();
+	reference.setVariable(member);
+	OOReturn returnStatement = factory.createOOReturn();
+	returnStatement.setReturnedExpresssion(reference);
+	getter.getStatements().add(returnStatement);
+	
+	return getter;
+    }
+    
+    private OOMethod createSetter(OOMember member) {
+	OOMethod setter = factory.createOOMethod();
+	setter.setName("set" + TransformUtil.capitalizeFirstCharacter(member.getName()));
+	setter.setReturnType(null);
+	setter.setVisibility(OOVisibility.PUBLIC);
+	
+	OOVariable parameter = factory.createOOVariable();
+	parameter.setName(member.getName());
+	parameter.setType(member.getType());
+	setter.getParameters().add(parameter);
+	
+	OOFieldReferenceExpression fieldReference = factory.createOOFieldReferenceExpression();
+	fieldReference.setFieldName(member.getName());
+	fieldReference.setFieldOwner(factory.createOOThisLiteral());
+	
+	OOVariableReferenceExpression parameterReference = factory.createOOVariableReferenceExpression();
+	parameterReference.setVariable(parameter);
+	
+	OOAssignmentExpression assignment = factory.createOOAssignmentExpression();
+	assignment.setLeftSide(fieldReference);
+	assignment.setRightSide(parameterReference);
+	
+	setter.getStatements().add(assignment);
+	
+	return setter;
     }
 }
