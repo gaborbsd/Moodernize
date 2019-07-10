@@ -32,4 +32,5 @@ public class TernaryExpressionTransformationTest extends AbstractTransformationT
 	Assert.assertTrue(ternary.getPositiveBranch() instanceof OOMinusExpression);
 	Assert.assertTrue(ternary.getNegativeBranch() instanceof OOIntegerLiteral);
     }
+    
 }
