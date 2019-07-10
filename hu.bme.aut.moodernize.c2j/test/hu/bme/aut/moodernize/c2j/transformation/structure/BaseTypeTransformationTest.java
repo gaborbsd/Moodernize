@@ -14,12 +14,13 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
     @Test
     public void intType_shouldTransformToInt() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("int a; short b; unsigned int c; unsigned short d;");
+	sourceCode.append("int a; signed int b; unsigned int c; unsigned short d; unsigned short int e;");
+	sourceCode.append("short f; short int g; signed short h; signed short int j;");
+	sourceCode.append("signed k; unsigned l;");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
-	Assert.assertEquals(4, globalVariables.size());
 	for (OOMember m : globalVariables) {
 	    Assert.assertTrue(m.getType().getBaseType() == OOBaseType.INT);
 	}
@@ -28,8 +29,10 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
     @Test
     public void longType_shouldTransformToLong() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("long a; unsigned long b;");
-
+	sourceCode.append("long a; long int b; signed long c; signed long int d;");
+	sourceCode.append("unsigned long e; long int f;");
+	sourceCode.append("long long g; long long int h; signed long long j; signed long long int k;");
+	sourceCode.append("unsigned long long l; unsigned long long int m;");
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	List<OOMember> globalVariables = getDefaultClass(model).getMembers();

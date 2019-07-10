@@ -32,7 +32,7 @@ public class TypeConverter {
     }
 
     private static void handleType(OOType ooType, IType cdtType) {
-	// More than one indirection is not supported yet
+	// TODO: More than one indirection is not supported yet
 	if (cdtType instanceof IPointerType) {
 	    handleType(ooType, ((IPointerType) cdtType).getType());
 	}
@@ -94,7 +94,6 @@ public class TypeConverter {
 	OOType type = factory.createOOType();
 	type.setClassType(null);
 	
-	//TODO: handle specifier.isXy()-s
 	switch (specifier.getType()) {
 	case IASTSimpleDeclSpecifier.t_auto:
 	    break;
@@ -105,7 +104,7 @@ public class TypeConverter {
 	case IASTSimpleDeclSpecifier.t_typeof:
 	    break;
 	case IASTSimpleDeclSpecifier.t_unspecified:
-	    if (specifier.isLong()) {
+	    if (specifier.isLong() || specifier.isLongLong()) {
 		type.setBaseType(OOBaseType.LONG);
 	    } else if (specifier.isShort()) {
 		type.setBaseType(OOBaseType.INT);
@@ -126,7 +125,7 @@ public class TypeConverter {
 	case IASTSimpleDeclSpecifier.t_decimal32:
 	case IASTSimpleDeclSpecifier.t_decimal64:
 	case IASTSimpleDeclSpecifier.t_decimal128:
-	    if (specifier.isLong()) {
+	    if (specifier.isLong() || specifier.isLongLong()) {
 		type.setBaseType(OOBaseType.LONG);
 	    } else {
 		type.setBaseType(OOBaseType.INT);
@@ -150,7 +149,7 @@ public class TypeConverter {
     public static OOType convertElaboratedTypeSpecifierType(IASTElaboratedTypeSpecifier specifier) {
 	OOType type = factory.createOOType();
 	String typeName = specifier.getName().resolveBinding().getName();
-	// TODO: Enum and union?
+	// TODO: Enum
 	switch (specifier.getKind()) {
 	case IASTElaboratedTypeSpecifier.k_struct:
 	    setOOReferenceType(type, typeName);
