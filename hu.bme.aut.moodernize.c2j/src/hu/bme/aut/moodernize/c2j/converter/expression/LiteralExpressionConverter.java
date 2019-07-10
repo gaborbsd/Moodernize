@@ -32,6 +32,9 @@ public class LiteralExpressionConverter {
 	    OODoubleLiteral doubleLiteral = factory.createOODoubleLiteral();
 	    doubleLiteral.setValue(valueDouble);
 	    return doubleLiteral;
+	   
+	case IASTLiteralExpression.lk_nullptr:
+	    return factory.createOONullLiteral();
 
 	default:
 	    throw new UnsupportedOperationException("Unsupported LiteralExpression encountered: " + literalExpression);

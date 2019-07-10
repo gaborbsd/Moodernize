@@ -22,10 +22,7 @@ public class TypeConverter {
     public static OOType convertCDTTypeToOOgenType(IType cdtType) {
 	OOType ooType = factory.createOOType();
 
-	while (cdtType instanceof IArrayType) {
-	    ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
-	    cdtType = ((IArrayType) cdtType).getType();
-	}
+	handleArrayType(ooType, cdtType);
 	handleType(ooType, cdtType);
 
 	return ooType;
@@ -34,7 +31,7 @@ public class TypeConverter {
     private static void handleType(OOType ooType, IType cdtType) {
 	// TODO: More than one indirection is not supported yet
 	if (cdtType instanceof IPointerType) {
-	    handleType(ooType, ((IPointerType) cdtType).getType());
+	    cdtType = ((IPointerType) cdtType).getType();
 	}
 
 	if (cdtType instanceof IBasicType) {
@@ -45,6 +42,13 @@ public class TypeConverter {
 	    setOOReferenceType(ooType, ((ICompositeType) (((ITypedef) cdtType).getType())).getName());
 	} else {
 	    ooType.setBaseType(OOBaseType.OBJECT);
+	}
+    }
+    
+    private static void handleArrayType(OOType ooType, IType arrayType) {
+	while (arrayType instanceof IArrayType) {
+	    ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
+	    arrayType = ((IArrayType) arrayType).getType();
 	}
     }
 

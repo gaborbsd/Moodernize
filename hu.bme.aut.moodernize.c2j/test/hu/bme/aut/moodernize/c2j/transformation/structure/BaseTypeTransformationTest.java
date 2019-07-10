@@ -33,6 +33,7 @@ public class BaseTypeTransformationTest extends AbstractTransformationTest {
 	sourceCode.append("unsigned long e; long int f;");
 	sourceCode.append("long long g; long long int h; signed long long j; signed long long int k;");
 	sourceCode.append("unsigned long long l; unsigned long long int m;");
+	
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	List<OOMember> globalVariables = getDefaultClass(model).getMembers();
