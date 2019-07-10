@@ -68,7 +68,6 @@ public class FunctionToClassAssigner {
 		assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
 		removeTargetClassParameterFromMethod(target, function);
 	    }
-
 	}
     }
 
