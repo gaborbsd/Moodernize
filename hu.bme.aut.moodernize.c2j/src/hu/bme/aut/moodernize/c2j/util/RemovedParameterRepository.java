@@ -2,6 +2,7 @@ package hu.bme.aut.moodernize.c2j.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class RemovedParameterRepository {
     private static Map<String, String> removedParameterNames = new HashMap<String, String>();
@@ -20,11 +21,11 @@ public class RemovedParameterRepository {
 	removedParameterIndices.put(functionName, index);
     }
     
-    public static Map<String, String> getRemovedParameterNames() {
-	return removedParameterNames;
+    public static Set<Map.Entry<String, String>> getRemovedParameterNames() {
+	return removedParameterNames.entrySet();
     }
     
-    public static Map<String, Integer> getRemovedParameterIndices() {
-	return removedParameterIndices;
+    public static Set<Map.Entry<String, Integer>> getRemovedParameterIndices() {
+	return removedParameterIndices.entrySet();
     }
 }

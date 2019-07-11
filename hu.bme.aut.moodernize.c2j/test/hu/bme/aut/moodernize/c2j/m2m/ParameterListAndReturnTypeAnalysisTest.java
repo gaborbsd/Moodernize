@@ -217,7 +217,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     }
 
     @Test
-    public void structReturnTypeMultipleStructParametersContainingReturnTypeWithMultipleOccurence_shouldTransformToReturnTypesClass() {
+    public void structReturnTypeMultipleStructParametersContainingReturnTypeWithMultipleOccurences_shouldTransformToReturnTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
 	sourceCode.append("struct S1 {int a, b;}\n");
 	sourceCode.append("struct S2 {char c;}\n");

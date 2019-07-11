@@ -28,7 +28,7 @@ public class FieldReferenceConverter {
 
 	if (ownerExpression instanceof OOVariableReferenceExpression) {
 	    String referredName = ((OOVariableReferenceExpression) ownerExpression).getVariable().getName();
-	    for (Map.Entry<String, String> removedParameterEntry : RemovedParameterRepository.getRemovedParameterNames().entrySet()) {
+	    for (Map.Entry<String, String> removedParameterEntry : RemovedParameterRepository.getRemovedParameterNames()) {
 		if (removedParameterEntry.getKey().equals(containingFunctionName)
 			&& removedParameterEntry.getValue().equals(referredName)) {
 		    ooFieldReference.setFieldOwner(factory.createOOThisLiteral());

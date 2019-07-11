@@ -17,7 +17,7 @@ public class FunctionToClassAssigner {
     private List<OOClass> classes;
     private List<OOMethod> functions;
     private List<OOMethod> toRemove = new ArrayList<OOMethod>();
-    private boolean transformedByReturnValue = false;
+    private boolean transformedByReturnType = false;
 
     public FunctionToClassAssigner(List<OOClass> classes, List<OOMethod> functions) {
 	super();
@@ -29,6 +29,7 @@ public class FunctionToClassAssigner {
 	for (OOMethod function : functions) {
 	    checkReturnType(function);
 	    checkParameterList(function);
+	    transformedByReturnType = false;
 	}
 	removeAssignedFunctionsFromGlobalFunctions();
     }
@@ -41,7 +42,7 @@ public class FunctionToClassAssigner {
 		OOClass target = getTargetClass(referenceReturnType);
 		if (target != null) {
 		    assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
-		    transformedByReturnValue = true;
+		    transformedByReturnType = true;
 		}
 	    }
 	}
@@ -58,11 +59,11 @@ public class FunctionToClassAssigner {
 	    }
 	}
 	
-	if (!transformedByReturnValue && parameterReferenceTypes.size() == 1) {
+	if (!transformedByReturnType && parameterReferenceTypes.size() == 1) {
 	    OOClass target = parameterReferenceTypes.get(0);
 	    removeTargetClassParametersFirstOccurenceFromMethod(target, function);
 	    assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
-	} else if (transformedByReturnValue) {
+	} else if (transformedByReturnType) {
 	    OOClass returnClassType = function.getReturnType().getClassType();
 	    OOClass matchingTypeParameter = TransformUtil.getClassFromClasses(parameterReferenceTypes, returnClassType);
 	    if (matchingTypeParameter != null) {
@@ -98,7 +99,7 @@ public class FunctionToClassAssigner {
 	}
 
 	OOMethod method;
-	if (transformedByReturnValue) {
+	if (transformedByReturnType) {
 	    method = TransformUtil.findAndGetMethodFromClasses(classes, from.getName());
 	} else {
 	    method = TransformUtil.getFunctionByName(functions, from.getName());

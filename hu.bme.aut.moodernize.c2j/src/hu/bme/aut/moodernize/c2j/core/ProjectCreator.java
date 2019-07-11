@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOClass;
-import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
@@ -48,6 +47,7 @@ public class ProjectCreator {
     
     private void createGlobalFunctions(OOModel model, OOClass mainClass) {
 	for (OOMethod globalFunction : model.getGlobalFunctions()) {
+	    globalFunction.setStatic(true);
 	    mainClass.getMethods().add(EcoreUtil.copy(globalFunction));
 	}
 	model.getGlobalFunctions().clear();
@@ -65,6 +65,7 @@ public class ProjectCreator {
 	    mainClass.getMembers().add(globalVariableCopy);
 	}
 	model.getGlobalVariables().clear();
+	createGettersAndSetters(mainClass);
     }
     
     private void createAllClasses(OOPackage mainPackage, List<OOClass> createdClasses) {
@@ -93,6 +94,7 @@ public class ProjectCreator {
 	getter.setName("get" + TransformUtil.capitalizeFirstCharacter(member.getName()));
 	getter.setReturnType(member.getType());
 	getter.setVisibility(OOVisibility.PUBLIC);
+	getter.setStatic(member.isStatic());
 	
 	OOVariableReferenceExpression reference = factory.createOOVariableReferenceExpression();
 	reference.setVariable(member);
@@ -108,21 +110,21 @@ public class ProjectCreator {
 	setter.setName("set" + TransformUtil.capitalizeFirstCharacter(member.getName()));
 	setter.setReturnType(null);
 	setter.setVisibility(OOVisibility.PUBLIC);
+	setter.setStatic(member.isStatic());
 	
 	OOVariable parameter = factory.createOOVariable();
-	parameter.setName(member.getName());
+	parameter.setName("new" + TransformUtil.capitalizeFirstCharacter(member.getName()));
 	parameter.setType(member.getType());
 	setter.getParameters().add(parameter);
 	
-	OOFieldReferenceExpression fieldReference = factory.createOOFieldReferenceExpression();
-	fieldReference.setFieldName(member.getName());
-	fieldReference.setFieldOwner(factory.createOOThisLiteral());
+	OOVariableReferenceExpression memberReference = factory.createOOVariableReferenceExpression();
+	memberReference.setVariable(member);
 	
 	OOVariableReferenceExpression parameterReference = factory.createOOVariableReferenceExpression();
 	parameterReference.setVariable(parameter);
 	
 	OOAssignmentExpression assignment = factory.createOOAssignmentExpression();
-	assignment.setLeftSide(fieldReference);
+	assignment.setLeftSide(memberReference);
 	assignment.setRightSide(parameterReference);
 	
 	setter.getStatements().add(assignment);
