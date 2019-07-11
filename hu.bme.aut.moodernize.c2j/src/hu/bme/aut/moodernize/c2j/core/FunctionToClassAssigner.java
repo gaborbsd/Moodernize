@@ -53,7 +53,7 @@ public class FunctionToClassAssigner {
 	
 	for (OOVariable parameter : parameters) {
 	    OOClass referenceType = parameter.getType().getClassType();
-	    if (referenceType != null) {
+	    if (referenceType != null && !TransformUtil.listContainsClass(parameterReferenceTypes, referenceType)) {
 		parameterReferenceTypes.add(referenceType);
 	    }
 	}
