@@ -41,16 +41,4 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	}
 	return PROCESS_CONTINUE;
     }
-
-    /*
-     * private void handleFunctionCallExpression(OOMethod currentFunction,
-     * IASTFunctionCallExpression functionCallExpression) { IASTExpression
-     * functionNameExpression = (IASTIdExpression)
-     * functionCallExpression.getFunctionNameExpression(); if
-     * (functionNameExpression != null && functionNameExpression instanceof
-     * IASTIdExpression) { IASTIdExpression idExpression = (IASTIdExpression)
-     * functionNameExpression; String calledName =
-     * idExpression.getName().resolveBinding().getName(); callGraph.add(new
-     * Calledge(currentFunction.getName(), calledName)); } }
-     */
 }

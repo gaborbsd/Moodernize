@@ -12,12 +12,10 @@ import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
-import hu.bme.aut.moodernize.c2j.converter.declaration.DeclaratorSpecifierConverter;
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOTernaryOperator;
-import hu.bme.aut.oogen.OOTypeCast;
 import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -65,10 +63,8 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertCastExpression(IASTCastExpression expression) {
-	OOTypeCast typeCast = factory.createOOTypeCast();
-	typeCast.setExpression(convertExpression(expression.getOperand()));
-	typeCast.setType(new DeclaratorSpecifierConverter().convertSpecifier(expression.getTypeId().getDeclSpecifier()));
-	return typeCast;
+	TypeCastConverter converter = new TypeCastConverter();
+	return converter.convertTypeCast(expression);
     }
 
     private OOExpression convertConditionalExpression(IASTConditionalExpression expression) {
@@ -92,7 +88,8 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertFunctionCallExpression(IASTFunctionCallExpression expression) {
-	throw new NotImplementedException();
+	FunctionCallExpressionConverter converter = new FunctionCallExpressionConverter();
+	return converter.convertFunctionCallExpression(expression);
     }
 
     private OOExpression convertIdExpression(IASTIdExpression expression) {

@@ -17,7 +17,7 @@ public class FunctionToClassAssigner {
     private List<OOClass> classes;
     private List<OOMethod> functions;
     private List<OOMethod> toRemove = new ArrayList<OOMethod>();
-    private boolean transformed = false;
+    private boolean transformedByReturnValue = false;
 
     public FunctionToClassAssigner(List<OOClass> classes, List<OOMethod> functions) {
 	super();
@@ -41,7 +41,7 @@ public class FunctionToClassAssigner {
 		OOClass target = getTargetClass(referenceReturnType);
 		if (target != null) {
 		    assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
-		    transformed = true;
+		    transformedByReturnValue = true;
 		}
 	    }
 	}
@@ -50,23 +50,23 @@ public class FunctionToClassAssigner {
     private void checkParameterList(OOMethod function) {
 	List<OOVariable> parameters = function.getParameters();
 	List<OOClass> parameterReferenceTypes = new ArrayList<OOClass>();
+	
 	for (OOVariable parameter : parameters) {
 	    OOClass referenceType = parameter.getType().getClassType();
 	    if (referenceType != null) {
 		parameterReferenceTypes.add(referenceType);
 	    }
 	}
-
-	if (parameterReferenceTypes.size() == 1) {
+	
+	if (!transformedByReturnValue && parameterReferenceTypes.size() == 1) {
 	    OOClass target = parameterReferenceTypes.get(0);
-	    if (transformed) {
-		OOClass returnClassType = function.getReturnType().getClassType();
-		if (returnClassType != null && target.getName().equals(returnClassType.getName())) {
-		    removeTargetClassParameterFromMethod(target, function);
-		}
-	    } else {
-		assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
-		removeTargetClassParameterFromMethod(target, function);
+	    removeTargetClassParametersFirstOccurenceFromMethod(target, function);
+	    assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
+	} else if (transformedByReturnValue) {
+	    OOClass returnClassType = function.getReturnType().getClassType();
+	    OOClass matchingTypeParameter = TransformUtil.getClassFromClasses(parameterReferenceTypes, returnClassType);
+	    if (matchingTypeParameter != null) {
+		removeTargetClassParametersFirstOccurenceFromMethod(matchingTypeParameter, function);
 	    }
 	}
     }
@@ -92,29 +92,34 @@ public class FunctionToClassAssigner {
 	toRemove.add(function);
     }
 
-    private void removeTargetClassParameterFromMethod(OOClass toRemove, OOMethod from) {
+    private void removeTargetClassParametersFirstOccurenceFromMethod(OOClass toRemove, OOMethod from) {
 	if (from == null || toRemove == null) {
 	    return;
 	}
 
-	OOMethod method = TransformUtil.findAndGetMethodFromClasses(classes, from.getName());
-	if (method == null) {
+	OOMethod method;
+	if (transformedByReturnValue) {
+	    method = TransformUtil.findAndGetMethodFromClasses(classes, from.getName());
+	} else {
 	    method = TransformUtil.getFunctionByName(functions, from.getName());
 	}
 
 	Iterator<OOVariable> iterator = method.getParameters().iterator();
+	int index = 0;
 	while (iterator.hasNext()) {
 	    OOVariable parameter = iterator.next();
 	    if (TransformUtil.isReferenceType(parameter.getType())
 		    && parameter.getType().getClassType().getName().equals(toRemove.getName())) {
-		storeRemovedParameter(from.getName(), parameter.getName());
+		storeRemovedParameter(from.getName(), parameter.getName(), index);
 		iterator.remove();
 		break;
 	    }
+	    index++;
 	}
     }
-    
-    private void storeRemovedParameter(String functionName, String parameterName) {
-	RemovedParameterRepository.addEntry(functionName, parameterName);
+
+    private void storeRemovedParameter(String functionName, String parameterName, Integer index) {
+	RemovedParameterRepository.addRemovedParameterName(functionName, parameterName);
+	RemovedParameterRepository.addRemovedParameterIndex(functionName, index);
     }
 }

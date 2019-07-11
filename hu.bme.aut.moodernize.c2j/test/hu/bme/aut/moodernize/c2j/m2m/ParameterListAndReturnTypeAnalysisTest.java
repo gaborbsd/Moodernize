@@ -169,6 +169,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	checkIfGivenFunctionBelongsOnlyToGivenClass(model, "someFunction", "S1");
+	
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
@@ -187,6 +188,13 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	checkIfGivenFunctionBelongsOnlyToGivenClass(model, "someFunction", "S1");
+	
+	List<OOClass> classes = model.getPackages().get(0).getClasses();
+	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	Assert.assertNotNull(transformedMethod);
+	Assert.assertEquals("S1", transformedMethod.getReturnType().getClassType().getName());
+	Assert.assertEquals(1, transformedMethod.getParameters().size());
+	Assert.assertEquals("S2", transformedMethod.getParameters().get(0).getType().getClassType().getName());
     }
 
     @Test
@@ -200,6 +208,14 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	checkIfGivenFunctionBelongsOnlyToGivenClass(model, "someFunction", "S1");
+	
+	List<OOClass> classes = model.getPackages().get(0).getClasses();
+	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	Assert.assertNotNull(transformedMethod);
+	Assert.assertEquals("S1", transformedMethod.getReturnType().getClassType().getName());
+	Assert.assertEquals(2, transformedMethod.getParameters().size());
+	Assert.assertEquals("S2", transformedMethod.getParameters().get(0).getType().getClassType().getName());
+	Assert.assertEquals("S3", transformedMethod.getParameters().get(1).getType().getClassType().getName());
     }
 
     private void checkIfGivenFunctionBelongsOnlyToGivenClass(OOModel model, String functionName, String className) {

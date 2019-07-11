@@ -4,17 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RemovedParameterRepository {
-    private static Map<String, String> functionsAndRemovedParameters = new HashMap<String, String>();
-    
-    public static void addEntry(String functionName, String parameterName) {
-	functionsAndRemovedParameters.put(functionName, parameterName);
-    }
+    private static Map<String, String> removedParameterNames = new HashMap<String, String>();
+    private static Map<String, Integer> removedParameterIndices = new HashMap<String, Integer>();
     
     public static void clearEntries() {
-	functionsAndRemovedParameters.clear();
+	removedParameterNames.clear();
+	removedParameterIndices.clear();
     }
     
-    public static Map<String, String> getEntries() {
-	return functionsAndRemovedParameters;
+    public static void addRemovedParameterName(String functionName, String parameterName) {
+	removedParameterNames.put(functionName, parameterName);
+    }
+    
+    public static void addRemovedParameterIndex(String functionName, Integer index) {
+	removedParameterIndices.put(functionName, index);
+    }
+    
+    public static Map<String, String> getRemovedParameterNames() {
+	return removedParameterNames;
+    }
+    
+    public static Map<String, Integer> getRemovedParameterIndices() {
+	return removedParameterIndices;
     }
 }

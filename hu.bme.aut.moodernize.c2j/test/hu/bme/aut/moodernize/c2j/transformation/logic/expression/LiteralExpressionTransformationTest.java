@@ -9,8 +9,11 @@ import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOModel;
+import hu.bme.aut.oogen.OONullLiteral;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
+import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableDeclarationList;
 
 public class LiteralExpressionTransformationTest extends AbstractTransformationTest {
     @Test
@@ -71,6 +74,22 @@ public class LiteralExpressionTransformationTest extends AbstractTransformationT
 	OOExpression returnExpression = ((OOReturn) returnStatement).getReturnedExpresssion();
 	Assert.assertTrue(returnExpression instanceof OODoubleLiteral);
 	Assert.assertEquals(3.27114, ((OODoubleLiteral) returnExpression).getValue(), 0.00001);
+    }
+
+    @Test
+    public void nullPointer_shouldTransformToOONullLiteral() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("void someFunction() {");
+	sourceCode.append("	int *x = NULL;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOVariableDeclarationList declarationList = (OOVariableDeclarationList) getDefaultClass(model).getMethods()
+		.get(0).getStatements().get(0);
+	Assert.assertEquals(1, declarationList.getVariableDeclarations().size());
+	OOVariable declaredVariable = declarationList.getVariableDeclarations().get(0);
+	Assert.assertTrue(declaredVariable.getInitializerExpression() instanceof OONullLiteral);
     }
 
 }
