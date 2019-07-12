@@ -7,6 +7,7 @@ import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFieldReferenceExpression;
+import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
@@ -30,7 +31,7 @@ public class IndexingTransformationTest extends AbstractTransformationTest {
 	OOExpression lhs = assignment.getLeftSide();
 	Assert.assertTrue(lhs instanceof OOIndexing);
 	OOIndexing indexing = (OOIndexing) lhs;
-	Assert.assertTrue(indexing.getCollectionExpression() instanceof OOFieldReferenceExpression);
+	Assert.assertTrue(indexing.getCollectionExpression() instanceof OOFunctionCallExpression);
 	Assert.assertTrue(indexing.getIndexExpression() instanceof OOVariableReferenceExpression);
     }
 }
