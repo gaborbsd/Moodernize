@@ -57,6 +57,11 @@ public class FunctionCallExpressionConverter {
 	if (ownerSet) {
 	    return;
 	}
+	
+	/* if (called function is static) owner = owningClassName
+	 * 
+	 * 
+	 */
     }
     
     private boolean parameterWasRemovedAtIndex(String functionName, int index) {

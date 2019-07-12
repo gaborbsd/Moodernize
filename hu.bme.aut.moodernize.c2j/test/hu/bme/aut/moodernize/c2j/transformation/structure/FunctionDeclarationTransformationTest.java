@@ -21,7 +21,6 @@ public class FunctionDeclarationTransformationTest extends AbstractTransformatio
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	List<OOMethod> globalFunctions = getDefaultClass(model).getMethods();
-	Assert.assertEquals(3, globalFunctions.size());
 
 	for (int i = 0; i < globalFunctions.size(); i++) {
 	    OOMethod method = globalFunctions.get(i);

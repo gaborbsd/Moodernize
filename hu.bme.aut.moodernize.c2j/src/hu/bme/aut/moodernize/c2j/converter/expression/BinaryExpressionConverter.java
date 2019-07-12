@@ -1,6 +1,7 @@
 package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOComparatorExpression;
@@ -16,6 +17,13 @@ public class BinaryExpressionConverter {
 
     public OOExpression convertBinaryExpression(IASTBinaryExpression binaryExpression) {
 	ExpressionConverter converter = new ExpressionConverter();
+
+	if (binaryExpression.getOperator() == IASTBinaryExpression.op_assign
+		&& binaryExpression.getOperand1() instanceof IASTFieldReference) {
+	    return new FieldReferenceConverter().getSetMethodForFieldReference((IASTFieldReference) binaryExpression.getOperand1(),
+		    binaryExpression.getOperand2());
+	}
+
 	OOExpression lhs = converter.convertExpression(binaryExpression.getOperand1());
 	OOExpression rhs = converter.convertExpression(binaryExpression.getOperand2());
 	int operator = binaryExpression.getOperator();
@@ -26,6 +34,7 @@ public class BinaryExpressionConverter {
     private OOExpression handleByOperator(int operator, OOExpression lhs, OOExpression rhs) {
 	switch (operator) {
 	case IASTBinaryExpression.op_assign:
+
 	    OOAssignmentExpression assignmentExpression = factory.createOOAssignmentExpression();
 	    assignmentExpression.setLeftSide(lhs);
 	    assignmentExpression.setRightSide(rhs);
@@ -120,15 +129,15 @@ public class BinaryExpressionConverter {
 	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_max:
-	    //g++ only: >?
+	    // g++ only: >?
 	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_min:
-	    //g++ only: <?
+	    // g++ only: <?
 	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmarrow:
-	    //C++ only
+	    // C++ only
 	    throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmdot:

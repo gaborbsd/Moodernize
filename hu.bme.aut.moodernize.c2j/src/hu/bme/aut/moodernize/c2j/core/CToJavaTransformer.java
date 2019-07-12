@@ -58,7 +58,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     }
 
     private void assignFunctionsToClassesBySignature() {
-	FunctionToClassAssigner assigner = new FunctionToClassAssigner(createdClasses, model.getGlobalFunctions());
+	ParameterListAndReturnTypeAnalyser assigner = new ParameterListAndReturnTypeAnalyser(createdClasses, model.getGlobalFunctions());
 	assigner.assignFunctionsToClasses();
     }
 

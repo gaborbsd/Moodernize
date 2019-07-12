@@ -47,7 +47,6 @@ public class ProjectCreator {
     
     private void createGlobalFunctions(OOModel model, OOClass mainClass) {
 	for (OOMethod globalFunction : model.getGlobalFunctions()) {
-	    globalFunction.setStatic(true);
 	    mainClass.getMethods().add(EcoreUtil.copy(globalFunction));
 	}
 	model.getGlobalFunctions().clear();

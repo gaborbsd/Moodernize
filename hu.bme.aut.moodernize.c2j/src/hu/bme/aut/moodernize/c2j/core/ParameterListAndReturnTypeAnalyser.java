@@ -13,13 +13,13 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 
-public class FunctionToClassAssigner {
+public class ParameterListAndReturnTypeAnalyser {
     private List<OOClass> classes;
     private List<OOMethod> functions;
     private List<OOMethod> toRemove = new ArrayList<OOMethod>();
     private boolean transformedByReturnType = false;
 
-    public FunctionToClassAssigner(List<OOClass> classes, List<OOMethod> functions) {
+    public ParameterListAndReturnTypeAnalyser(List<OOClass> classes, List<OOMethod> functions) {
 	super();
 	this.classes = classes;
 	this.functions = functions;
@@ -32,6 +32,9 @@ public class FunctionToClassAssigner {
 	    transformedByReturnType = false;
 	}
 	removeAssignedFunctionsFromGlobalFunctions();
+	for (OOMethod remainingFunction : functions) {
+	    remainingFunction.setStatic(true);
+	}
     }
 
     private void checkReturnType(OOMethod function) {
