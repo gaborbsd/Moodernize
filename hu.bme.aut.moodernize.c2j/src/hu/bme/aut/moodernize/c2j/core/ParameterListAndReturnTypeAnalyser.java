@@ -103,7 +103,7 @@ public class ParameterListAndReturnTypeAnalyser {
 
 	OOMethod method;
 	if (transformedByReturnType) {
-	    method = TransformUtil.findAndGetMethodFromClasses(classes, from.getName());
+	    method = TransformUtil.getMethodFromClasses(classes, from.getName());
 	} else {
 	    method = TransformUtil.getFunctionByName(functions, from.getName());
 	}

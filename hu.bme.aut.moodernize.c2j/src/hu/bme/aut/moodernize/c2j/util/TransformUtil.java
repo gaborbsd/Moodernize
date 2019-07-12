@@ -63,6 +63,18 @@ public class TransformUtil {
 
 	return null;
     }
+    
+    public static OOClass getContainerClass(OOMethod method, List<OOClass> classes) {
+	for (OOClass cl : classes) {
+	    for (OOMethod m : cl.getMethods()) {
+		if (m.getName().equals(method.getName())) {
+		    return cl;
+		}
+	    }
+	}
+	
+	return null;
+    }
 
     public static OOMethod getFunctionByName(List<OOMethod> functions, String name) {
 	for (OOMethod function : functions) {
@@ -103,7 +115,7 @@ public class TransformUtil {
 	}
     }
     
-    public static OOMethod findAndGetMethodFromClasses(List<OOClass> classes, String methodName) {
+    public static OOMethod getMethodFromClasses(List<OOClass> classes, String methodName) {
 	for (OOClass cl : classes) {
 	    for (OOMethod method : cl.getMethods()) {
 		if (method.getName().equals(methodName)) {

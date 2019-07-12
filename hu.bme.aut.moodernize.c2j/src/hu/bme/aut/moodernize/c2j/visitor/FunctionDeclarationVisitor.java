@@ -38,8 +38,7 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 
 	    OOMethod ooFunction = factory.createOOMethod();
 	    ooFunction.setName(cdtFunction.getName());
-	    ooFunction.setStatic(cdtFunction.isStatic());
-	    ooFunction.setVisibility(OOVisibility.PUBLIC);
+	    handleVisibility(ooFunction, cdtFunction);
 
 	    IType returnType = cdtFunction.getType().getReturnType();
 	    if (returnType instanceof IBasicType && ((IBasicType) returnType).getKind() == Kind.eVoid) {
@@ -62,5 +61,13 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 	}
 
 	return PROCESS_SKIP;
+    }
+    
+    private void handleVisibility(OOMethod ooFunction, IFunction cdtFunction) {
+	if (cdtFunction.isStatic()) {
+	    ooFunction.setVisibility(OOVisibility.PRIVATE);
+	} else {
+	    ooFunction.setVisibility(OOVisibility.PUBLIC);
+	}
     }
 }

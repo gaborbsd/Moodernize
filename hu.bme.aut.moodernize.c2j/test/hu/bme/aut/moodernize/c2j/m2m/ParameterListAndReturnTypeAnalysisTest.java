@@ -38,7 +38,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertNull(transformedMethod.getReturnType());
 	Assert.assertEquals(0, transformedMethod.getParameters().size());
@@ -55,7 +55,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertNull(transformedMethod.getReturnType());
 	Assert.assertEquals(1, transformedMethod.getParameters().size());
@@ -74,7 +74,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertNull(transformedMethod.getReturnType());
 	Assert.assertEquals(2, transformedMethod.getParameters().size());
@@ -95,7 +95,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "ModernizedCProgram");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertNull(transformedMethod.getReturnType());
 	Assert.assertEquals(2, transformedMethod.getParameters().size());
@@ -123,7 +123,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "ModernizedCProgram");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertNull(transformedMethod.getReturnType());
 	Assert.assertEquals(5, transformedMethod.getParameters().size());
@@ -151,7 +151,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertEquals(2, transformedMethod.getParameters().size());
 	for (OOVariable parameter : transformedMethod.getParameters()) {
@@ -172,7 +172,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertEquals(0, transformedMethod.getParameters().size());
 	Assert.assertEquals("S1", transformedMethod.getReturnType().getClassType().getName());
@@ -190,7 +190,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertEquals("S1", transformedMethod.getReturnType().getClassType().getName());
 	Assert.assertEquals(1, transformedMethod.getParameters().size());
@@ -209,7 +209,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertEquals("S1", transformedMethod.getReturnType().getClassType().getName());
 	Assert.assertEquals(1, transformedMethod.getParameters().size());
@@ -228,7 +228,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertEquals("S1", transformedMethod.getReturnType().getClassType().getName());
 	Assert.assertEquals(3, transformedMethod.getParameters().size());
@@ -252,7 +252,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
-	OOMethod transformedMethod = TransformUtil.findAndGetMethodFromClasses(classes, "someFunction");
+	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
 	Assert.assertNotNull(transformedMethod);
 	Assert.assertEquals("S1", transformedMethod.getReturnType().getClassType().getName());
 	Assert.assertEquals(2, transformedMethod.getParameters().size());

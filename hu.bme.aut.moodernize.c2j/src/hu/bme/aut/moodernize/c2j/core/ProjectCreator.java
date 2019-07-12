@@ -19,7 +19,7 @@ import hu.bme.aut.oogen.OogenFactory;
 
 public class ProjectCreator {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-    private static String DEFAULTCLASSNAME = "ModernizedCProgram";
+    public static String DEFAULTCLASSNAME = "ModernizedCProgram";
     
     public void createProjectHierarchy(OOModel model, List<OOClass> createdClasses) {
 	OOPackage mainPackage = createPackageHierarchy(model);

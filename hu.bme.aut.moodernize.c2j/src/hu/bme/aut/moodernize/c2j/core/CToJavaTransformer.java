@@ -21,7 +21,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 
     private OOModel model = factory.createOOModel();
-    private List<OOClass> createdClasses = new ArrayList<OOClass>();
+    private List<OOClass> createdClasses = TransformationDataHolder.getCreatedClasses();
+    private List<OOMethod> globalFunctions = TransformationDataHolder.getFunctions(); 
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
@@ -29,12 +30,13 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	traverseAsts(asts);
 	assignFunctionsToClassesBySignature();
 	collectFunctionDefinitions(asts);
-	createProjectHierarchy(model, createdClasses);
+	createProjectHierarchy();
 
 	return model;
     }
-    
+
     private void clearDataStructures() {
+	TransformationDataHolder.clear();
 	RemovedParameterRepository.clearEntries();
     }
 
@@ -50,7 +52,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	List<AbstractBaseVisitor> visitors = new ArrayList<AbstractBaseVisitor>();
 	visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
 	visitors.add(new StructVisitor(containingFilename, createdClasses));
-	visitors.add(new FunctionDeclarationVisitor(containingFilename, model.getGlobalFunctions()));
+	visitors.add(new FunctionDeclarationVisitor(containingFilename, globalFunctions));
 
 	for (AbstractBaseVisitor visitor : visitors) {
 	    ast.accept(visitor);
@@ -58,13 +60,28 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     }
 
     private void assignFunctionsToClassesBySignature() {
-	ParameterListAndReturnTypeAnalyser assigner = new ParameterListAndReturnTypeAnalyser(createdClasses, model.getGlobalFunctions());
+	ParameterListAndReturnTypeAnalyser assigner = new ParameterListAndReturnTypeAnalyser(createdClasses,
+		globalFunctions);
 	assigner.assignFunctionsToClasses();
     }
 
     private void collectFunctionDefinitions(Set<IASTTranslationUnit> asts) {
+	for (IASTTranslationUnit ast : asts) {
+	    if (ast != null) {
+		ast.accept(new FunctionDefinitionVisitor(ast.getContainingFilename(), getAllFunctions()));
+	    }
+	}
+    }
+
+    private void createProjectHierarchy() {
+	globalFunctions.forEach(f -> model.getGlobalFunctions().add(f));
+	ProjectCreator projectCreator = new ProjectCreator();
+	projectCreator.createProjectHierarchy(model, createdClasses);
+    }
+
+    private List<OOMethod> getAllFunctions() {
 	List<OOMethod> functions = new ArrayList<OOMethod>();
-	for (OOMethod function : model.getGlobalFunctions()) {
+	for (OOMethod function : globalFunctions) {
 	    functions.add(function);
 	}
 	for (OOClass cl : createdClasses) {
@@ -72,15 +89,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		functions.add(method);
 	    }
 	}
-	for (IASTTranslationUnit ast : asts) {
-	    if (ast != null) {
-		ast.accept(new FunctionDefinitionVisitor(ast.getContainingFilename(), functions));
-	    }
-	}
-    }
 
-    private void createProjectHierarchy(OOModel model, List<OOClass> createdClasses) {
-	ProjectCreator projectCreator = new ProjectCreator();
-	projectCreator.createProjectHierarchy(model, createdClasses);
+	return functions;
     }
 }
