@@ -6,7 +6,6 @@ import org.junit.Test;
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOExpression;
-import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOMethod;
