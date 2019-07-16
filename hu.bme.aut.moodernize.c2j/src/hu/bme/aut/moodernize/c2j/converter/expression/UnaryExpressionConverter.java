@@ -51,6 +51,7 @@ public class UnaryExpressionConverter {
     
     private OOExpression setOperandAndReturn(OOBracketedExpression expression, OOExpression operand) {
 	expression.setOperand(operand);
+	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(expression);
 	return expression;
     }
 

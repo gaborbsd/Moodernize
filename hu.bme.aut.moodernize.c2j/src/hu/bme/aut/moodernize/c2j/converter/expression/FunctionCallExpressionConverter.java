@@ -21,7 +21,7 @@ import hu.bme.aut.oogen.OogenFactory;
 
 public class FunctionCallExpressionConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-    private boolean ownerSet = false;
+    private boolean ownerSetToRemovedParameter = false;
 
     public OOFunctionCallExpression convertFunctionCallExpression(IASTFunctionCallExpression call) {
 	OOFunctionCallExpression functionCall = factory.createOOFunctionCallExpression();
@@ -52,7 +52,7 @@ public class FunctionCallExpressionConverter {
 
 	    if (parameterWasRemovedAtIndex(functionCall.getFunctionName(), i)) {
 		functionCall.setOwnerExpression(convertedArgument);
-		ownerSet = true;
+		ownerSetToRemovedParameter = true;
 	    } else {
 		functionCall.getArgumentExpressions().add(convertedArgument);
 	    }
@@ -60,7 +60,7 @@ public class FunctionCallExpressionConverter {
     }
 
     private void handleFunctionOwner(OOFunctionCallExpression functionCall, IASTFunctionCallExpression call) {
-	if (ownerSet) {
+	if (ownerSetToRemovedParameter) {
 	    return;
 	}
 
@@ -101,7 +101,7 @@ public class FunctionCallExpressionConverter {
 	    dummyDefaultClass.setName(ProjectCreator.DEFAULTCLASSNAME);
 	    
 	    return dummyDefaultClass;
-	} 
+	}
 	
 	//Control should never be able to reach here! Previous funtion throws exception if so!
 	return null;

@@ -29,7 +29,8 @@ public class InitializerConverter {
     public OOExpression convertInitializerClause(IASTInitializerClause initClause) {
 	if (initClause instanceof IASTExpression) {
 	    ExpressionConverter converter = new ExpressionConverter();
-	    return converter.convertExpression((IASTExpression) initClause);
+	    OOExpression convertedExpression = converter.convertExpression((IASTExpression) initClause);
+	    return convertedExpression;
 	} else if (initClause instanceof IASTInitializerList) {
 	    return convertInitializerList((IASTInitializerList) initClause);
 	} else {

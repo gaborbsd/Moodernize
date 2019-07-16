@@ -20,8 +20,8 @@ public class BinaryExpressionConverter {
 
 	if (binaryExpression.getOperator() == IASTBinaryExpression.op_assign
 		&& binaryExpression.getOperand1() instanceof IASTFieldReference) {
-	    return new FieldReferenceConverter().getSetMethodForFieldReference((IASTFieldReference) binaryExpression.getOperand1(),
-		    binaryExpression.getOperand2());
+	    return new FieldReferenceConverter().getSetMethodCallForFieldReference(
+		    (IASTFieldReference) binaryExpression.getOperand1(), binaryExpression.getOperand2());
 	}
 
 	OOExpression lhs = converter.convertExpression(binaryExpression.getOperand1());
@@ -30,14 +30,16 @@ public class BinaryExpressionConverter {
 
 	return handleByOperator(operator, lhs, rhs);
     }
-
+    
     private OOExpression handleByOperator(int operator, OOExpression lhs, OOExpression rhs) {
 	switch (operator) {
 	case IASTBinaryExpression.op_assign:
-
 	    OOAssignmentExpression assignmentExpression = factory.createOOAssignmentExpression();
 	    assignmentExpression.setLeftSide(lhs);
 	    assignmentExpression.setRightSide(rhs);
+	    
+	    IntegerLiteralToBooleanConverter.handleIntToBoolConversion(assignmentExpression);
+	    
 	    return assignmentExpression;
 
 	case IASTBinaryExpression.op_plus:
@@ -160,7 +162,7 @@ public class BinaryExpressionConverter {
     private OOExpression setBothSidesAndReturn(OOComparatorExpression expression, OOExpression lhs, OOExpression rhs) {
 	expression.setLeftSide(lhs);
 	expression.setRightSide(rhs);
-
+	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(expression);
 	return expression;
     }
 

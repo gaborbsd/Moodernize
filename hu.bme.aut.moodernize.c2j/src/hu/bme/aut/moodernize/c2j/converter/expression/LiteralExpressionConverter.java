@@ -6,6 +6,7 @@ import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalLiteral;
+import hu.bme.aut.oogen.OOStringLiteral;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class LiteralExpressionConverter {
@@ -32,6 +33,12 @@ public class LiteralExpressionConverter {
 	    OODoubleLiteral doubleLiteral = factory.createOODoubleLiteral();
 	    doubleLiteral.setValue(valueDouble);
 	    return doubleLiteral;
+	    
+	case IASTLiteralExpression.lk_string_literal:
+	case IASTLiteralExpression.lk_char_constant:
+	    OOStringLiteral stringLiteral = factory.createOOStringLiteral();
+	    stringLiteral.setValue(valueString);
+	    return stringLiteral;	 
 	   
 	case IASTLiteralExpression.lk_nullptr:
 	    return factory.createOONullLiteral();

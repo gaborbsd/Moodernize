@@ -31,14 +31,13 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 	    return PROCESS_SKIP;
 	}
 
-	
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof IFunction) {
 	    IFunction cdtFunction = (IFunction) binding;
 
 	    OOMethod ooFunction = factory.createOOMethod();
 	    ooFunction.setName(cdtFunction.getName());
-	    handleVisibility(ooFunction, cdtFunction);
+	    ooFunction.setVisibility(OOVisibility.PUBLIC);
 
 	    IType returnType = cdtFunction.getType().getReturnType();
 	    if (returnType instanceof IBasicType && ((IBasicType) returnType).getKind() == Kind.eVoid) {
@@ -61,13 +60,5 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 	}
 
 	return PROCESS_SKIP;
-    }
-    
-    private void handleVisibility(OOMethod ooFunction, IFunction cdtFunction) {
-	if (cdtFunction.isStatic()) {
-	    ooFunction.setVisibility(OOVisibility.PRIVATE);
-	} else {
-	    ooFunction.setVisibility(OOVisibility.PUBLIC);
-	}
     }
 }

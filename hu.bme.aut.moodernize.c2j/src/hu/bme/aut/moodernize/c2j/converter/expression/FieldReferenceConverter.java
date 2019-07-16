@@ -43,7 +43,7 @@ public class FieldReferenceConverter {
 	getterCall.setOwnerExpression(ownerExpression);
     }
 
-    public OOFunctionCallExpression getSetMethodForFieldReference(IASTFieldReference fieldReference,
+    public OOFunctionCallExpression getSetMethodCallForFieldReference(IASTFieldReference fieldReference,
 	    IASTExpression setTo) {
 	OOFunctionCallExpression setterCall = factory.createOOFunctionCallExpression();
 	setterCall.setFunctionName("set"

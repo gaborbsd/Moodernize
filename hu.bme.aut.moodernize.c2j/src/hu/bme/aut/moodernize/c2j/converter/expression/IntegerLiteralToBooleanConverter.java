@@ -1,15 +1,101 @@
 package hu.bme.aut.moodernize.c2j.converter.expression;
 
+import java.util.List;
+
+import hu.bme.aut.oogen.OOAssignmentExpression;
+import hu.bme.aut.oogen.OOBaseType;
+import hu.bme.aut.oogen.OOBracketedExpression;
+import hu.bme.aut.oogen.OOComparatorExpression;
+import hu.bme.aut.oogen.OOEqualsExpression;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOInitializerList;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOLogicalLiteral;
+import hu.bme.aut.oogen.OONotEqualsExpression;
 import hu.bme.aut.oogen.OOOneOperandLogicalExpression;
+import hu.bme.aut.oogen.OOTernaryOperator;
 import hu.bme.aut.oogen.OOTwoOperandLogicalExpression;
+import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableDeclarationList;
+import hu.bme.aut.oogen.OOVariableReferenceExpression;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class IntegerLiteralToBooleanConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
+
+    public static OOExpression handleIntToBoolConversion(OOExpression expression) {
+	if (expression instanceof OOTwoOperandLogicalExpression) {
+	    convertTwoOperandLogicalExpression((OOTwoOperandLogicalExpression) expression);
+	} else if (expression instanceof OOOneOperandLogicalExpression) {
+	    convertOneOperandLogicalExpression((OOOneOperandLogicalExpression) expression);
+	} else if (expression instanceof OOTernaryOperator) {
+	    convertTernaryOperator((OOTernaryOperator) expression);
+	} else if (expression instanceof OOBracketedExpression) {
+	    convertBracketedExpression((OOBracketedExpression) expression);
+	} else if (expression instanceof OOAssignmentExpression) {
+	    convertAssignmentExpression((OOAssignmentExpression) expression);
+	} else if (expression instanceof OOComparatorExpression) {
+	    convertComparatorExpression((OOComparatorExpression) expression);
+	} else if (expression instanceof OOInitializerList) {
+	    handleIntToBoolConversion((OOVariableDeclarationList) expression);
+	}
+	if (expression instanceof OOIntegerLiteral) {
+	    return createBoolFromLogicalInt((OOIntegerLiteral) expression);
+	} else
+	    return expression;
+    }
+
+    private static void convertTwoOperandLogicalExpression(OOTwoOperandLogicalExpression expression) {
+	expression.setLeftSide(handleIntToBoolConversion(expression.getLeftSide()));
+	expression.setRightSide(handleIntToBoolConversion(expression.getRightSide()));
+    }
+
+    private static void convertOneOperandLogicalExpression(OOOneOperandLogicalExpression expression) {
+	expression.setOperand(handleIntToBoolConversion(expression.getOperand()));
+    }
+
+    private static void convertTernaryOperator(OOTernaryOperator expression) {
+	expression.setCondition(handleIntToBoolConversion(expression.getCondition()));
+	// expression.setPositiveBranch(handleIntToBoolConversion(expression.getPositiveBranch()));
+	// expression.setNegativeBranch(handleIntToBoolConversion(expression.getNegativeBranch()));
+    }
+
+    private static void convertBracketedExpression(OOBracketedExpression expression) {
+	expression.setOperand(handleIntToBoolConversion(expression.getOperand()));
+    }
+
+    private static void convertAssignmentExpression(OOAssignmentExpression expression) {
+	OOExpression lhs = expression.getLeftSide();
+
+	if (lhs instanceof OOVariableReferenceExpression) {
+	    OOVariableReferenceExpression referredVariable = (OOVariableReferenceExpression) lhs;
+	    if (referredVariable.getVariable().getType().getBaseType() == OOBaseType.BOOLEAN) {
+		expression.setRightSide(handleIntToBoolConversion(expression.getRightSide()));
+	    }
+	}
+    }
+
+    private static void convertComparatorExpression(OOComparatorExpression expression) {
+	if (expression instanceof OOEqualsExpression || expression instanceof OONotEqualsExpression) {
+	    OOExpression lhs = expression.getLeftSide();
+	    if (lhs instanceof OOVariableReferenceExpression) {
+		OOVariableReferenceExpression referredVariable = (OOVariableReferenceExpression) lhs;
+		if (referredVariable.getVariable().getType().getBaseType() == OOBaseType.BOOLEAN) {
+		    expression.setRightSide(handleIntToBoolConversion(expression.getRightSide()));
+		}
+	    }
+	}
+    }
+    
+    public static void handleIntToBoolConversion(OOVariableDeclarationList expression) {
+	List<OOVariable> variableDeclarations = expression.getVariableDeclarations();
+	for (OOVariable declaration : variableDeclarations) {
+	    if (declaration.getType().getBaseType() == OOBaseType.BOOLEAN) {
+		declaration.setInitializerExpression(handleIntToBoolConversion(declaration.getInitializerExpression()));
+	    }
+	}
+    }
 
     private static OOLogicalExpression createBoolFromLogicalInt(OOIntegerLiteral integerLiteral) {
 	OOLogicalLiteral logicalLiteral = factory.createOOLogicalLiteral();
@@ -20,22 +106,5 @@ public class IntegerLiteralToBooleanConverter {
 	}
 
 	return logicalLiteral;
-    }
-    
-    private static OOExpression checkIfExpressionIsIntegerLiteral(OOExpression expression) {
-	if (expression instanceof OOIntegerLiteral) {
-	    expression = createBoolFromLogicalInt((OOIntegerLiteral) expression);
-	}
-	
-	return expression;
-    }
-    
-    public static void handleIntToBoolConversion(OOTwoOperandLogicalExpression expression) {
-	expression.setLeftSide(checkIfExpressionIsIntegerLiteral(expression.getLeftSide()));
-	expression.setRightSide(checkIfExpressionIsIntegerLiteral(expression.getRightSide()));	
-    }
-    
-    public static void handleIntToBoolConversion(OOOneOperandLogicalExpression expression) {
-	expression.setOperand(checkIfExpressionIsIntegerLiteral(expression.getOperand()));
     }
 }

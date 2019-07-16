@@ -9,6 +9,7 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.converter.expression.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableDeclarationList;
@@ -26,6 +27,7 @@ public class SimpleDeclarationConverter {
 	    declarationList.getVariableDeclarations().add(declaredVariable);
 	}
 		
+	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(declarationList);
 	return declarationList;
     }
 

@@ -75,6 +75,8 @@ public class ExpressionConverter {
 	ternary.setPositiveBranch(converter.convertExpression(expression.getPositiveResultExpression()));
 	ternary.setNegativeBranch(converter.convertExpression(expression.getNegativeResultExpression()));
 
+	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(ternary);
+	
 	return ternary;
     }
 
