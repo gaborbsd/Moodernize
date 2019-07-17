@@ -6,6 +6,7 @@ import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOComparatorExpression;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOTwoOperandAssignableExpression;
 import hu.bme.aut.oogen.OOTwoOperandLogicalExpression;
@@ -20,8 +21,10 @@ public class BinaryExpressionConverter {
 
 	if (binaryExpression.getOperator() == IASTBinaryExpression.op_assign
 		&& binaryExpression.getOperand1() instanceof IASTFieldReference) {
-	    return new FieldReferenceConverter().getSetMethodCallForFieldReference(
+	    OOFunctionCallExpression setterCall = new FieldReferenceConverter().getSetMethodCallForFieldReference(
 		    (IASTFieldReference) binaryExpression.getOperand1(), binaryExpression.getOperand2());
+	    
+	    return setterCall;
 	}
 
 	OOExpression lhs = converter.convertExpression(binaryExpression.getOperand1());

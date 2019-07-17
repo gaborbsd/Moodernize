@@ -8,6 +8,7 @@ import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOComparatorExpression;
 import hu.bme.aut.oogen.OOEqualsExpression;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOInitializerList;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalExpression;
@@ -39,6 +40,8 @@ public class IntegerLiteralToBooleanConverter {
 	    convertComparatorExpression((OOComparatorExpression) expression);
 	} else if (expression instanceof OOInitializerList) {
 	    handleIntToBoolConversion((OOVariableDeclarationList) expression);
+	} else if (expression instanceof OOFunctionCallExpression) {
+	    convertSetterCallExpression((OOFunctionCallExpression) expression);
 	}
 	if (expression instanceof OOIntegerLiteral) {
 	    return createBoolFromLogicalInt((OOIntegerLiteral) expression);
@@ -95,6 +98,19 @@ public class IntegerLiteralToBooleanConverter {
 		declaration.setInitializerExpression(handleIntToBoolConversion(declaration.getInitializerExpression()));
 	    }
 	}
+    }
+    
+    private static void convertSetterCallExpression(OOFunctionCallExpression expression) {
+	OOExpression ownerExpression = expression.getOwnerExpression();
+	if (ownerExpression instanceof OOVariableReferenceExpression) {
+	    OOVariable referredVariable = ((OOVariableReferenceExpression) ownerExpression).getVariable();
+	    if (referredVariable.getType().getBaseType() == OOBaseType.BOOLEAN) {
+		OOExpression convertedArgument = handleIntToBoolConversion(expression.getArgumentExpressions().get(0));
+		expression.getArgumentExpressions().clear();
+		expression.getArgumentExpressions().add(convertedArgument);
+	    }
+	}
+	
     }
 
     private static OOLogicalExpression createBoolFromLogicalInt(OOIntegerLiteral integerLiteral) {
