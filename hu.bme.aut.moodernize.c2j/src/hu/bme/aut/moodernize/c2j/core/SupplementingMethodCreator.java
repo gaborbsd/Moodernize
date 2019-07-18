@@ -52,7 +52,7 @@ public class SupplementingMethodCreator {
 	    OOFunctionCallExpression setterCall = factory.createOOFunctionCallExpression();
 	    
 	    setterCall.setFunctionName("set" + TransformUtil.capitalizeFirstCharacter(parameter.getName()));
-	    setterCall.setOwnerExpression(factory.createOOThisLiteral());
+	    setterCall.setOwnerExpression(null);
 	    
 	    OOVariableReferenceExpression argumentExpression = factory.createOOVariableReferenceExpression();
 	    argumentExpression.setVariable(parameter);

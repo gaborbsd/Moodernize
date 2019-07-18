@@ -110,7 +110,6 @@ public class IntegerLiteralToBooleanConverter {
 		expression.getArgumentExpressions().add(convertedArgument);
 	    }
 	}
-	
     }
 
     private static OOLogicalExpression createBoolFromLogicalInt(OOIntegerLiteral integerLiteral) {
