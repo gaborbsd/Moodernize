@@ -5,6 +5,8 @@ import java.util.List;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOConstructor;
+import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOReturn;
@@ -24,7 +26,44 @@ public class SupplementingMethodCreator {
     }
 
     private void createConstructor(OOClass cl) {
+	OOConstructor constructor = factory.createOOConstructor();
+	
+	constructor.setVisibility(OOVisibility.PUBLIC);
+	constructor.setClassName(cl.getName());
+	createConstructorParameters(constructor, cl.getMembers());
+	createConstructorStatements(constructor);
 
+	cl.getConstructors().add(constructor);
+    }
+
+    private void createConstructorParameters(OOConstructor constructor, List<OOMember> members) {
+	for (OOMember member : members) {
+	    if (!hasDefaultValue(member)) {
+		OOVariable parameter = factory.createOOVariable();
+		parameter.setName(member.getName());
+		parameter.setType(member.getType());
+		constructor.getParameters().add(parameter);
+	    }
+	}
+    }
+
+    private void createConstructorStatements(OOConstructor constructor) {
+	for (OOVariable parameter : constructor.getParameters()) {
+	    OOFunctionCallExpression setterCall = factory.createOOFunctionCallExpression();
+	    
+	    setterCall.setFunctionName("set" + TransformUtil.capitalizeFirstCharacter(parameter.getName()));
+	    setterCall.setOwnerExpression(factory.createOOThisLiteral());
+	    
+	    OOVariableReferenceExpression argumentExpression = factory.createOOVariableReferenceExpression();
+	    argumentExpression.setVariable(parameter);
+	    setterCall.getArgumentExpressions().add(argumentExpression);
+	    
+	    constructor.getStatements().add(setterCall);
+	}
+    }
+    
+    private boolean hasDefaultValue(OOMember member) {
+	return member.getInitializerExpression() != null;
     }
 
     private void createGettersAndSetters(OOClass cl) {
