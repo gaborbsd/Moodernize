@@ -6,9 +6,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalLiteral;
+import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOSubtractionExpression;
@@ -101,7 +103,8 @@ public class SimpleDeclarationTransformationTest extends AbstractTransformationT
 	sourceCode.append("struct S2 struct3;}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0).getStatements();
+	OOMethod function = TransformUtil.getFunctionByName(getDefaultClass(model).getMethods(), "main");
+	List<OOStatement> statements = function.getStatements();
 	for (int i = 0; i <= 1; i++) {
 	    OOStatement statement = statements.get(i);
 	    List<OOVariable> variableDeclarations = ((OOVariableDeclarationList) statement).getVariableDeclarations();

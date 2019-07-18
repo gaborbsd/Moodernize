@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFunctionCallExpression;
@@ -25,7 +26,7 @@ public class IndexingTransformationTest extends AbstractTransformationTest {
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOMethod function = getDefaultClass(model).getMethods().get(0);
+	OOMethod function = TransformUtil.getFunctionByName(getDefaultClass(model).getMethods(), "testIndex");
 	OOAssignmentExpression assignment = (OOAssignmentExpression) function.getStatements().get(0);
 	OOExpression lhs = assignment.getLeftSide();
 	Assert.assertTrue(lhs instanceof OOIndexing);

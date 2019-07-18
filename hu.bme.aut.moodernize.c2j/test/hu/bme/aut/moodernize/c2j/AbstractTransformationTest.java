@@ -19,6 +19,7 @@ import org.junit.Before;
 
 import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOModel;
 
@@ -41,7 +42,7 @@ public abstract class AbstractTransformationTest {
     }
     
     protected OOClass getDefaultClass(OOModel model) {
-	return model.getPackages().get(0).getClasses().get(0);
+	return TransformUtil.getMainClassFromClasses(model.getPackages().get(0).getClasses());
     }
 
     private IASTTranslationUnit getIASTTranslationUnit(char[] code) throws CoreException {

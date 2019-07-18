@@ -1,5 +1,6 @@
 package hu.bme.aut.moodernize.c2j.converter.expression;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -8,7 +9,6 @@ import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
-import hu.bme.aut.moodernize.c2j.core.ProjectCreator;
 import hu.bme.aut.moodernize.c2j.core.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.util.RemovedParameterRepository;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
@@ -64,8 +64,9 @@ public class FunctionCallExpressionConverter {
 	    return;
 	}
 
-	OOMethod calledFunction = getCalledFunction(functionCall.getFunctionName());
-	OOClass containingClass = getContainingClass(calledFunction);
+	OOClass containingClass = getContainingClass(functionCall.getFunctionName());
+	OOClass mainClass = TransformUtil.getMainClassFromClasses(TransformationDataHolder.getCreatedClasses());
+	OOMethod calledFunction = getCalledFunction(mainClass.getMethods(), functionCall.getFunctionName());
 	if (calledFunction.isStatic()) {
 	    OOStringLiteral ownerExpression = factory.createOOStringLiteral();
 	    ownerExpression.setValue(containingClass.getName());
@@ -74,37 +75,29 @@ public class FunctionCallExpressionConverter {
 	}
     }
 
-    private OOMethod getCalledFunction(String functionName) {
+    private OOClass getContainingClass(String functionName) {
+	OOClass containingClass = TransformUtil.getContainerClass(functionName,
+		TransformationDataHolder.getCreatedClasses());
+	if (containingClass != null) {
+	    return containingClass;
+	}
+
+	throw new UnsupportedOperationException("Function call encountered that belongs to no class: " + functionName);
+    }
+
+    private OOMethod getCalledFunction(List<OOMethod> globalFunctions, String functionName) {
 	OOMethod calledFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.getCreatedClasses(),
 		functionName);
 	if (calledFunction != null) {
 	    return calledFunction;
 	}
 
-	calledFunction = TransformUtil.getFunctionByName(TransformationDataHolder.getFunctions(), functionName);
+	calledFunction = TransformUtil.getFunctionByName(globalFunctions, functionName);
 	if (calledFunction != null) {
 	    return calledFunction;
 	}
 
 	throw new UnsupportedOperationException("Function call encountered that belongs to no class: " + functionName);
-    }
-
-    private OOClass getContainingClass(OOMethod calledFunction) {
-	OOClass containingClass = TransformUtil.getContainerClass(calledFunction,
-		TransformationDataHolder.getCreatedClasses());
-	if (containingClass != null) {
-	    return containingClass;
-	}
-	
-	if (TransformUtil.listContainsMethod(TransformationDataHolder.getFunctions(), calledFunction)) {
-	    OOClass dummyDefaultClass = factory.createOOClass();
-	    dummyDefaultClass.setName(ProjectCreator.DEFAULTCLASSNAME);
-	    
-	    return dummyDefaultClass;
-	}
-	
-	//Control should never be able to reach here! Previous funtion throws exception if so!
-	return null;
     }
 
     private boolean parameterWasRemovedAtIndex(String functionName, int index) {

@@ -1,10 +1,12 @@
 package hu.bme.aut.moodernize.c2j.util;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
+import hu.bme.aut.moodernize.c2j.core.MainClassCreator;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
@@ -55,8 +57,12 @@ public class TransformUtil {
     }
 
     public static OOClass getClassFromClasses(List<OOClass> classes, OOClass cl) {
+	return getClassByName(classes, cl.getName());
+    }
+    
+    public static OOClass getClassByName(List<OOClass> classes, String className) {
 	for (OOClass c : classes) {
-	    if (c.getName().toUpperCase().equals(cl.getName().toUpperCase())) {
+	    if (c.getName().toUpperCase().equals(className.toUpperCase())) {
 		return c;
 	    }
 	}
@@ -64,16 +70,26 @@ public class TransformUtil {
 	return null;
     }
     
-    public static OOClass getContainerClass(OOMethod method, List<OOClass> classes) {
+    public static OOClass getContainerClass(String functionName, List<OOClass> classes) {
 	for (OOClass cl : classes) {
 	    for (OOMethod m : cl.getMethods()) {
-		if (m.getName().equals(method.getName())) {
+		if (m.getName().equals(functionName)) {
 		    return cl;
 		}
 	    }
 	}
 	
 	return null;
+    }
+    
+    public static OOClass getMainClassFromClasses(List<OOClass> classes) {
+	for (OOClass cl : classes) {
+	    if (cl.getName().equals(MainClassCreator.MAINCLASSNAME)) {
+		return cl;
+	    }
+	}
+	
+	throw new InvalidParameterException("MainClass not found in classes: " + classes);
     }
 
     public static OOMethod getFunctionByName(List<OOMethod> functions, String name) {

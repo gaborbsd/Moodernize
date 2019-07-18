@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
@@ -20,8 +21,7 @@ public class SupplementingMethodsGenerationTest extends AbstractTransformationTe
 	sourceCode.append("typedef struct S1 {int x; } S1;");
 	
 	OOModel model = getModelBySourceCode(sourceCode.toString());
-	
-	OOClass cl = model.getPackages().get(0).getClasses().get(1);
+	OOClass cl = TransformUtil.getClassByName(model.getPackages().get(0).getClasses(), "S1");
 	List<OOMethod> methods = cl.getMethods();
 	
 	Assert.assertEquals(2, methods.size());
