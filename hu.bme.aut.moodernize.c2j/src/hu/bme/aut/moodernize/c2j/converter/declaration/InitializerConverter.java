@@ -9,13 +9,25 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerList;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOInitializerList;
+import hu.bme.aut.oogen.OONewClass;
+import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class InitializerConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-    
+    private OOType type = null;
+    private int initializerListConversionCount = 0;
+
+    public InitializerConverter() {
+    }
+
+    public InitializerConverter(OOType type) {
+	this.type = type;
+    }
+
     public OOExpression convertInitializer(IASTInitializer init) {
 	if (init instanceof IASTEqualsInitializer) {
 	    return convertEqualsInitializer((IASTEqualsInitializer) init);
@@ -25,7 +37,7 @@ public class InitializerConverter {
 	    throw new UnsupportedOperationException("Unsupported Initializer encountered: " + init);
 	}
     }
-    
+
     public OOExpression convertInitializerClause(IASTInitializerClause initClause) {
 	if (initClause instanceof IASTExpression) {
 	    ExpressionConverter converter = new ExpressionConverter();
@@ -43,11 +55,47 @@ public class InitializerConverter {
     }
 
     private OOExpression convertInitializerList(IASTInitializerList initList) {
-	OOInitializerList initializerList = factory.createOOInitializerList();
-	for (IASTInitializerClause clause : initList.getClauses()) {
-	    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+	initializerListConversionCount++;
+	if (type == null) {
+	    OOInitializerList initializerList = factory.createOOInitializerList();
+	    for (IASTInitializerClause clause : initList.getClauses()) {
+		initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+	    }
+	    return initializerList;
+	} else {
+	    if (initializerListConversionCount == 1) {
+		if (type.getArrayDimensions() == 0) {
+		    OOClass classType = type.getClassType();
+		    if (classType != null) {
+			OONewClass newClassExpression = factory.createOONewClass();
+			newClassExpression.setClassName(classType.getName());
+			for (IASTInitializerClause clause : initList.getClauses()) {
+			    newClassExpression.getConstructorParameterExpressions()
+				    .add(convertInitializerClause(clause));
+			}
+			return newClassExpression;
+		    } else {
+			OOInitializerList initializerList = factory.createOOInitializerList();
+			for (IASTInitializerClause clause : initList.getClauses()) {
+			    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+			}
+			return initializerList;
+		    }
+		} else {
+		    OOInitializerList initializerList = factory.createOOInitializerList();
+		    for (IASTInitializerClause clause : initList.getClauses()) {
+			initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+		    }
+		    return initializerList;
+		}
+	    } else {
+		OOInitializerList initializerList = factory.createOOInitializerList();
+		for (IASTInitializerClause clause : initList.getClauses()) {
+		    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+		}
+		return initializerList;
+	    }
 	}
-	
-	return initializerList;
+
     }
 }

@@ -10,6 +10,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.moodernize.c2j.converter.expression.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.oogen.OONewClass;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableDeclarationList;
@@ -45,17 +46,29 @@ public class SimpleDeclarationConverter {
 		//TODO: What to do if some dimensions are set and some are not?
 		if (sizeExpression != null) {
 		    type.getArraySizeExpressions().add(converter.convertExpression(sizeExpression));
+		} else {
+		    type.getArraySizeExpressions().add(factory.createOONullLiteral());
 		}
 	    }
 	}
-	
-	IASTInitializer init = declarator.getInitializer();
-	if (init != null) {
-	    InitializerConverter converter = new InitializerConverter();
-	    declaredVariable.setInitializerExpression(converter.convertInitializer(declarator.getInitializer()));
-	}
+	handleInitializerExpression(declaredVariable, declarator);
     }
 
+    private void handleInitializerExpression(OOVariable declaredVariable, IASTDeclarator declarator) {
+	IASTInitializer initializer = declarator.getInitializer();
+	if (initializer != null) {
+	    InitializerConverter converter = new InitializerConverter(declaredVariable.getType());
+	    declaredVariable.setInitializerExpression(converter.convertInitializer(declarator.getInitializer()));
+	} else {
+	    OOType declaredType = declaredVariable.getType();
+	    if (declaredType.getClassType() != null) {
+		OONewClass newExpression = factory.createOONewClass();
+		newExpression.setClassName(declaredType.getClassType().getName());
+		declaredVariable.setInitializerExpression(newExpression);
+	    }
+	}
+    }
+    
     private void handleSpecifier(OOVariable declaredVariable, IASTDeclSpecifier specifier) {
 	declaredVariable.setType(new DeclaratorSpecifierConverter().convertSpecifier(specifier));
     }

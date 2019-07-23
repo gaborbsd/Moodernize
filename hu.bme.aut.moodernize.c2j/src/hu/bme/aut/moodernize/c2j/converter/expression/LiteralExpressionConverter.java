@@ -33,7 +33,7 @@ public class LiteralExpressionConverter {
 	    OODoubleLiteral doubleLiteral = factory.createOODoubleLiteral();
 	    doubleLiteral.setValue(valueDouble);
 	    return doubleLiteral;
-	    
+	    	    
 	case IASTLiteralExpression.lk_string_literal:
 	case IASTLiteralExpression.lk_char_constant:
 	    OOStringLiteral stringLiteral = factory.createOOStringLiteral();

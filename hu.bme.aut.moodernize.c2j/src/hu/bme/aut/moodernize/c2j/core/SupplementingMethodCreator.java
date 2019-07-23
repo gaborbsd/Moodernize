@@ -26,16 +26,16 @@ public class SupplementingMethodCreator {
     }
 
     private void createConstructor(OOClass cl) {
-	OOConstructor constructor = factory.createOOConstructor();
-	
-	constructor.setVisibility(OOVisibility.PUBLIC);
-	constructor.setClassName(cl.getName());
+	if (cl.getName().equals(MainClassCreator.MAINCLASSNAME)) {
+	    return;
+	}
+	OOConstructor constructor = createEmptyConstructor(cl.getName());
 	createConstructorParameters(constructor, cl.getMembers());
 	createConstructorStatements(constructor);
 
 	cl.getConstructors().add(constructor);
-    }
-
+    }  
+    
     private void createConstructorParameters(OOConstructor constructor, List<OOMember> members) {
 	for (OOMember member : members) {
 	    if (!hasDefaultValue(member)) {
@@ -62,9 +62,21 @@ public class SupplementingMethodCreator {
 	}
     }
     
+    private OOConstructor createEmptyConstructor(String className) {
+	OOConstructor emptyConstructor = factory.createOOConstructor();
+	emptyConstructor.setVisibility(OOVisibility.PUBLIC);
+	emptyConstructor.setClassName(className);
+	
+	return emptyConstructor;
+    }
+    
     private boolean hasDefaultValue(OOMember member) {
 	return member.getInitializerExpression() != null;
     }
+    
+    private boolean isEmptyConstructor(OOConstructor constructor) {
+	return constructor.getParameters().isEmpty() && constructor.getStatements().isEmpty();
+    }  
 
     private void createGettersAndSetters(OOClass cl) {
 	List<OOMethod> methods = cl.getMethods();

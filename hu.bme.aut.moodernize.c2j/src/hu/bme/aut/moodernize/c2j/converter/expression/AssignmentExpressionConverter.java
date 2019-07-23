@@ -20,8 +20,8 @@ public class AssignmentExpressionConverter {
 	} else {
 	    ExpressionConverter converter = new ExpressionConverter();
 	    OOExpression lhs = converter.convertExpression(assignmentExpression.getOperand1());
-	    OOExpression rhs = converter.convertExpression(assignmentExpression.getOperand2());
-
+	    OOExpression rhs = converter.convertExpression(assignmentExpression.getOperand2());	
+	    
 	    OOAssignmentExpression ooAssignmentExpression = factory.createOOAssignmentExpression();
 	    ooAssignmentExpression.setLeftSide(lhs);
 	    ooAssignmentExpression.setRightSide(rhs);
