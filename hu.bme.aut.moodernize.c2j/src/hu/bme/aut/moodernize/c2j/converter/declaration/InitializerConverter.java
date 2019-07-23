@@ -12,6 +12,7 @@ import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOInitializerList;
+import hu.bme.aut.oogen.OONewArray;
 import hu.bme.aut.oogen.OONewClass;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
@@ -57,11 +58,7 @@ public class InitializerConverter {
     private OOExpression convertInitializerList(IASTInitializerList initList) {
 	initializerListConversionCount++;
 	if (type == null) {
-	    OOInitializerList initializerList = factory.createOOInitializerList();
-	    for (IASTInitializerClause clause : initList.getClauses()) {
-		initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
-	    }
-	    return initializerList;
+	    return createInitListFromClauses(initList.getClauses());
 	} else {
 	    if (initializerListConversionCount == 1) {
 		if (type.getArrayDimensions() == 0) {
@@ -75,27 +72,25 @@ public class InitializerConverter {
 			}
 			return newClassExpression;
 		    } else {
-			OOInitializerList initializerList = factory.createOOInitializerList();
-			for (IASTInitializerClause clause : initList.getClauses()) {
-			    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
-			}
-			return initializerList;
+			return createInitListFromClauses(initList.getClauses());
 		    }
 		} else {
-		    OOInitializerList initializerList = factory.createOOInitializerList();
-		    for (IASTInitializerClause clause : initList.getClauses()) {
-			initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
-		    }
-		    return initializerList;
+		    OONewArray newArrayExpression = factory.createOONewArray();
+		    newArrayExpression.setArrayType(type);
+		    newArrayExpression.setInitializerList(createInitListFromClauses(initList.getClauses()));
+		    return newArrayExpression;
 		}
 	    } else {
-		OOInitializerList initializerList = factory.createOOInitializerList();
-		for (IASTInitializerClause clause : initList.getClauses()) {
-		    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
-		}
-		return initializerList;
+		return createInitListFromClauses(initList.getClauses());
 	    }
 	}
+    }
 
+    private OOInitializerList createInitListFromClauses(IASTInitializerClause[] clauses) {
+	OOInitializerList initializerList = factory.createOOInitializerList();
+	for (IASTInitializerClause clause : clauses) {
+	    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+	}
+	return initializerList;
     }
 }
