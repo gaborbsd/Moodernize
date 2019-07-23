@@ -34,6 +34,10 @@ public class SupplementingMethodCreator {
 	createConstructorStatements(constructor);
 
 	cl.getConstructors().add(constructor);
+	
+	if (!isEmptyConstructor(constructor)) {
+	    cl.getConstructors().add(createEmptyConstructor(cl.getName()));
+	}
     }  
     
     private void createConstructorParameters(OOConstructor constructor, List<OOMember> members) {

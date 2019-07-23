@@ -2,11 +2,14 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 
+import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOStringLiteral;
+import hu.bme.aut.oogen.OOType;
+import hu.bme.aut.oogen.OOTypeCast;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class LiteralExpressionConverter {
@@ -33,13 +36,25 @@ public class LiteralExpressionConverter {
 	    OODoubleLiteral doubleLiteral = factory.createOODoubleLiteral();
 	    doubleLiteral.setValue(valueDouble);
 	    return doubleLiteral;
-	    	    
-	case IASTLiteralExpression.lk_string_literal:
+
 	case IASTLiteralExpression.lk_char_constant:
+	    OOTypeCast typeCast = factory.createOOTypeCast();
+
+	    OOType type = factory.createOOType();
+	    type.setBaseType(OOBaseType.BYTE);
+	    typeCast.setType(type);
+
+	    OOStringLiteral charLiteral = factory.createOOStringLiteral();
+	    charLiteral.setValue(valueString);
+	    typeCast.setExpression(charLiteral);
+
+	    return typeCast;
+
+	case IASTLiteralExpression.lk_string_literal:
 	    OOStringLiteral stringLiteral = factory.createOOStringLiteral();
 	    stringLiteral.setValue(valueString);
-	    return stringLiteral;	 
-	   
+	    return stringLiteral;
+
 	case IASTLiteralExpression.lk_nullptr:
 	    return factory.createOONullLiteral();
 
