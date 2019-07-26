@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j.core;
+package hu.bme.aut.moodernize.c2j.dataholders;
 
 import java.util.ArrayList;
 import java.util.List;

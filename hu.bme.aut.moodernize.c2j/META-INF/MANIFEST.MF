@@ -23,7 +23,11 @@ Require-Bundle: org.eclipse.cdt.core;bundle-version="6.2.0",
  org.junit.vintage.engine,
  org.hamcrest.core,
  org.opentest4j,
- org.apiguardian
+ org.apiguardian,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro
 Export-Package: hu.bme.aut.moodernize.c2j,
  hu.bme.aut.moodernize.c2j.core
 Automatic-Module-Name: hu.bme.aut.moodernize.c2j

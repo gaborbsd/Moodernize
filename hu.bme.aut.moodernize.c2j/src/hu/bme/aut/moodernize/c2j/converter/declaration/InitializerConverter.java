@@ -9,6 +9,8 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerList;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOInitializerList;
@@ -90,6 +92,10 @@ public class InitializerConverter {
 	OOInitializerList initializerList = factory.createOOInitializerList();
 	for (IASTInitializerClause clause : clauses) {
 	    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
+	}
+
+	if (type.getBaseType() == OOBaseType.BOOLEAN) {
+	    IntegerLiteralToBooleanConverter.handleIntToBoolConversion(initializerList);
 	}
 	return initializerList;
     }

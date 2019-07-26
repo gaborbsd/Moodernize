@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import hu.bme.aut.moodernize.c2j.util.RemovedParameterRepository;
+import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
@@ -123,7 +123,7 @@ public class ParameterListAndReturnTypeAnalyser {
     }
 
     private void storeRemovedParameter(String functionName, String parameterName, Integer index) {
-	RemovedParameterRepository.addRemovedParameterName(functionName, parameterName);
-	RemovedParameterRepository.addRemovedParameterIndex(functionName, index);
+	RemovedParameterDataHolder.addRemovedParameterName(functionName, parameterName);
+	RemovedParameterDataHolder.addRemovedParameterIndex(functionName, index);
     }
 }

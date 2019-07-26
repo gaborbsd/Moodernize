@@ -9,14 +9,20 @@ import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
-import hu.bme.aut.moodernize.c2j.core.TransformationDataHolder;
-import hu.bme.aut.moodernize.c2j.util.RemovedParameterRepository;
+import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOMethod;
+import hu.bme.aut.oogen.OONewClass;
 import hu.bme.aut.oogen.OOStringLiteral;
+import hu.bme.aut.oogen.OOType;
+import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableReferenceExpression;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class FunctionCallExpressionConverter {
@@ -30,6 +36,8 @@ public class FunctionCallExpressionConverter {
 	handleFunctionArguments(functionCall, call);
 	handleFunctionOwner(functionCall, call);
 
+	storeFunctionCall(functionCall, TransformUtil.getContainingFunctionName(call));
+	
 	return functionCall;
     }
 
@@ -67,12 +75,66 @@ public class FunctionCallExpressionConverter {
 	OOClass containingClass = getContainingClass(functionCall.getFunctionName());
 	OOClass mainClass = TransformUtil.getMainClassFromClasses(TransformationDataHolder.getCreatedClasses());
 	OOMethod calledFunction = getCalledFunction(mainClass.getMethods(), functionCall.getFunctionName());
+
 	if (calledFunction.isStatic()) {
 	    OOStringLiteral ownerExpression = factory.createOOStringLiteral();
 	    ownerExpression.setValue(containingClass.getName());
 	    functionCall.setOwnerExpression(ownerExpression);
 	    return;
 	}
+
+	String containingFunctionName = TransformUtil.getContainingFunctionName(call);
+	OOMethod containingFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.getCreatedClasses(),
+		containingFunctionName);
+
+	if (!checkIfFunctionContainsPreviousOwnerAndSetAsNewOwner(functionCall, containingFunction)) {
+	    createNewInstanceAndSetAsOwner(functionCall, containingClass, containingFunction);
+	}
+    }
+    
+    private void storeFunctionCall(OOFunctionCallExpression functionCall, String containingFunctionName) {
+	if (!FunctionCallExpressionDataHolder.getFunctionName().equals(containingFunctionName)) {
+	    FunctionCallExpressionDataHolder.clearFunctionCalls(containingFunctionName);
+	}
+	FunctionCallExpressionDataHolder.addFunctionCall(functionCall);
+    }
+
+    private boolean checkIfFunctionContainsPreviousOwnerAndSetAsNewOwner(OOFunctionCallExpression functionCall,
+	    OOMethod containingFunction) {
+	if (!FunctionCallExpressionDataHolder.getFunctionName().equals(containingFunction.getName())) {
+	    return false;
+	}
+	for (OOFunctionCallExpression previousCall : FunctionCallExpressionDataHolder.getPreviousFunctionCallsInFunction()) {
+	    //TODO: overloaded functions?
+	    if (previousCall.getFunctionName().equals(functionCall.getFunctionName())) {
+		functionCall.setOwnerExpression(previousCall.getOwnerExpression());
+		return true;
+	    }
+	}
+	
+	return false;
+    }
+
+    private void createNewInstanceAndSetAsOwner(OOFunctionCallExpression functionCall, OOClass classType,
+	    OOMethod containingFunction) {
+	OOVariable ownerDeclaration = factory.createOOVariable();
+	ownerDeclaration.setName(TransformUtil.getWithLowerCaseFirstCharacter(classType.getName()));
+
+	OOType type = factory.createOOType();
+	classType.setName(classType.getName());
+	type.setClassType(classType);
+	type.setBaseType(OOBaseType.OBJECT);
+	ownerDeclaration.setType(type);
+
+	OONewClass newExpression = factory.createOONewClass();
+	newExpression.setClassName(classType.getName());
+	ownerDeclaration.setInitializerExpression(newExpression);
+
+	containingFunction.getStatements().add(ownerDeclaration);
+
+	OOVariableReferenceExpression reference = factory.createOOVariableReferenceExpression();
+	reference.setVariable(ownerDeclaration);
+	functionCall.setOwnerExpression(reference);
     }
 
     private OOClass getContainingClass(String functionName) {
@@ -101,7 +163,7 @@ public class FunctionCallExpressionConverter {
     }
 
     private boolean parameterWasRemovedAtIndex(String functionName, int index) {
-	for (Map.Entry<String, Integer> indexEntry : RemovedParameterRepository.getRemovedParameterIndices()) {
+	for (Map.Entry<String, Integer> indexEntry : RemovedParameterDataHolder.getRemovedParameterIndices()) {
 	    if (indexEntry.getKey().equals(functionName) && indexEntry.getValue() == index) {
 		return true;
 	    }

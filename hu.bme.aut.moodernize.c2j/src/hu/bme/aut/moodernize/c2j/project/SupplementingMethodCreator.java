@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j.core;
+package hu.bme.aut.moodernize.c2j.project;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class SupplementingMethodCreator {
 	for (OOVariable parameter : constructor.getParameters()) {
 	    OOFunctionCallExpression setterCall = factory.createOOFunctionCallExpression();
 	    
-	    setterCall.setFunctionName("set" + TransformUtil.capitalizeFirstCharacter(parameter.getName()));
+	    setterCall.setFunctionName("set" + TransformUtil.getWithUpperCaseFirstCharacter(parameter.getName()));
 	    setterCall.setOwnerExpression(null);
 	    
 	    OOVariableReferenceExpression argumentExpression = factory.createOOVariableReferenceExpression();
@@ -92,7 +92,7 @@ public class SupplementingMethodCreator {
 
     private OOMethod createGetter(OOMember member) {
 	OOMethod getter = factory.createOOMethod();
-	getter.setName("get" + TransformUtil.capitalizeFirstCharacter(member.getName()));
+	getter.setName("get" + TransformUtil.getWithUpperCaseFirstCharacter(member.getName()));
 	getter.setReturnType(member.getType());
 	getter.setVisibility(OOVisibility.PUBLIC);
 	getter.setStatic(member.isStatic());
@@ -108,13 +108,13 @@ public class SupplementingMethodCreator {
 
     private OOMethod createSetter(OOMember member) {
 	OOMethod setter = factory.createOOMethod();
-	setter.setName("set" + TransformUtil.capitalizeFirstCharacter(member.getName()));
+	setter.setName("set" + TransformUtil.getWithUpperCaseFirstCharacter(member.getName()));
 	setter.setReturnType(null);
 	setter.setVisibility(OOVisibility.PUBLIC);
 	setter.setStatic(member.isStatic());
 
 	OOVariable parameter = factory.createOOVariable();
-	parameter.setName("new" + TransformUtil.capitalizeFirstCharacter(member.getName()));
+	parameter.setName("new" + TransformUtil.getWithUpperCaseFirstCharacter(member.getName()));
 	parameter.setType(member.getType());
 	setter.getParameters().add(parameter);
 

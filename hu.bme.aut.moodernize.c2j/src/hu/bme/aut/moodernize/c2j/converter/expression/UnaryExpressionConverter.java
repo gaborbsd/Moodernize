@@ -2,6 +2,7 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
+import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOOneOperandArithmeticExpression;

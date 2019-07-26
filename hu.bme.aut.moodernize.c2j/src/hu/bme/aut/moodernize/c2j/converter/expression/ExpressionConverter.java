@@ -13,6 +13,7 @@ import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
+import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOTernaryOperator;

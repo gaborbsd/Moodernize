@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 
+import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFunctionCallExpression;

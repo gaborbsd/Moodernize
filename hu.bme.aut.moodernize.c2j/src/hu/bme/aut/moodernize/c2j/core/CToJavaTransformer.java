@@ -6,7 +6,12 @@ import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
-import hu.bme.aut.moodernize.c2j.util.RemovedParameterRepository;
+import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
+import hu.bme.aut.moodernize.c2j.project.MainClassCreator;
+import hu.bme.aut.moodernize.c2j.project.ProjectCreator;
+import hu.bme.aut.moodernize.c2j.project.SupplementingMethodCreator;
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDefinitionVisitor;
@@ -39,7 +44,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 
     private void clearDataStructures() {
 	TransformationDataHolder.clear();
-	RemovedParameterRepository.clearEntries();
+	RemovedParameterDataHolder.clearEntries();
+	FunctionCallExpressionDataHolder.clearFunctionCalls("");
     }
 
     private void traverseAsts(Set<IASTTranslationUnit> asts) {

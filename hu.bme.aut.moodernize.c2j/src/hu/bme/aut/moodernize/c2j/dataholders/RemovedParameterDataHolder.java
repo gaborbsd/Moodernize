@@ -1,10 +1,10 @@
-package hu.bme.aut.moodernize.c2j.util;
+package hu.bme.aut.moodernize.c2j.dataholders;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class RemovedParameterRepository {
+public class RemovedParameterDataHolder {
     private static Map<String, String> removedParameterNames = new HashMap<String, String>();
     private static Map<String, Integer> removedParameterIndices = new HashMap<String, Integer>();
     

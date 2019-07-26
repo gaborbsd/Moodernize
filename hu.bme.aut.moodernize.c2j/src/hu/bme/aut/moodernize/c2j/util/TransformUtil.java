@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
-import hu.bme.aut.moodernize.c2j.core.MainClassCreator;
+import hu.bme.aut.moodernize.c2j.project.MainClassCreator;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
@@ -14,13 +14,19 @@ import hu.bme.aut.oogen.OOVariable;
 
 public class TransformUtil {
     
-    public static String capitalizeFirstCharacter(String s) {
+    public static String getWithUpperCaseFirstCharacter(String s) {
 	if (s.length() == 1) {
 	    return s.substring(0, 1).toUpperCase();
 	}
 	return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
     
+    public static String getWithLowerCaseFirstCharacter(String s) {
+	if (s.length() == 1) {
+	    return s.substring(0, 1).toLowerCase();
+	}
+	return s.substring(0, 1).toLowerCase() + s.substring(1);
+    }
     
     public static boolean isReferenceType(OOType type) {
 	return type == null ? false : type.getClassType() != null && type.getArrayDimensions() == 0;

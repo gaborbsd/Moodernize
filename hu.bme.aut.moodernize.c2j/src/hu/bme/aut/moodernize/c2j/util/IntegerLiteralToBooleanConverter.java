@@ -1,5 +1,6 @@
-package hu.bme.aut.moodernize.c2j.converter.expression;
+package hu.bme.aut.moodernize.c2j.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hu.bme.aut.oogen.OOAssignmentExpression;
@@ -24,7 +25,7 @@ import hu.bme.aut.oogen.OogenFactory;
 
 public class IntegerLiteralToBooleanConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-
+    
     public static OOExpression handleIntToBoolConversion(OOExpression expression) {
 	if (expression instanceof OOTwoOperandLogicalExpression) {
 	    convertTwoOperandLogicalExpression((OOTwoOperandLogicalExpression) expression);
@@ -38,10 +39,12 @@ public class IntegerLiteralToBooleanConverter {
 	    convertAssignmentExpression((OOAssignmentExpression) expression);
 	} else if (expression instanceof OOComparatorExpression) {
 	    convertComparatorExpression((OOComparatorExpression) expression);
-	} else if (expression instanceof OOInitializerList) {
+	} else if (expression instanceof OOVariableDeclarationList) {
 	    handleIntToBoolConversion((OOVariableDeclarationList) expression);
 	} else if (expression instanceof OOFunctionCallExpression) {
 	    convertSetterCallExpression((OOFunctionCallExpression) expression);
+	} else if (expression instanceof OOInitializerList) {
+	    convertInitializerList((OOInitializerList) expression);
 	}
 	if (expression instanceof OOIntegerLiteral) {
 	    return createBoolFromLogicalInt((OOIntegerLiteral) expression);
@@ -110,6 +113,15 @@ public class IntegerLiteralToBooleanConverter {
 		expression.getArgumentExpressions().add(convertedArgument);
 	    }
 	}
+    }
+    
+    private static void convertInitializerList(OOInitializerList expression) {
+	List<OOExpression> convertedExpressions = new ArrayList<OOExpression>();
+	for (OOExpression initExp : expression.getInitializerExpressions()) {
+	    convertedExpressions.add(handleIntToBoolConversion(initExp));
+	}
+	expression.getInitializerExpressions().clear();
+	expression.getInitializerExpressions().addAll(convertedExpressions);
     }
 
     private static OOLogicalExpression createBoolFromLogicalInt(OOIntegerLiteral integerLiteral) {
