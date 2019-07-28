@@ -61,31 +61,48 @@ public class InitializerConverter {
 	initializerListConversionCount++;
 	if (type == null) {
 	    return createInitListFromClauses(initList.getClauses());
-	} else {
-	    if (initializerListConversionCount == 1) {
-		if (type.getArrayDimensions() == 0) {
-		    OOClass classType = type.getClassType();
-		    if (classType != null) {
-			OONewClass newClassExpression = factory.createOONewClass();
-			newClassExpression.setClassName(classType.getName());
-			for (IASTInitializerClause clause : initList.getClauses()) {
-			    newClassExpression.getConstructorParameterExpressions()
-				    .add(convertInitializerClause(clause));
-			}
-			return newClassExpression;
-		    } else {
-			return createInitListFromClauses(initList.getClauses());
-		    }
+	}
+	if (initializerListConversionCount == 1) {
+	    if (type.getArrayDimensions() == 0) {
+		OOClass classType = type.getClassType();
+		if (classType != null) {
+		    return createNewClassExpressionFromInitList(classType, initList);
 		} else {
-		    OONewArray newArrayExpression = factory.createOONewArray();
-		    newArrayExpression.setArrayType(type);
-		    newArrayExpression.setInitializerList(createInitListFromClauses(initList.getClauses()));
-		    return newArrayExpression;
+		    return createInitListFromClauses(initList.getClauses());
 		}
+	    } else {
+		OONewArray newArrayExpression = factory.createOONewArray();
+		newArrayExpression.setArrayType(type);
+		newArrayExpression.setInitializerList(createInitListFromClauses(initList.getClauses()));
+		return newArrayExpression;
+	    }
+	} else {
+	    OOClass classType = type.getClassType();
+	    if (!hasMoreNestedInitLists(initList) && classType != null) {
+		return createNewClassExpressionFromInitList(classType, initList);
 	    } else {
 		return createInitListFromClauses(initList.getClauses());
 	    }
 	}
+    }
+    
+    private boolean hasMoreNestedInitLists(IASTInitializerList initList) {
+	for (IASTInitializerClause clause : initList.getClauses()) {
+	    if (clause instanceof IASTInitializerList) {
+		return true;
+	    }
+	}
+	
+	return false;
+    }
+
+    private OONewClass createNewClassExpressionFromInitList(OOClass classType, IASTInitializerList initList) {
+	OONewClass newClassExpression = factory.createOONewClass();
+	newClassExpression.setClassName(classType.getName());
+	for (IASTInitializerClause clause : initList.getClauses()) {
+	    newClassExpression.getConstructorParameterExpressions().add(convertInitializerClause(clause));
+	}
+	return newClassExpression;
     }
 
     private OOInitializerList createInitListFromClauses(IASTInitializerClause[] clauses) {
