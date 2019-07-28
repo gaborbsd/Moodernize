@@ -7,9 +7,11 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.oogen.OONewArray;
 import hu.bme.aut.oogen.OONewClass;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
@@ -24,7 +26,8 @@ public class SimpleDeclarationConverter {
 	for (IASTDeclarator declarator : declaration.getDeclarators()) {
 	    OOVariable declaredVariable = factory.createOOVariable();
 	    handleSpecifier(declaredVariable, declaration.getDeclSpecifier());
-	    handleDeclarator(declaredVariable, declarator);
+	    handleDeclarator(declaredVariable, declarator);	   
+	    handleArrayDeclarationWithoutInitializerExpression(declaredVariable);
 	    declarationList.getVariableDeclarations().add(declaredVariable);
 	}
 		
@@ -71,5 +74,16 @@ public class SimpleDeclarationConverter {
     
     private void handleSpecifier(OOVariable declaredVariable, IASTDeclSpecifier specifier) {
 	declaredVariable.setType(new DeclaratorSpecifierConverter().convertSpecifier(specifier));
+    }
+    
+    private void handleArrayDeclarationWithoutInitializerExpression(OOVariable declaredVariable) {
+	OOType type = declaredVariable.getType();
+	int arrayDimensions = type.getArrayDimensions();
+	if (arrayDimensions > 0 && declaredVariable.getInitializerExpression() == null) {
+	    OONewArray initializerExpression = factory.createOONewArray();
+	    initializerExpression.setArrayType(EcoreUtil.copy(type));
+	    declaredVariable.setInitializerExpression(initializerExpression);
+	    type.getArraySizeExpressions().clear();
+	}
     }
 }
