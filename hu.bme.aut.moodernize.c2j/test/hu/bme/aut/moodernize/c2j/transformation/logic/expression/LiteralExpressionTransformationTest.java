@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
+import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
@@ -12,6 +13,8 @@ import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OONullLiteral;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
+import hu.bme.aut.oogen.OOStringLiteral;
+import hu.bme.aut.oogen.OOTypeCast;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableDeclarationList;
 
@@ -91,5 +94,23 @@ public class LiteralExpressionTransformationTest extends AbstractTransformationT
 	OOVariable declaredVariable = declarationList.getVariableDeclarations().get(0);
 	Assert.assertTrue(declaredVariable.getInitializerExpression() instanceof OONullLiteral);
     }
-
+    
+    @Test
+    public void char_shouldTransformToOOByteLiteralCast() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("void someFunction() {");
+	sourceCode.append("	char c = 'A';");
+	sourceCode.append("}");
+	
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+	
+	OOVariableDeclarationList declarationList = (OOVariableDeclarationList) getDefaultClass(model).getMethods()
+		.get(0).getStatements().get(0);
+	Assert.assertEquals(1, declarationList.getVariableDeclarations().size());
+	OOVariable declaredVariable = declarationList.getVariableDeclarations().get(0);
+	Assert.assertTrue(declaredVariable.getInitializerExpression() instanceof OOTypeCast);
+	OOTypeCast typeCast = (OOTypeCast) declaredVariable.getInitializerExpression();
+	Assert.assertTrue(typeCast.getType().getBaseType() == OOBaseType.BYTE);
+	Assert.assertEquals("'A'", ((OOStringLiteral)typeCast.getExpression()).getValue());
+    }
 }

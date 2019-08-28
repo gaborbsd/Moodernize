@@ -35,7 +35,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -52,7 +52,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -71,7 +71,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -92,7 +92,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "ModernizedCProgram");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "ModernizedCProgram");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -120,7 +120,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "ModernizedCProgram");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "ModernizedCProgram");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -148,7 +148,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -169,7 +169,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -187,7 +187,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -206,7 +206,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -225,7 +225,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -249,7 +249,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	checkIfGivenFunctionBelongsExactlyToGivenClass(model, "someFunction", "S1");
+	checkIfFunctionBelongsExactlyToClass(model, "someFunction", "S1");
 
 	List<OOClass> classes = model.getPackages().get(0).getClasses();
 	OOMethod transformedMethod = TransformUtil.getMethodFromClasses(classes, "someFunction");
@@ -259,8 +259,8 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
 	Assert.assertEquals("S2", transformedMethod.getParameters().get(0).getType().getClassType().getName());
 	Assert.assertEquals("S3", transformedMethod.getParameters().get(1).getType().getClassType().getName());
     }
-
-    private void checkIfGivenFunctionBelongsExactlyToGivenClass(OOModel model, String functionName, String className) {
+    
+    private void checkIfFunctionBelongsExactlyToClass(OOModel model, String functionName, String className) {
 	for (OOClass cl : model.getPackages().get(0).getClasses()) {
 	    if (cl.getName().equals(className)) {
 		Assert.assertTrue(TransformUtil.functionBelongsToClass(functionName, cl));

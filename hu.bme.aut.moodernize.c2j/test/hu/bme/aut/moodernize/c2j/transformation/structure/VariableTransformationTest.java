@@ -12,6 +12,7 @@ import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOModel;
+import hu.bme.aut.oogen.OONewArray;
 import hu.bme.aut.oogen.OOVariable;
 
 public class VariableTransformationTest extends AbstractTransformationTest {
@@ -36,12 +37,12 @@ public class VariableTransformationTest extends AbstractTransformationTest {
 	    case 1:
 		Assert.assertEquals("b", globalVariable.getName());
 		Assert.assertTrue(globalVariable.getType().getBaseType() == OOBaseType.INT);
-		Assert.assertTrue(globalVariable.getInitializerExpression() == null);
+		Assert.assertNull(globalVariable.getInitializerExpression());
 		break;
 	    case 2:
 		Assert.assertEquals("c", globalVariable.getName());
 		Assert.assertTrue(globalVariable.getType().getBaseType() == OOBaseType.LONG);
-		Assert.assertTrue(globalVariable.getInitializerExpression() == null);
+		Assert.assertTrue(globalVariable.getInitializerExpression() instanceof OONewArray);
 		Assert.assertEquals(1, globalVariable.getType().getArrayDimensions());
 		break;
 	    case 3:
@@ -52,7 +53,7 @@ public class VariableTransformationTest extends AbstractTransformationTest {
 	    case 4:
 		Assert.assertEquals("e", globalVariable.getName());
 		Assert.assertTrue(globalVariable.getType().getBaseType() == OOBaseType.LONG);
-		Assert.assertTrue(globalVariable.getInitializerExpression() == null);
+		Assert.assertNull(globalVariable.getInitializerExpression());
 		break;
 	    case 5:
 		Assert.assertEquals("f", globalVariable.getName());

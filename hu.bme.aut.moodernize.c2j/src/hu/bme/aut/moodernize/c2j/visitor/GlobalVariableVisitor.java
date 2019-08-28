@@ -29,7 +29,7 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	if (!isCorrectContainingFile(declaration)) {
 	    return PROCESS_SKIP;
 	}
-	
+
 	if (!(declaration instanceof IASTSimpleDeclaration)) {
 	    return PROCESS_SKIP;
 	}

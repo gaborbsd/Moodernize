@@ -24,7 +24,7 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 	this.globalFunctions = globalFunctions;
 	shouldVisitNames = true;
     }
-   
+
     @Override
     public int visit(IASTName name) {
 	if (!isCorrectContainingFile(name)) {
@@ -55,7 +55,7 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 	    if (!TransformUtil.listContainsMethod(globalFunctions, ooFunction)) {
 		globalFunctions.add(ooFunction);
 	    }
-	    
+
 	    return PROCESS_CONTINUE;
 	}
 

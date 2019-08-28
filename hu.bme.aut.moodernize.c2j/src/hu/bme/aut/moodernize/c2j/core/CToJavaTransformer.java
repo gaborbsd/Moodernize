@@ -27,7 +27,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 
     private OOModel model = factory.createOOModel();
     private List<OOClass> createdClasses = TransformationDataHolder.getCreatedClasses();
-    private List<OOMethod> globalFunctions = new ArrayList<OOMethod>(); 
+    private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
@@ -37,6 +37,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	createMainClass();
 	createSupplementingMethods();
 	collectFunctionDefinitions(asts);
+	collectComments(asts);
 	createProjectHierarchy();
 
 	return model;
@@ -80,14 +81,18 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	    }
 	}
     }
-    
+
     private void createSupplementingMethods() {
 	new SupplementingMethodCreator().createSupplementingMethods(createdClasses);
     }
-    
+
     private void createMainClass() {
 	createdClasses.add(new MainClassCreator().createMainClass(model.getGlobalVariables(), globalFunctions));
 	model.getGlobalVariables().clear();
+    }
+
+    private void collectComments(Set<IASTTranslationUnit> asts) {
+
     }
 
     private void createProjectHierarchy() {
