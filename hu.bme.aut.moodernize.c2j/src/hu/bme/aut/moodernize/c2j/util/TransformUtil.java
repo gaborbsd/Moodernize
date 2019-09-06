@@ -66,6 +66,16 @@ public class TransformUtil {
 	return getClassByName(classes, cl.getName());
     }
     
+    public static OOMethod getMethodFromClass(OOClass cl, String methodName) {
+	for (OOMethod m : cl.getMethods()) {
+	    if (m.getName().equals(methodName)) {
+		return m;
+	    }
+	}
+	
+	return null;
+    }
+    
     public static OOClass getClassByName(List<OOClass> classes, String className) {
 	for (OOClass c : classes) {
 	    if (c.getName().toUpperCase().equals(className.toUpperCase())) {

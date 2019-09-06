@@ -14,6 +14,7 @@ import hu.bme.aut.oogen.OOInitializerList;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalExpression;
 import hu.bme.aut.oogen.OOLogicalLiteral;
+import hu.bme.aut.oogen.OOMinusExpression;
 import hu.bme.aut.oogen.OONotEqualsExpression;
 import hu.bme.aut.oogen.OOOneOperandLogicalExpression;
 import hu.bme.aut.oogen.OOTernaryOperator;
@@ -25,10 +26,12 @@ import hu.bme.aut.oogen.OogenFactory;
 
 public class IntegerLiteralToBooleanConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-    
+
     public static OOExpression handleIntToBoolConversion(OOExpression expression) {
 	if (expression instanceof OOTwoOperandLogicalExpression) {
 	    convertTwoOperandLogicalExpression((OOTwoOperandLogicalExpression) expression);
+	} else if (expression instanceof OOMinusExpression) {
+	    return createBoolFromLogicalInt((OOIntegerLiteral) (((OOMinusExpression) expression).getOperand()));
 	} else if (expression instanceof OOOneOperandLogicalExpression) {
 	    convertOneOperandLogicalExpression((OOOneOperandLogicalExpression) expression);
 	} else if (expression instanceof OOTernaryOperator) {
@@ -93,7 +96,7 @@ public class IntegerLiteralToBooleanConverter {
 	    }
 	}
     }
-    
+
     public static void handleIntToBoolConversion(OOVariableDeclarationList expression) {
 	List<OOVariable> variableDeclarations = expression.getVariableDeclarations();
 	for (OOVariable declaration : variableDeclarations) {
@@ -102,7 +105,7 @@ public class IntegerLiteralToBooleanConverter {
 	    }
 	}
     }
-    
+
     private static void convertSetterCallExpression(OOFunctionCallExpression expression) {
 	OOExpression ownerExpression = expression.getOwnerExpression();
 	if (ownerExpression instanceof OOVariableReferenceExpression) {
@@ -114,7 +117,7 @@ public class IntegerLiteralToBooleanConverter {
 	    }
 	}
     }
-    
+
     private static void convertInitializerList(OOInitializerList expression) {
 	List<OOExpression> convertedExpressions = new ArrayList<OOExpression>();
 	for (OOExpression initExp : expression.getInitializerExpressions()) {
