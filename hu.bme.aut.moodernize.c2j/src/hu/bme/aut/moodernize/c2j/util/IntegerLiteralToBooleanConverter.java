@@ -76,7 +76,7 @@ public class IntegerLiteralToBooleanConverter {
 
     private static void convertAssignmentExpression(OOAssignmentExpression expression) {
 	OOExpression lhs = expression.getLeftSide();
-
+	
 	if (lhs instanceof OOVariableReferenceExpression) {
 	    OOVariableReferenceExpression referredVariable = (OOVariableReferenceExpression) lhs;
 	    if (referredVariable.getVariable().getType().getBaseType() == OOBaseType.BOOLEAN) {

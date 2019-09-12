@@ -8,6 +8,7 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 import hu.bme.aut.moodernize.c2j.project.MainClassCreator;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
@@ -162,6 +163,16 @@ public class TransformUtil {
     public static boolean functionBelongsToClass(String functionName, OOClass cl) {
 	for (OOMethod method : cl.getMethods()) {
 	    if (method.getName().equals(functionName)) {
+		return true;
+	    }
+	}
+	
+	return false;
+    }
+    
+    public static boolean listContainsEnum(List<OOEnumeration> enums, OOEnumeration enumeration) {
+	for (OOEnumeration e : enums) {
+	    if (e.getName().equals(enumeration.getName())) {
 		return true;
 	    }
 	}

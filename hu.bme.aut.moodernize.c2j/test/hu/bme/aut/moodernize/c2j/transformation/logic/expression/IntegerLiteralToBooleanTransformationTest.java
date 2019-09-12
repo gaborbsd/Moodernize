@@ -11,6 +11,7 @@ import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOEqualsExpression;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalLiteral;
 import hu.bme.aut.oogen.OOModel;
@@ -241,5 +242,22 @@ public class IntegerLiteralToBooleanTransformationTest extends AbstractTransform
 		Assert.fail("Unexpected declaration index: " + i);
 	    }
 	}
+    }
+
+    @Test
+    public void booleanVariableMemberSetterCall_integerLiteralsShouldTransformToBoolean() {
+	StringBuilder sourceCode = new StringBuilder();
+	sourceCode.append("typedef struct S {bool b;} S;");
+	sourceCode.append("void someFunction() {");
+	sourceCode.append("	S s;");
+	sourceCode.append("	s.b = 2;");
+	sourceCode.append("}");
+
+	OOModel model = getModelBySourceCode(sourceCode.toString());
+
+	OOFunctionCallExpression setterCall = (OOFunctionCallExpression) (TransformUtil.getMethodFromClass(getDefaultClass(model), "someFunction")
+		.getStatements().get(1));
+	OOLogicalLiteral argumentLiteral = (OOLogicalLiteral) setterCall.getArgumentExpressions().get(0);
+	Assert.assertTrue(argumentLiteral.isValue());
     }
 }

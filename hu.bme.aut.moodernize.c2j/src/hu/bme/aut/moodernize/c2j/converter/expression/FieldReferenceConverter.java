@@ -44,11 +44,11 @@ public class FieldReferenceConverter {
     }
 
     public OOFunctionCallExpression getSetMethodCallForFieldReference(IASTFieldReference fieldReference,
-	    IASTExpression setTo) {
+	    IASTExpression setArgument) {
 	OOFunctionCallExpression setterCall = factory.createOOFunctionCallExpression();
 	setterCall.setFunctionName("set"
 		+ TransformUtil.getWithUpperCaseFirstCharacter(fieldReference.getFieldName().resolveBinding().getName()));
-	setterCall.getArgumentExpressions().add(new ExpressionConverter().convertExpression(setTo));
+	setterCall.getArgumentExpressions().add(new ExpressionConverter().convertExpression(setArgument));
 	setOwnerExpression(setterCall, fieldReference);
 
 	return setterCall;

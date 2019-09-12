@@ -13,11 +13,13 @@ import hu.bme.aut.moodernize.c2j.project.MainClassCreator;
 import hu.bme.aut.moodernize.c2j.project.ProjectCreator;
 import hu.bme.aut.moodernize.c2j.project.SupplementingMethodCreator;
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.EnumVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDefinitionVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.GlobalVariableVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.StructVisitor;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OogenFactory;
@@ -28,6 +30,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private OOModel model = factory.createOOModel();
     private List<OOClass> createdClasses = TransformationDataHolder.getCreatedClasses();
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
+    private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
@@ -37,7 +40,6 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	createMainClass();
 	createSupplementingMethods();
 	collectFunctionDefinitions(asts);
-	collectComments(asts);
 	createProjectHierarchy();
 
 	return model;
@@ -61,6 +63,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	List<AbstractBaseVisitor> visitors = new ArrayList<AbstractBaseVisitor>();
 	visitors.add(new GlobalVariableVisitor(containingFilename, model.getGlobalVariables()));
 	visitors.add(new StructVisitor(containingFilename, createdClasses));
+	visitors.add(new EnumVisitor(containingFilename, enums));
 	visitors.add(new FunctionDeclarationVisitor(containingFilename, globalFunctions));
 
 	for (AbstractBaseVisitor visitor : visitors) {
@@ -98,7 +101,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private void createProjectHierarchy() {
 	globalFunctions.forEach(f -> model.getGlobalFunctions().add(f));
 	ProjectCreator projectCreator = new ProjectCreator();
-	projectCreator.createProjectHierarchy(model, createdClasses);
+	projectCreator.createProjectHierarchy(model, createdClasses, enums);
     }
 
     private List<OOMethod> getAllFunctions() {

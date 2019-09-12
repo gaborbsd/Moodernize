@@ -16,7 +16,7 @@ public class AssignmentExpressionConverter {
 	if (lhsIsFieldReference(assignmentExpression)) {
 	    OOFunctionCallExpression setterCall = new FieldReferenceConverter().getSetMethodCallForFieldReference(
 		    (IASTFieldReference) assignmentExpression.getOperand1(), assignmentExpression.getOperand2());
-
+	    IntegerLiteralToBooleanConverter.handleIntToBoolConversion(setterCall);
 	    return setterCall;
 	} else {
 	    ExpressionConverter converter = new ExpressionConverter();
