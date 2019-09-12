@@ -43,6 +43,7 @@ import org.eclipse.ui.progress.IProgressService;
 import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOPackage;
 import hu.bme.aut.oogen.java.OOCodeGeneratorTemplatesJava;
@@ -123,6 +124,9 @@ public class TransformCToJava implements IObjectActionDelegate {
 	for (OOPackage pkg : ooModel.getPackages()) {
 	    for (OOClass cl : pkg.getClasses()) {
 		classes.put(pkg.getName() + "." + cl.getName(), template.generate(cl));
+	    }
+	    for (OOEnumeration e : pkg.getEnums()) {
+		classes.put(pkg.getName() + "." + e.getName(), template.generate(e));
 	    }
 	}
 
