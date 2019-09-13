@@ -15,7 +15,7 @@ import hu.bme.aut.oogen.OogenFactory;
 public class FieldReferenceConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 
-    public OOFunctionCallExpression convertFieldReference(IASTFieldReference fieldReference) {
+    public OOFunctionCallExpression convertFieldReferenceToGetterCall(IASTFieldReference fieldReference) {
 	OOFunctionCallExpression getterCall = factory.createOOFunctionCallExpression();
 	getterCall.setFunctionName("get"
 		+ TransformUtil.getWithUpperCaseFirstCharacter(fieldReference.getFieldName().resolveBinding().getName()));

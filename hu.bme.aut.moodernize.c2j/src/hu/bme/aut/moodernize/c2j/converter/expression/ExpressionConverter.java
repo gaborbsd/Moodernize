@@ -87,7 +87,7 @@ public class ExpressionConverter {
 
     private OOExpression convertFieldReference(IASTFieldReference expression) {
 	FieldReferenceConverter converter = new FieldReferenceConverter();
-	return converter.convertFieldReference(expression);
+	return converter.convertFieldReferenceToGetterCall(expression);
     }
 
     private OOExpression convertFunctionCallExpression(IASTFunctionCallExpression expression) {
