@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -80,9 +81,14 @@ public class TransformCToJava implements IObjectActionDelegate {
 		try {
 		    subMonitor.beginTask("Parsing project", 100);
 		    Set<IASTTranslationUnit> asts = parseCProject();
-		    Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts);
-		    generateJavaProject(subMonitor, transformedCode);
-
+		    try {
+			Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts);
+			generateJavaProject(subMonitor, transformedCode);
+		    } catch (OperationCanceledException e) {
+			subMonitor.done();
+			//TODO: Popup window
+			System.out.print(e.getMessage());
+		    }
 		} finally {
 		    subMonitor.done();
 		}
@@ -119,6 +125,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 
 	ICToJavaTransformer transformer = new CToJavaTransformer();
 	OOModel ooModel = transformer.transform(asts);
+
 	Map<String, String> classes = new HashMap<>();
 	OOCodeGeneratorTemplatesJava template = OOCodeGeneratorTemplatesJava.getInstance();
 	for (OOPackage pkg : ooModel.getPackages()) {
@@ -132,7 +139,6 @@ public class TransformCToJava implements IObjectActionDelegate {
 
 	transformationMonitor.worked(90);
 	transformationMonitor.done();
-
 	return classes;
     }
 

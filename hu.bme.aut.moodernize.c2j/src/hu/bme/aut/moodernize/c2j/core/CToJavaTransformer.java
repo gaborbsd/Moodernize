@@ -17,6 +17,7 @@ import hu.bme.aut.moodernize.c2j.visitor.EnumVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDefinitionVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.GlobalVariableVisitor;
+import hu.bme.aut.moodernize.c2j.visitor.ProblemVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.StructVisitor;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOEnumeration;
@@ -34,6 +35,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
+	checkForErrors(asts);
+
 	clearDataStructures();
 	traverseAsts(asts);
 	assignFunctionsToClassesBySignature();
@@ -43,6 +46,14 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	createProjectHierarchy();
 
 	return model;
+    }
+
+    private void checkForErrors(Set<IASTTranslationUnit> asts) {
+	for (IASTTranslationUnit ast : asts) {
+	    if (ast != null) {
+		ast.accept(new ProblemVisitor(ast.getContainingFilename()));
+	    }
+	}
     }
 
     private void clearDataStructures() {
