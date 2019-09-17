@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.cdt.core.dom.ast.IASTComment;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
+import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerResult;
+import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerVisitor;
 import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
-import hu.bme.aut.moodernize.c2j.project.MainClassCreator;
-import hu.bme.aut.moodernize.c2j.project.ProjectCreator;
-import hu.bme.aut.moodernize.c2j.project.SupplementingMethodCreator;
+import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
+import hu.bme.aut.moodernize.c2j.projectcreation.ProjectCreator;
+import hu.bme.aut.moodernize.c2j.projectcreation.SupplementingMethodCreator;
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.EnumVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
@@ -36,8 +39,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
 	checkForErrors(asts);
-
 	clearDataStructures();
+	createCommentMappings(asts);
 	traverseAsts(asts);
 	assignFunctionsToClassesBySignature();
 	createMainClass();
@@ -60,6 +63,21 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	TransformationDataHolder.clear();
 	RemovedParameterDataHolder.clearEntries();
 	FunctionCallExpressionDataHolder.clearFunctionCalls("");
+    }
+
+    private void createCommentMappings(Set<IASTTranslationUnit> asts) {
+	for (IASTTranslationUnit ast : asts) {
+	    if (ast != null) {
+		List<CommentOwnerResult> commentOwners = new ArrayList<CommentOwnerResult>();
+		for (IASTComment comment : ast.getComments()) {
+		    CommentOwnerVisitor visitor = new CommentOwnerVisitor(ast.getContainingFilename(),
+			    comment.getFileLocation().getStartingLineNumber());
+		    ast.accept(visitor);
+		    commentOwners.add(visitor.getCommentOwnerResult());
+		}
+		System.out.println("Dummy");
+	    }
+	}
     }
 
     private void traverseAsts(Set<IASTTranslationUnit> asts) {

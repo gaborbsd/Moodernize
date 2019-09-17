@@ -1,4 +1,4 @@
-package hu.bme.aut.moodernize.c2j.project;
+package hu.bme.aut.moodernize.c2j.projectcreation;
 
 import java.util.List;
 

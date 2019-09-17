@@ -1,0 +1,62 @@
+package hu.bme.aut.moodernize.c2j.commentmapping;
+
+import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.ICompositeType;
+import org.eclipse.cdt.core.dom.ast.IEnumeration;
+import org.eclipse.cdt.core.dom.ast.IFunction;
+
+import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
+
+public class CommentOwnerVisitor extends AbstractBaseVisitor {
+    private int commentLineNumber;
+    private int currentClosestLineNumber = Integer.MAX_VALUE;
+    private CommentOwnerResult commentOwnerResult = new CommentOwnerResult();
+
+    public CommentOwnerVisitor(String fileName, int commentLineNumber) {
+	super(fileName);
+
+	this.commentLineNumber = commentLineNumber;
+	commentOwnerResult.commentOwner = null;
+	commentOwnerResult.position = null;
+	commentOwnerResult.type = null;
+
+	this.shouldVisitNames = true;
+    }
+
+    public int visit(IASTName name) {
+	if (!isCorrectContainingFile(name)) {
+	    return PROCESS_SKIP;
+	}
+
+	IBinding binding = name.resolveBinding();
+	if (binding instanceof IFunction || binding instanceof IEnumeration || (binding instanceof ICompositeType
+		&& ((ICompositeType) binding).getKey() == ICompositeType.k_struct)) {
+	    int distance = Math.abs(name.getFileLocation().getStartingLineNumber() - commentLineNumber);
+	    int currentDistance = Math.abs(currentClosestLineNumber - commentLineNumber);
+	    if (distance < currentDistance) {
+		currentClosestLineNumber = name.getFileLocation().getStartingLineNumber();
+		commentOwnerResult.commentOwner = binding;
+		if (binding instanceof IFunction) {
+		    commentOwnerResult.type = CommentOwnerType.FUNCTION;
+		} else if (binding instanceof IEnumeration) {
+		    commentOwnerResult.type = CommentOwnerType.ENUM;
+		} else if (binding instanceof ICompositeType
+			&& ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
+		    commentOwnerResult.type = CommentOwnerType.STRUCT;
+		}
+	    }
+	}
+
+	return PROCESS_CONTINUE;
+    }
+
+    public CommentOwnerResult getCommentOwnerResult() {
+	if (commentLineNumber < currentClosestLineNumber) {
+	    commentOwnerResult.position = CommentPosition.BEFORE;
+	} else {
+	    commentOwnerResult.position = CommentPosition.AFTER;
+	}
+	return commentOwnerResult;
+    }
+}

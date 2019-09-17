@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
-import hu.bme.aut.moodernize.c2j.project.MainClassCreator;
+import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOMethod;
