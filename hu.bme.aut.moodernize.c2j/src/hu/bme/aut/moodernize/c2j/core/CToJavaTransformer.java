@@ -36,6 +36,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
 
+    private List<CommentOwnerResult> commentOwners = new ArrayList<CommentOwnerResult>();
+
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
 	checkForErrors(asts);
@@ -68,14 +70,13 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private void createCommentMappings(Set<IASTTranslationUnit> asts) {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
-		List<CommentOwnerResult> commentOwners = new ArrayList<CommentOwnerResult>();
 		for (IASTComment comment : ast.getComments()) {
-		    CommentOwnerVisitor visitor = new CommentOwnerVisitor(ast.getContainingFilename(),
-			    comment.getFileLocation().getStartingLineNumber());
-		    ast.accept(visitor);
-		    commentOwners.add(visitor.getCommentOwnerResult());
+		    if (comment.getContainingFilename().equals(ast.getContainingFilename())) {
+			CommentOwnerVisitor visitor = new CommentOwnerVisitor(ast.getContainingFilename(), comment);
+			ast.accept(visitor);
+			commentOwners.add(visitor.getCommentOwnerResult());
+		    }
 		}
-		System.out.println("Dummy");
 	    }
 	}
     }
