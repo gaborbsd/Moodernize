@@ -10,6 +10,8 @@ import org.eclipse.cdt.core.dom.ast.IFunction;
 import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IType;
 
+import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
+import hu.bme.aut.moodernize.c2j.util.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOMethod;
@@ -52,6 +54,10 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 		ooParameter.setType(TypeConverter.convertCDTTypeToOOgenType(cdtParameter.getType()));
 		ooFunction.getParameters().add(ooParameter);
 	    }
+
+	    CommentProcessor.processOwnedComments(ooFunction,
+		    CommentMappingDataHolder.findAllOwnedComments(cdtFunction));
+
 	    if (!TransformUtil.listContainsMethod(globalFunctions, ooFunction)) {
 		globalFunctions.add(ooFunction);
 	    }

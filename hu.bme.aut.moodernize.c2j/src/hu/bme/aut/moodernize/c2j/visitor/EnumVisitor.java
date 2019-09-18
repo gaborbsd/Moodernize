@@ -7,6 +7,8 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
 import org.eclipse.cdt.core.dom.ast.IEnumerator;
 
+import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
+import hu.bme.aut.moodernize.c2j.util.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOEnumeration;
 
@@ -36,6 +38,9 @@ public class EnumVisitor extends AbstractBaseVisitor {
 	    for (IEnumerator enumerator : enumeration.getEnumerators()) {
 		ooEnum.getOptions().add(enumerator.getName());
 	    }
+
+	    CommentProcessor.processOwnedComments(ooEnum, CommentMappingDataHolder.findAllOwnedComments(enumeration));
+
 	    if (!TransformUtil.listContainsEnum(enums, ooEnum)) {
 		enums.add(ooEnum);
 	    }

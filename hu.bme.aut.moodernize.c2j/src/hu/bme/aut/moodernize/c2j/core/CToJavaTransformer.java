@@ -9,6 +9,7 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerResult;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerVisitor;
+import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
@@ -35,8 +36,6 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private List<OOClass> createdClasses = TransformationDataHolder.getCreatedClasses();
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
-
-    private List<CommentOwnerResult> commentOwners = new ArrayList<CommentOwnerResult>();
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
@@ -65,9 +64,11 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	TransformationDataHolder.clear();
 	RemovedParameterDataHolder.clearEntries();
 	FunctionCallExpressionDataHolder.clearFunctionCalls("");
+	CommentMappingDataHolder.clearMappings();
     }
 
     private void createCommentMappings(Set<IASTTranslationUnit> asts) {
+	List<CommentOwnerResult> commentOwners = new ArrayList<CommentOwnerResult>();
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
 		for (IASTComment comment : ast.getComments()) {
@@ -79,6 +80,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 		}
 	    }
 	}
+	CommentMappingDataHolder.addAllMappings(commentOwners);
     }
 
     private void traverseAsts(Set<IASTTranslationUnit> asts) {
@@ -122,10 +124,6 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private void createMainClass() {
 	createdClasses.add(new MainClassCreator().createMainClass(model.getGlobalVariables(), globalFunctions));
 	model.getGlobalVariables().clear();
-    }
-
-    private void collectComments(Set<IASTTranslationUnit> asts) {
-
     }
 
     private void createProjectHierarchy() {

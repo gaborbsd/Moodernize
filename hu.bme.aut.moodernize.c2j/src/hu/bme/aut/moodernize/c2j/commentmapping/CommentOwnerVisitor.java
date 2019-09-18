@@ -24,7 +24,6 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	
 	commentOwnerResult.commentOwner = null;
 	commentOwnerResult.position = null;
-	commentOwnerResult.type = null;
 
 	this.shouldVisitNames = true;
     }
@@ -42,14 +41,6 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	    if (distance < currentDistance) {
 		currentClosestLineNumber = name.getFileLocation().getStartingLineNumber();
 		commentOwnerResult.commentOwner = binding;
-		if (binding instanceof IFunction) {
-		    commentOwnerResult.type = CommentOwnerType.FUNCTION;
-		} else if (binding instanceof IEnumeration) {
-		    commentOwnerResult.type = CommentOwnerType.ENUM;
-		} else if (binding instanceof ICompositeType
-			&& ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
-		    commentOwnerResult.type = CommentOwnerType.STRUCT;
-		}
 	    }
 	    
 	    return PROCESS_CONTINUE;
