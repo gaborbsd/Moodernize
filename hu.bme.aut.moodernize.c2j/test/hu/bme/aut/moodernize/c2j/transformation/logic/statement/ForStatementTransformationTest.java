@@ -112,16 +112,15 @@ public class ForStatementTransformationTest extends AbstractTransformationTest {
     public void comprehensive_shouldTransformToCorrespondingForStatement() {
 	StringBuilder sourceCode = new StringBuilder();
 	sourceCode.append("int main(void) {");
-	sourceCode.append("	int i;");
-	sourceCode.append("	for (int i = 0; i < 100; i = i + 1) { i = 2 * i; if (i != 100) { i = 100; } ");
+	sourceCode.append("	for (int i = 0; i < 100; i = i + 1) { i = 2 * i; if (i != 100) { i = 100; } } ");
 	sourceCode.append("}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
 	List<OOStatement> statements = getDefaultClass(model).getMethods().get(0).getStatements();
-	Assert.assertEquals(2, statements.size());
+	Assert.assertEquals(1, statements.size());
 
-	OOFor forStatement = (OOFor) statements.get(1);
+	OOFor forStatement = (OOFor) statements.get(0);
 	Assert.assertTrue(forStatement.getInitStatement() instanceof OOVariableDeclarationList);
 	Assert.assertTrue(forStatement.getCondition() instanceof OOLessThanExpression);
 	Assert.assertTrue(forStatement.getIncrementExpression() instanceof OOAssignmentExpression);

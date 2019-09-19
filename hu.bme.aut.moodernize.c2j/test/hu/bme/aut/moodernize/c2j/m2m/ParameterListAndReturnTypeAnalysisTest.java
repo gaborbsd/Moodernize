@@ -16,7 +16,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void noStructType_shouldNotTransformToAClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
 	sourceCode.append("void someFunction(int a){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -30,7 +30,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void singleStructTypeParameter_shouldTransformToParameterTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
 	sourceCode.append("void someFunction(struct S1 s1){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -47,7 +47,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void singleStructTypeParameterMultipleOccurences_shouldRemoveOnlyTheFirstParameter() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
 	sourceCode.append("void someFunction(struct S1 s11, struct S1 s12){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -66,7 +66,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void singleStructTypeAndPrimitiveParameters_shouldTransformToParameterTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
 	sourceCode.append("void someFunction(struct S1 s1, int a, int b){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -86,8 +86,8 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void multipleStructTypeParameters_shouldNotTransformToAClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
-	sourceCode.append("struct S2 {char c = 'X';}\n");
+	sourceCode.append("struct S1 {int a, b;};");
+	sourceCode.append("struct S2 {char c = 'X';};");
 	sourceCode.append("void someFunction(struct S1 s1, struct S2 s2){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -114,8 +114,8 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void multipleStructTypeAndPrimitiveParameters_shouldNotTransformToAClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
-	sourceCode.append("struct S2 {char c = 'X';}\n");
+	sourceCode.append("struct S1 {int a, b;};");
+	sourceCode.append("struct S2 {char c = 'X';};");
 	sourceCode.append("void someFunction(struct S1 s1, struct S2 s2, int a, int b, char c){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -143,7 +143,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void structReturnTypeNoStructParameter_shouldTransformToReturnTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
 	sourceCode.append("struct S1 someFunction(int a, int b){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -164,7 +164,7 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void structReturnTypeSingleIdenticalStructParameter_shouldTransformToReturnTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
 	sourceCode.append("struct S1 someFunction(struct S1 s1){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -181,8 +181,8 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void structReturnTypeSingleDifferentStructParameter_shouldTransformToReturnTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
-	sourceCode.append("struct S2 {char c}\n");
+	sourceCode.append("struct S1 {int a, b;};");
+	sourceCode.append("struct S2 {char c;};");
 	sourceCode.append("struct S1 someFunction(struct S2 s2){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -200,8 +200,8 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void structReturnTypeMultipleStructParametersContainingReturnType_shouldTransformToReturnTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
-	sourceCode.append("struct S2 {char c;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
+	sourceCode.append("struct S2 {char c;};");
 	sourceCode.append("struct S1 someFunction(struct S1 s1, struct S2 s2){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -219,8 +219,8 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void structReturnTypeMultipleStructParametersContainingReturnTypeWithMultipleOccurences_shouldTransformToReturnTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
-	sourceCode.append("struct S2 {char c;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
+	sourceCode.append("struct S2 {char c;};");
 	sourceCode.append("struct S1 someFunction(struct S1 s11, struct S2 s2, struct S1 s12, struct S1 s13){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
@@ -242,9 +242,9 @@ public class ParameterListAndReturnTypeAnalysisTest extends AbstractTransformati
     @Test
     public void structReturnTypeMultipleStructParametersNotContainingReturnType_shouldTransformToReturnTypesClass() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("struct S1 {int a, b;}\n");
-	sourceCode.append("struct S2 {char c;}\n");
-	sourceCode.append("struct S3 {int x;}\n");
+	sourceCode.append("struct S1 {int a, b;};");
+	sourceCode.append("struct S2 {char c;};");
+	sourceCode.append("struct S3 {int x;};");
 	sourceCode.append("struct S1 someFunction(struct S2 s2, struct S3 s3){}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
