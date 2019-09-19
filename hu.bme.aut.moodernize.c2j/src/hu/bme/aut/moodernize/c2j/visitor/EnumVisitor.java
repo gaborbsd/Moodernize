@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.visitor;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNameOwner;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
 import org.eclipse.cdt.core.dom.ast.IEnumerator;
@@ -25,6 +26,11 @@ public class EnumVisitor extends AbstractBaseVisitor {
 	if (!isCorrectContainingFile(name)) {
 	    return PROCESS_SKIP;
 	}
+	
+	if (name.getRoleOfName(true) != IASTNameOwner.r_definition) {
+	    return PROCESS_SKIP;
+	}
+	
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof IEnumeration) {
 	    String enumName = binding.getName();

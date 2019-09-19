@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.visitor;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNameOwner;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IField;
@@ -27,6 +28,10 @@ public class StructVisitor extends AbstractBaseVisitor {
     @Override
     public int visit(IASTName name) {
 	if (!isCorrectContainingFile(name)) {
+	    return PROCESS_SKIP;
+	}
+	
+	if (name.getRoleOfName(true) != IASTNameOwner.r_definition) {
 	    return PROCESS_SKIP;
 	}
 
