@@ -8,8 +8,8 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
 import org.eclipse.cdt.core.dom.ast.IEnumerator;
 
+import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
-import hu.bme.aut.moodernize.c2j.util.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOEnumeration;
 

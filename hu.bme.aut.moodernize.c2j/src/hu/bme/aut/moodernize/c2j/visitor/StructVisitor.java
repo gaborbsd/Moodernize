@@ -8,8 +8,8 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IField;
 
+import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
-import hu.bme.aut.moodernize.c2j.util.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOClass;

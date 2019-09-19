@@ -7,7 +7,9 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
+import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.converter.statement.StatementConverter;
+import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
@@ -36,6 +38,8 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	    StatementConverter converter = new StatementConverter();
 	    for (IASTStatement statement : statements) {
 		OOStatement convertedStatement = converter.convertStatement(statement);
+		CommentProcessor.processOwnedComments(convertedStatement,
+			CommentMappingDataHolder.findAllOwnedComments(statement));
 		TransformUtil.getFunctionByName(functions, functionName).getStatements().add(convertedStatement);
 	    }
 	}

@@ -1,9 +1,7 @@
-package hu.bme.aut.moodernize.c2j.util;
+package hu.bme.aut.moodernize.c2j.commentmapping;
 
 import java.util.List;
 
-import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerResult;
-import hu.bme.aut.moodernize.c2j.commentmapping.CommentPosition;
 import hu.bme.aut.oogen.OOCommentOwner;
 
 public class CommentProcessor {

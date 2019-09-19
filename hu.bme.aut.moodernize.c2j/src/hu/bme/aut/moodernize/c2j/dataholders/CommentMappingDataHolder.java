@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.dataholders;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
 import org.eclipse.cdt.core.dom.ast.IFunction;
@@ -33,6 +34,10 @@ public class CommentMappingDataHolder {
     
     public static List<CommentOwnerResult> findAllOwnedComments(IEnumeration potentialOwner) {
 	return collectAllOwnedComments(IEnumeration.class, potentialOwner);
+    }
+    
+    public static List<CommentOwnerResult> findAllOwnedComments(IASTStatement potentialOwner) {
+	return collectAllOwnedComments(IASTStatement.class, potentialOwner);
     }
     
     private static <T> List<CommentOwnerResult> collectAllOwnedComments(Class<T> type, T potentialOwner) {

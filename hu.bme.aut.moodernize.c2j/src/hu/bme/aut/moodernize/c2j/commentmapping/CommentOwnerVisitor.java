@@ -2,6 +2,7 @@ package hu.bme.aut.moodernize.c2j.commentmapping;
 
 import org.eclipse.cdt.core.dom.ast.IASTComment;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
@@ -21,11 +22,12 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 
 	this.commentLineNumber = comment.getFileLocation().getStartingLineNumber();
 	this.comment = comment;
-	
+
 	commentOwnerResult.commentOwner = null;
 	commentOwnerResult.position = null;
 
 	this.shouldVisitNames = true;
+	this.shouldVisitStatements = true;
     }
 
     public int visit(IASTName name) {
@@ -42,11 +44,26 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 		currentClosestLineNumber = name.getFileLocation().getStartingLineNumber();
 		commentOwnerResult.commentOwner = binding;
 	    }
-	    
+
 	    return PROCESS_CONTINUE;
 	}
 
 	return PROCESS_SKIP;
+    }
+
+    public int visit(IASTStatement statement) {
+	if (!isCorrectContainingFile(statement)) {
+	    return PROCESS_SKIP;
+	}
+
+	int distance = Math.abs(statement.getFileLocation().getStartingLineNumber() - commentLineNumber);
+	int currentDistance = Math.abs(currentClosestLineNumber - commentLineNumber);
+	if (distance < currentDistance) {
+	    currentClosestLineNumber = statement.getFileLocation().getStartingLineNumber();
+	    commentOwnerResult.commentOwner = statement;
+	}
+
+	return PROCESS_CONTINUE;
     }
 
     public CommentOwnerResult getCommentOwnerResult() {
@@ -55,12 +72,12 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	} else {
 	    commentOwnerResult.position = CommentPosition.AFTER;
 	}
-	
+
 	OOComment ooComment = factory.createOOComment();
 	ooComment.setIsBlockComment(this.comment.isBlockComment());
 	ooComment.setText(String.copyValueOf(this.comment.getComment()));
 	commentOwnerResult.comment = ooComment;
-	
+
 	return commentOwnerResult;
     }
 }
