@@ -1,16 +1,17 @@
 package hu.bme.aut.moodernize.c2j.util;
 
 import org.eclipse.cdt.core.dom.ast.IASTElaboratedTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
 import org.eclipse.cdt.core.dom.ast.IPointerType;
 import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.core.dom.ast.ITypedef;
-import org.eclipse.cdt.core.templateengine.process.processes.SetEnvironmentVariable;
 
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
@@ -47,8 +48,7 @@ public class TypeConverter {
 	    setOOEnumType(ooType, ((IEnumeration) cdtType).getName());
 	} else if (cdtType instanceof ITypedef && (((ITypedef) cdtType).getType()) instanceof IEnumeration) {
 	    setOOEnumType(ooType, ((IEnumeration) (((ITypedef) cdtType).getType())).getName());
-	}
-	else {
+	} else {
 	    ooType.setBaseType(OOBaseType.OBJECT);
 	}
     }
@@ -183,8 +183,16 @@ public class TypeConverter {
 
     public static OOType convertNamedTypeSpecifierType(IASTNamedTypeSpecifier specifier) {
 	OOType type = factory.createOOType();
-	String typeName = specifier.getName().resolveBinding().getName();
-	setOOClassType(type, typeName);
+	IASTName specifiedName = specifier.getName();
+	IBinding binding = specifiedName.resolveBinding();
+	String typeName = binding.getName();
+
+	if (binding instanceof IEnumeration) {
+	    setOOEnumType(type, typeName);
+	} else {
+	    setOOClassType(type, typeName);
+	}
+
 	return type;
     }
 }
