@@ -6,12 +6,15 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IArrayType;
 import org.eclipse.cdt.core.dom.ast.IBasicType;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
+import org.eclipse.cdt.core.dom.ast.IEnumeration;
 import org.eclipse.cdt.core.dom.ast.IPointerType;
 import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.core.dom.ast.ITypedef;
+import org.eclipse.cdt.core.templateengine.process.processes.SetEnvironmentVariable;
 
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OogenFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -37,14 +40,19 @@ public class TypeConverter {
 	if (cdtType instanceof IBasicType) {
 	    setOOBaseType(ooType, (IBasicType) cdtType);
 	} else if (cdtType instanceof ICompositeType) {
-	    setOOReferenceType(ooType, ((ICompositeType) cdtType).getName());
+	    setOOClassType(ooType, ((ICompositeType) cdtType).getName());
 	} else if (cdtType instanceof ITypedef && (((ITypedef) cdtType).getType()) instanceof ICompositeType) {
-	    setOOReferenceType(ooType, ((ICompositeType) (((ITypedef) cdtType).getType())).getName());
-	} else {
+	    setOOClassType(ooType, ((ICompositeType) (((ITypedef) cdtType).getType())).getName());
+	} else if (cdtType instanceof IEnumeration) {
+	    setOOEnumType(ooType, ((IEnumeration) cdtType).getName());
+	} else if (cdtType instanceof ITypedef && (((ITypedef) cdtType).getType()) instanceof IEnumeration) {
+	    setOOEnumType(ooType, ((IEnumeration) (((ITypedef) cdtType).getType())).getName());
+	}
+	else {
 	    ooType.setBaseType(OOBaseType.OBJECT);
 	}
     }
-    
+
     private static void handleArrayType(OOType ooType, IType arrayType) {
 	while (arrayType instanceof IArrayType) {
 	    ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
@@ -87,17 +95,24 @@ public class TypeConverter {
 	}
     }
 
-    private static void setOOReferenceType(OOType ooType, String className) {
+    private static void setOOClassType(OOType ooType, String className) {
 	ooType.setBaseType(OOBaseType.OBJECT);
 	OOClass classType = factory.createOOClass();
 	classType.setName(className);
 	ooType.setClassType(classType);
     }
 
+    private static void setOOEnumType(OOType ooType, String enumName) {
+	ooType.setBaseType(OOBaseType.OBJECT);
+	OOEnumeration enumType = factory.createOOEnumeration();
+	enumType.setName(enumName);
+	ooType.setEnumType(enumType);
+    }
+
     public static OOType convertSimpleDeclSpecifierType(IASTSimpleDeclSpecifier specifier) {
 	OOType type = factory.createOOType();
 	type.setClassType(null);
-	
+
 	switch (specifier.getType()) {
 	case IASTSimpleDeclSpecifier.t_auto:
 	    break;
@@ -153,10 +168,13 @@ public class TypeConverter {
     public static OOType convertElaboratedTypeSpecifierType(IASTElaboratedTypeSpecifier specifier) {
 	OOType type = factory.createOOType();
 	String typeName = specifier.getName().resolveBinding().getName();
-	// TODO: Enum
+
 	switch (specifier.getKind()) {
 	case IASTElaboratedTypeSpecifier.k_struct:
-	    setOOReferenceType(type, typeName);
+	    setOOClassType(type, typeName);
+	    return type;
+	case IASTElaboratedTypeSpecifier.k_enum:
+	    setOOEnumType(type, typeName);
 	    return type;
 	default:
 	    throw new NotImplementedException();
@@ -166,7 +184,7 @@ public class TypeConverter {
     public static OOType convertNamedTypeSpecifierType(IASTNamedTypeSpecifier specifier) {
 	OOType type = factory.createOOType();
 	String typeName = specifier.getName().resolveBinding().getName();
-	setOOReferenceType(type, typeName);
+	setOOClassType(type, typeName);
 	return type;
     }
 }
