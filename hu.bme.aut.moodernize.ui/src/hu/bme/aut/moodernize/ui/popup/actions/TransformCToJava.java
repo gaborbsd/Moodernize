@@ -34,10 +34,14 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.LibraryLocation;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.progress.IProgressService;
 
@@ -56,6 +60,8 @@ public class TransformCToJava implements IObjectActionDelegate {
     private ICProject cProject;
 
     private IProgressService pgService;
+    private Shell shell;
+    private Display display;
 
     public TransformCToJava() {
 	super();
@@ -65,7 +71,10 @@ public class TransformCToJava implements IObjectActionDelegate {
      * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
      */
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	pgService = targetPart.getSite().getWorkbenchWindow().getWorkbench().getProgressService();
+	IWorkbench workbench = targetPart.getSite().getWorkbenchWindow().getWorkbench();
+	pgService = workbench.getProgressService();
+	shell = workbench.getModalDialogShellProvider().getShell();
+	display = workbench.getDisplay();
     }
 
     /**
@@ -85,9 +94,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 			Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts);
 			generateJavaProject(subMonitor, transformedCode);
 		    } catch (OperationCanceledException e) {
-			subMonitor.done();
-			//TODO: Popup window
-			System.out.print(e.getMessage());
+			showErrorWindow(e.getMessage());
 		    }
 		} finally {
 		    subMonitor.done();
@@ -219,5 +226,14 @@ public class TransformCToJava implements IObjectActionDelegate {
 	} catch (CoreException e) {
 	    e.printStackTrace();
 	}
+    }
+    
+    private void showErrorWindow(String message) {
+	display.asyncExec(new Runnable() {
+	    @Override
+	    public void run() {
+		MessageDialog.openError(shell, "Error", message);
+	    }
+	});
     }
 }
