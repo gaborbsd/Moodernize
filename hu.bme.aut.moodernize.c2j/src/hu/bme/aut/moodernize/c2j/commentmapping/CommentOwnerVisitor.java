@@ -1,6 +1,7 @@
 package hu.bme.aut.moodernize.c2j.commentmapping;
 
 import org.eclipse.cdt.core.dom.ast.IASTComment;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -28,6 +29,9 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 
 	this.shouldVisitNames = true;
 	this.shouldVisitStatements = true;
+	if (comment.isBlockComment()) {
+	    this.shouldVisitExpressions = true;
+	}
     }
 
     public int visit(IASTName name) {
@@ -66,8 +70,23 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	return PROCESS_CONTINUE;
     }
 
+    public int visit(IASTExpression expression) {
+	if (!isCorrectContainingFile(expression)) {
+	    return PROCESS_SKIP;
+	}
+
+	int distance = Math.abs(expression.getFileLocation().getStartingLineNumber() - commentLineNumber);
+	int currentDistance = Math.abs(currentClosestLineNumber - commentLineNumber);
+	if (distance <= currentDistance) {
+	    currentClosestLineNumber = expression.getFileLocation().getStartingLineNumber();
+	    commentOwnerResult.commentOwner = expression;
+	}
+
+	return PROCESS_CONTINUE;
+    }
+
     public CommentOwnerResult getCommentOwnerResult() {
-	if (commentLineNumber < currentClosestLineNumber) {
+	if (commentLineNumber <= currentClosestLineNumber) {
 	    commentOwnerResult.position = CommentPosition.BEFORE;
 	} else {
 	    commentOwnerResult.position = CommentPosition.AFTER;

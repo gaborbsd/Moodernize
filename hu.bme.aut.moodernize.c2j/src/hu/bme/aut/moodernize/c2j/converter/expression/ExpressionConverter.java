@@ -12,7 +12,9 @@ import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
+import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
+import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIndexing;
@@ -24,6 +26,13 @@ public class ExpressionConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 
     public OOExpression convertExpression(IASTExpression expression) {
+	OOExpression convertedExpression = getConvertedExpression(expression);
+	CommentProcessor.processOwnedComments(convertedExpression,
+		CommentMappingDataHolder.findAllOwnedComments(expression));
+	return convertedExpression;
+    }
+
+    private OOExpression getConvertedExpression(IASTExpression expression) {
 	if (expression instanceof IASTArraySubscriptExpression) {
 	    return convertArraySubscriptExpression((IASTArraySubscriptExpression) expression);
 	} else if (expression instanceof IASTBinaryExpression) {
@@ -77,7 +86,7 @@ public class ExpressionConverter {
 	ternary.setNegativeBranch(converter.convertExpression(expression.getNegativeResultExpression()));
 
 	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(ternary);
-	
+
 	return ternary;
     }
 

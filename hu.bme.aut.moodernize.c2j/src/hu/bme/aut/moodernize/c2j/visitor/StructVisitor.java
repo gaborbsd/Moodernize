@@ -30,7 +30,7 @@ public class StructVisitor extends AbstractBaseVisitor {
 	if (!isCorrectContainingFile(name)) {
 	    return PROCESS_SKIP;
 	}
-	
+
 	if (name.getRoleOfName(true) != IASTNameOwner.r_definition) {
 	    return PROCESS_SKIP;
 	}
@@ -53,11 +53,14 @@ public class StructVisitor extends AbstractBaseVisitor {
 		classMember.setName(structMember.getName());
 		classMember.setType(TypeConverter.convertCDTTypeToOOgenType(structMember.getType()));
 		classMember.setVisibility(OOVisibility.PRIVATE);
+
+		CommentProcessor.processOwnedComments(classMember, CommentMappingDataHolder.findAllOwnedComments(structMember));
+
 		newClass.getMembers().add(classMember);
 	    }
-	    
+
 	    CommentProcessor.processOwnedComments(newClass, CommentMappingDataHolder.findAllOwnedComments(struct));
-	    
+
 	    if (!TransformUtil.listContainsClass(classes, newClass)) {
 		classes.add(newClass);
 	    }

@@ -30,7 +30,7 @@ public class MainClassCreator {
 	    OOMember globalVariableCopy = factory.createOOMember();
 	    globalVariableCopy.setName(globalVariable.getName());
 	    globalVariableCopy.setType(globalVariable.getType());
-	    globalVariableCopy.setVisibility(OOVisibility.PRIVATE);
+	    globalVariableCopy.setVisibility(OOVisibility.PUBLIC);
 	    globalVariableCopy.setTransient(globalVariable.isTransient());
 	    globalVariableCopy.setInitializerExpression(globalVariable.getInitializerExpression());
 	    globalVariableCopy.setStatic(true);

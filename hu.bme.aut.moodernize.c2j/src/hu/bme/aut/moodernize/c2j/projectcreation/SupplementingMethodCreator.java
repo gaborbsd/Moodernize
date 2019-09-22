@@ -20,8 +20,10 @@ public class SupplementingMethodCreator {
 
     public void createSupplementingMethods(List<OOClass> classes) {
 	for (OOClass cl : classes) {
-	    createConstructor(cl);
-	    createGettersAndSetters(cl);
+	    if (!cl.getName().equals(MainClassCreator.MAINCLASSNAME)) {
+		createConstructor(cl);
+		createGettersAndSetters(cl);
+	    }
 	}
     }
 
@@ -34,12 +36,12 @@ public class SupplementingMethodCreator {
 	createConstructorStatements(constructor);
 
 	cl.getConstructors().add(constructor);
-	
+
 	if (!isEmptyConstructor(constructor)) {
 	    cl.getConstructors().add(createEmptyConstructor(cl.getName()));
 	}
-    }  
-    
+    }
+
     private void createConstructorParameters(OOConstructor constructor, List<OOMember> members) {
 	for (OOMember member : members) {
 	    if (!hasDefaultValue(member)) {
@@ -54,33 +56,33 @@ public class SupplementingMethodCreator {
     private void createConstructorStatements(OOConstructor constructor) {
 	for (OOVariable parameter : constructor.getParameters()) {
 	    OOFunctionCallExpression setterCall = factory.createOOFunctionCallExpression();
-	    
+
 	    setterCall.setFunctionName("set" + TransformUtil.getWithUpperCaseFirstCharacter(parameter.getName()));
 	    setterCall.setOwnerExpression(null);
-	    
+
 	    OOVariableReferenceExpression argumentExpression = factory.createOOVariableReferenceExpression();
 	    argumentExpression.setVariable(parameter);
 	    setterCall.getArgumentExpressions().add(argumentExpression);
-	    
+
 	    constructor.getStatements().add(setterCall);
 	}
     }
-    
+
     private OOConstructor createEmptyConstructor(String className) {
 	OOConstructor emptyConstructor = factory.createOOConstructor();
 	emptyConstructor.setVisibility(OOVisibility.PUBLIC);
 	emptyConstructor.setClassName(className);
-	
+
 	return emptyConstructor;
     }
-    
+
     private boolean hasDefaultValue(OOMember member) {
 	return member.getInitializerExpression() != null;
     }
-    
+
     private boolean isEmptyConstructor(OOConstructor constructor) {
 	return constructor.getParameters().isEmpty() && constructor.getStatements().isEmpty();
-    }  
+    }
 
     private void createGettersAndSetters(OOClass cl) {
 	List<OOMethod> methods = cl.getMethods();

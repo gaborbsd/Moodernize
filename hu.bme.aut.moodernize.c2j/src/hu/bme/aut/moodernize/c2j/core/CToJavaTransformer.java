@@ -33,7 +33,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 
     private OOModel model = factory.createOOModel();
-    private List<OOClass> createdClasses = TransformationDataHolder.getCreatedClasses();
+    private List<OOClass> createdClasses = TransformationDataHolder.createdClasses;
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
 
@@ -42,7 +42,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	checkForErrors(asts);
 	clearDataStructures();
 	createCommentMappings(asts);
-	traverseAsts(asts);
+	collectProjectStructure(asts);
 	assignFunctionsToClassesBySignature();
 	createMainClass();
 	createSupplementingMethods();
@@ -83,7 +83,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	CommentMappingDataHolder.addAllMappings(commentOwners);
     }
 
-    private void traverseAsts(Set<IASTTranslationUnit> asts) {
+    private void collectProjectStructure(Set<IASTTranslationUnit> asts) {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
 		acceptVisitors(ast, ast.getContainingFilename());
@@ -101,6 +101,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	for (AbstractBaseVisitor visitor : visitors) {
 	    ast.accept(visitor);
 	}
+
     }
 
     private void assignFunctionsToClassesBySignature() {

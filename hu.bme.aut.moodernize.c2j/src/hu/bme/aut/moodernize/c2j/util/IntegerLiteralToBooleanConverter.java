@@ -3,9 +3,12 @@ package hu.bme.aut.moodernize.c2j.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOBracketedExpression;
+import hu.bme.aut.oogen.OOComment;
 import hu.bme.aut.oogen.OOComparatorExpression;
 import hu.bme.aut.oogen.OOEqualsExpression;
 import hu.bme.aut.oogen.OOExpression;
@@ -135,6 +138,14 @@ public class IntegerLiteralToBooleanConverter {
 	    logicalLiteral.setValue(true);
 	}
 
+	for (OOComment comment : integerLiteral.getBeforeComments()) {
+	    logicalLiteral.getBeforeComments().add(EcoreUtil.copy(comment));
+	}
+	
+	for (OOComment comment : integerLiteral.getAfterComments()) {
+	    logicalLiteral.getAfterComments().add(EcoreUtil.copy(comment));
+	}
+	
 	return logicalLiteral;
     }
 }

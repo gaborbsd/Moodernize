@@ -179,4 +179,14 @@ public class TransformUtil {
 	
 	return false;
     }
+    
+    public static boolean isGlobalVariable(String varName, List<OOVariable> globalVariables) {
+	for (OOVariable globalVar : globalVariables) {
+	    if (globalVar.getName().equals(varName)) {
+		return true;
+	    }
+	}
+	
+	return false;
+    }
 }

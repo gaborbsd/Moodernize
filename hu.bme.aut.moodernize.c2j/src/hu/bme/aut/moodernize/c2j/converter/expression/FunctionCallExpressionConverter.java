@@ -37,7 +37,7 @@ public class FunctionCallExpressionConverter {
 	handleFunctionOwner(functionCall, call);
 
 	storeFunctionCall(functionCall, TransformUtil.getContainingFunctionName(call));
-	
+
 	return functionCall;
     }
 
@@ -73,7 +73,7 @@ public class FunctionCallExpressionConverter {
 	}
 
 	OOClass containingClass = getContainingClass(functionCall.getFunctionName());
-	OOClass mainClass = TransformUtil.getMainClassFromClasses(TransformationDataHolder.getCreatedClasses());
+	OOClass mainClass = TransformUtil.getMainClassFromClasses(TransformationDataHolder.createdClasses);
 	OOMethod calledFunction = getCalledFunction(mainClass.getMethods(), functionCall.getFunctionName());
 
 	if (calledFunction.isStatic()) {
@@ -84,14 +84,14 @@ public class FunctionCallExpressionConverter {
 	}
 
 	String containingFunctionName = TransformUtil.getContainingFunctionName(call);
-	OOMethod containingFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.getCreatedClasses(),
+	OOMethod containingFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.createdClasses,
 		containingFunctionName);
 
 	if (!checkIfFunctionContainsPreviousOwnerAndSetAsNewOwner(functionCall, containingFunction)) {
 	    createNewInstanceAndSetAsOwner(functionCall, containingClass, containingFunction);
 	}
     }
-    
+
     private void storeFunctionCall(OOFunctionCallExpression functionCall, String containingFunctionName) {
 	if (!FunctionCallExpressionDataHolder.getFunctionName().equals(containingFunctionName)) {
 	    FunctionCallExpressionDataHolder.clearFunctionCalls(containingFunctionName);
@@ -104,14 +104,15 @@ public class FunctionCallExpressionConverter {
 	if (!FunctionCallExpressionDataHolder.getFunctionName().equals(containingFunction.getName())) {
 	    return false;
 	}
-	for (OOFunctionCallExpression previousCall : FunctionCallExpressionDataHolder.getPreviousFunctionCallsInFunction()) {
-	    //TODO: overloaded functions?
+	for (OOFunctionCallExpression previousCall : FunctionCallExpressionDataHolder
+		.getPreviousFunctionCallsInFunction()) {
+	    // TODO: overloaded functions?
 	    if (previousCall.getFunctionName().equals(functionCall.getFunctionName())) {
 		functionCall.setOwnerExpression(previousCall.getOwnerExpression());
 		return true;
 	    }
 	}
-	
+
 	return false;
     }
 
@@ -139,7 +140,7 @@ public class FunctionCallExpressionConverter {
 
     private OOClass getContainingClass(String functionName) {
 	OOClass containingClass = TransformUtil.getContainerClass(functionName,
-		TransformationDataHolder.getCreatedClasses());
+		TransformationDataHolder.createdClasses);
 	if (containingClass != null) {
 	    return containingClass;
 	}
@@ -148,7 +149,7 @@ public class FunctionCallExpressionConverter {
     }
 
     private OOMethod getCalledFunction(List<OOMethod> globalFunctions, String functionName) {
-	OOMethod calledFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.getCreatedClasses(),
+	OOMethod calledFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.createdClasses,
 		functionName);
 	if (calledFunction != null) {
 	    return calledFunction;
