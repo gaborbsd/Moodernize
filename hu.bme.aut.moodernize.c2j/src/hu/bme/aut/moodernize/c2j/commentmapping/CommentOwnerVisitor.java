@@ -1,12 +1,14 @@
 package hu.bme.aut.moodernize.c2j.commentmapping;
 
 import org.eclipse.cdt.core.dom.ast.IASTComment;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
+import org.eclipse.cdt.core.dom.ast.IField;
 import org.eclipse.cdt.core.dom.ast.IFunction;
 
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
@@ -40,10 +42,11 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	}
 
 	IBinding binding = name.resolveBinding();
-	if (binding instanceof IFunction || binding instanceof IEnumeration || (binding instanceof ICompositeType
-		&& ((ICompositeType) binding).getKey() == ICompositeType.k_struct)) {
+	if (binding instanceof IFunction || binding instanceof IEnumeration || binding instanceof IField
+		|| (isStruct(binding))) {
 	    int distance = Math.abs(name.getFileLocation().getStartingLineNumber() - commentLineNumber);
 	    int currentDistance = Math.abs(currentClosestLineNumber - commentLineNumber);
+
 	    if (distance < currentDistance) {
 		currentClosestLineNumber = name.getFileLocation().getStartingLineNumber();
 		commentOwnerResult.commentOwner = binding;
@@ -60,9 +63,14 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	    return PROCESS_SKIP;
 	}
 
+	if (statement instanceof IASTCompoundStatement) {
+	    return PROCESS_CONTINUE;
+	}
+	
 	int distance = Math.abs(statement.getFileLocation().getStartingLineNumber() - commentLineNumber);
 	int currentDistance = Math.abs(currentClosestLineNumber - commentLineNumber);
-	if (distance < currentDistance) {
+	if (distance < currentDistance
+		|| (distance == currentDistance && commentOwnerResult.commentOwner instanceof IFunction)) {
 	    currentClosestLineNumber = statement.getFileLocation().getStartingLineNumber();
 	    commentOwnerResult.commentOwner = statement;
 	}
@@ -98,5 +106,9 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	commentOwnerResult.comment = ooComment;
 
 	return commentOwnerResult;
+    }
+
+    private boolean isStruct(IBinding binding) {
+	return binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct;
     }
 }
