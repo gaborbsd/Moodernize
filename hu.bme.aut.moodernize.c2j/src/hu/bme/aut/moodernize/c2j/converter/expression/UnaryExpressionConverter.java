@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.moodernize.c2j.util.PointerConverter;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOOneOperandArithmeticExpression;
@@ -22,7 +23,7 @@ public class UnaryExpressionConverter {
     private OOExpression handleByOperator(int operator, OOExpression operand) {
 	switch (operator) {
 	case IASTUnaryExpression.op_amper:
-	    throw new NotImplementedException();
+	    return operand;
 	case IASTUnaryExpression.op_bracketedPrimary:
 	    return setOperandAndReturn(factory.createOOBracketedExpression(), operand);
 	case IASTUnaryExpression.op_minus:
@@ -32,17 +33,22 @@ public class UnaryExpressionConverter {
 	case IASTUnaryExpression.op_plus:
 	    return setOperandAndReturn(factory.createOOPlusExpression(), operand);
 	case IASTUnaryExpression.op_postFixDecr:
+	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPostfixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_postFixIncr:
+	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPostfixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixDecr:
+	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPrefixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixIncr:
+	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPrefixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_sizeof:
 	    throw new NotImplementedException();
 	case IASTUnaryExpression.op_star:
-	    throw new NotImplementedException();
+	    PointerConverter.handlePointerConversion(operand);
+	    return operand;
 	case IASTUnaryExpression.op_tilde:
 	    return setOperandAndReturn(factory.createOOBitWiseComplement(), operand);
 	default:

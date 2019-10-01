@@ -6,13 +6,16 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
+import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OONewArray;
 import hu.bme.aut.oogen.OONewClass;
+import hu.bme.aut.oogen.OONullLiteral;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableDeclarationList;
@@ -26,11 +29,11 @@ public class SimpleDeclarationConverter {
 	for (IASTDeclarator declarator : declaration.getDeclarators()) {
 	    OOVariable declaredVariable = factory.createOOVariable();
 	    handleSpecifier(declaredVariable, declaration.getDeclSpecifier());
-	    handleDeclarator(declaredVariable, declarator);	   
+	    handleDeclarator(declaredVariable, declarator);
 	    handleArrayDeclarationWithoutInitializerExpression(declaredVariable);
 	    declarationList.getVariableDeclarations().add(declaredVariable);
 	}
-		
+
 	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(declarationList);
 	return declarationList;
     }
@@ -38,10 +41,16 @@ public class SimpleDeclarationConverter {
     // TODO: Handle declarators: pointeroperator, nested declarator
     private void handleDeclarator(OOVariable declaredVariable, IASTDeclarator declarator) {
 	declaredVariable.setName(declarator.getName().resolveBinding().getName());
+	OOType type = declaredVariable.getType();
+
+	for (@SuppressWarnings("unused") IASTPointerOperator pointerOperator : declarator.getPointerOperators()) {
+	    type.setArrayDimensions(type.getArrayDimensions() + 1);
+	    type.getArraySizeExpressions().add(factory.createOONullLiteral());
+	    type.setNumberOfIndirections(type.getNumberOfIndirections() + 1);
+	}
 	
 	if (declarator instanceof IASTArrayDeclarator) {
 	    IASTArrayDeclarator arrayDeclarator = (IASTArrayDeclarator) declarator;
-	    OOType type = declaredVariable.getType();
 	    ExpressionConverter converter = new ExpressionConverter();
 	    for (IASTArrayModifier modifier : arrayDeclarator.getArrayModifiers()) {
 		type.setArrayDimensions(type.getArrayDimensions() + 1);
@@ -71,13 +80,16 @@ public class SimpleDeclarationConverter {
 	    }
 	}
     }
-    
+
     private void handleSpecifier(OOVariable declaredVariable, IASTDeclSpecifier specifier) {
 	declaredVariable.setType(new DeclaratorSpecifierConverter().convertSpecifier(specifier));
     }
-    
+
     private void handleArrayDeclarationWithoutInitializerExpression(OOVariable declaredVariable) {
 	OOType type = declaredVariable.getType();
+	if (!hasNonNullSizeExpression(type)) {
+	    return;
+	}
 	int arrayDimensions = type.getArrayDimensions();
 	if (arrayDimensions > 0 && declaredVariable.getInitializerExpression() == null) {
 	    OONewArray initializerExpression = factory.createOONewArray();
@@ -85,5 +97,15 @@ public class SimpleDeclarationConverter {
 	    declaredVariable.setInitializerExpression(initializerExpression);
 	    type.getArraySizeExpressions().clear();
 	}
+    }
+    
+    private boolean hasNonNullSizeExpression(OOType type) {
+	for (OOExpression sizeExpression : type.getArraySizeExpressions()) {
+	    if (!(sizeExpression instanceof OONullLiteral)) {
+		return true;
+	    }
+	}
+	
+	return false;
     }
 }

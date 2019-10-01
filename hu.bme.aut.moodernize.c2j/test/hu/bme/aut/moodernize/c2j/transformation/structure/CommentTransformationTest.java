@@ -133,7 +133,7 @@ public class CommentTransformationTest extends AbstractTransformationTest {
 	afterComments = ifStatement.getAfterComments();
 	Assert.assertEquals(0, afterComments.size());
 	Assert.assertEquals(1, beforeComments.size());
-	Assert.assertEquals("/* Block comment in if statement */", beforeComments.get(0).getText());
+	Assert.assertEquals("/* Block comment in empty if statement */", beforeComments.get(0).getText());
 	
 	OOStatement returnStatement = statements.get(2);
 	beforeComments = returnStatement.getBeforeComments();
