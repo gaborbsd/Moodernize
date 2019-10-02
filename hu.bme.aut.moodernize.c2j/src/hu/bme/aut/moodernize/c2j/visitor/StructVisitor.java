@@ -47,8 +47,7 @@ public class StructVisitor extends AbstractBaseVisitor {
 	    OOClass newClass = factory.createOOClass();
 	    newClass.setName(struct.getName());
 
-	    IField[] members = struct.getFields();
-	    for (IField structMember : members) {
+	    for (IField structMember : struct.getFields()) {
 		OOMember classMember = factory.createOOMember();
 		classMember.setName(structMember.getName());
 		classMember.setType(TypeConverter.convertCDTTypeToOOgenType(structMember.getType()));

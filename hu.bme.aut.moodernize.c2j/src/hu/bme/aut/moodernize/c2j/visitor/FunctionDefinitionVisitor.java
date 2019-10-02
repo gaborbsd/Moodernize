@@ -10,9 +10,12 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.converter.statement.StatementConverter;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.FunctionVariableTypesDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
+import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableDeclarationList;
 
 public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
     private List<OOMethod> functions;
@@ -33,16 +36,33 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	if (declaration instanceof IASTFunctionDefinition) {
 	    IASTFunctionDefinition function = (IASTFunctionDefinition) declaration;
 	    String functionName = function.getDeclarator().getName().resolveBinding().getName();
-
+	    FunctionVariableTypesDataHolder.clear();
+	    OOMethod correspondingFunction = TransformUtil.getFunctionByName(functions, functionName);
+	    
+	    for (OOVariable parameter : correspondingFunction.getParameters()) {
+		FunctionVariableTypesDataHolder.parameters.add(parameter);
+	    }
+	    
 	    IASTStatement[] statements = ((IASTCompoundStatement) function.getBody()).getStatements();
 	    StatementConverter converter = new StatementConverter();
 	    for (IASTStatement statement : statements) {
 		OOStatement convertedStatement = converter.convertStatement(statement);
+
 		CommentProcessor.processOwnedComments(convertedStatement,
 			CommentMappingDataHolder.findAllOwnedComments(statement));
-		TransformUtil.getFunctionByName(functions, functionName).getStatements().add(convertedStatement);
+		addToDataHolderIfVariableDeclaration(convertedStatement);
+
+		correspondingFunction.getStatements().add(convertedStatement);
 	    }
 	}
 	return PROCESS_CONTINUE;
+    }
+
+    private void addToDataHolderIfVariableDeclaration(OOStatement statement) {
+	if (statement instanceof OOVariableDeclarationList) {
+	    for (OOVariable declaredVariable : ((OOVariableDeclarationList) statement).getVariableDeclarations()) {
+		FunctionVariableTypesDataHolder.variableDeclarations.add(declaredVariable);
+	    }
+	}
     }
 }
