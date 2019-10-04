@@ -1,14 +1,18 @@
 package hu.bme.aut.moodernize.c2j.util;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
+import hu.bme.aut.moodernize.c2j.dataholders.FunctionVariableTypesDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOEnumeration;
+import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
@@ -174,5 +178,23 @@ public class TransformUtil {
 	}
 	
 	return false;
+    }
+    
+    public static boolean isGlobalVariable(String name) {
+	OOClass mainClass = getClassByName(TransformationDataHolder.createdClasses,
+		MainClassCreator.MAINCLASSNAME);
+	if (mainClass == null) {
+	    return false;
+	}
+	
+	List<OOMember> globalMembers = mainClass.getMembers();
+	List<String> globalVariableNames = new ArrayList<String>();
+	for (OOMember member : globalMembers) {
+	    globalVariableNames.add(member.getName());
+	}
+
+	return !listContainsVariable(FunctionVariableTypesDataHolder.variableDeclarations, name)
+		&& !listContainsVariable(FunctionVariableTypesDataHolder.parameters, name)
+		&& globalVariableNames.contains(name);
     }
 }

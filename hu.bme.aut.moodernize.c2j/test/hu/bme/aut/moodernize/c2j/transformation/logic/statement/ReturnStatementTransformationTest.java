@@ -9,7 +9,6 @@ import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOAdditionExpression;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOExpression;
-import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;

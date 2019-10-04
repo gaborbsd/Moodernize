@@ -7,7 +7,6 @@ import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOExpression;
-import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;

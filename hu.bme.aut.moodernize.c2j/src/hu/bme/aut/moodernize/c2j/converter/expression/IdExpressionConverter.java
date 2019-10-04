@@ -38,7 +38,7 @@ public class IdExpressionConverter {
 	    enumReference.setFieldOwner(ownerLiteral);
 
 	    return enumReference;
-	} else if (isGlobalVariableReference(name)) {
+	} else if (TransformUtil.isGlobalVariable(name)) {
 	    OOFieldReferenceExpression fieldReference = factory.createOOFieldReferenceExpression();
 	    fieldReference.setFieldName(name);
 	    
@@ -58,23 +58,5 @@ public class IdExpressionConverter {
 
 	    return referenceExpression;
 	}
-    }
-
-    private boolean isGlobalVariableReference(String name) {
-	OOClass mainClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses,
-		MainClassCreator.MAINCLASSNAME);
-	if (mainClass == null) {
-	    return false;
-	}
-
-	List<OOMember> globalMembers = mainClass.getMembers();
-	List<String> globalVariableNames = new ArrayList<String>();
-	for (OOMember member : globalMembers) {
-	    globalVariableNames.add(member.getName());
-	}
-
-	return !TransformUtil.listContainsVariable(FunctionVariableTypesDataHolder.variableDeclarations, name)
-		&& !TransformUtil.listContainsVariable(FunctionVariableTypesDataHolder.parameters, name)
-		&& globalVariableNames.contains(name);
     }
 }
