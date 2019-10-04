@@ -9,6 +9,7 @@ import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOAdditionExpression;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
@@ -67,7 +68,7 @@ public class ReturnStatementTransformationTest extends AbstractTransformationTes
     public void returnStatementExpression_shouldTransformToExpressionReturnStatement() {
 	StringBuilder sourceCode = new StringBuilder();
 	sourceCode.append("int global = 12;");
-	sourceCode.append("int someFunction(int x) {return x + global;}");
+	sourceCode.append("int someFunction(int x) {return x + x;}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
@@ -92,7 +93,7 @@ public class ReturnStatementTransformationTest extends AbstractTransformationTes
 	Assert.assertTrue(reffedVariableLhs.getType().getBaseType() == OOBaseType.INT);
 
 	OOVariable reffedVariableRhs = ((OOVariableReferenceExpression) rhs).getVariable();
-	Assert.assertTrue(reffedVariableRhs.getName().equals("global"));
+	Assert.assertTrue(reffedVariableRhs.getName().equals("x"));
 	Assert.assertTrue(reffedVariableRhs.getType().getBaseType() == OOBaseType.INT);
     }
 }

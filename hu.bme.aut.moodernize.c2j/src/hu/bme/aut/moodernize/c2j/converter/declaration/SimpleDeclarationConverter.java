@@ -38,7 +38,6 @@ public class SimpleDeclarationConverter {
 	return declarationList;
     }
 
-    // TODO: Handle declarators: pointeroperator, nested declarator
     private void handleDeclarator(OOVariable declaredVariable, IASTDeclarator declarator) {
 	declaredVariable.setName(declarator.getName().resolveBinding().getName());
 	OOType type = declaredVariable.getType();

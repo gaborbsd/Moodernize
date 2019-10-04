@@ -6,6 +6,7 @@ import org.junit.Test;
 import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
@@ -31,7 +32,7 @@ public class FieldReferenceTransformationTest extends AbstractTransformationTest
 	OOFunctionCallExpression getterCall = (OOFunctionCallExpression) rhs;
 	Assert.assertEquals("getX", getterCall.getFunctionName());
 	Assert.assertEquals(0, getterCall.getArgumentExpressions().size());
-	Assert.assertTrue(getterCall.getOwnerExpression() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(getterCall.getOwnerExpression() instanceof OOFieldReferenceExpression);
     }
     
     @Test
@@ -53,6 +54,6 @@ public class FieldReferenceTransformationTest extends AbstractTransformationTest
 	Assert.assertEquals("setX", setterCall.getFunctionName());
 	Assert.assertEquals(1, setterCall.getArgumentExpressions().size());
 	Assert.assertTrue(setterCall.getArgumentExpressions().get(0) instanceof OOVariableReferenceExpression);
-	Assert.assertTrue(setterCall.getOwnerExpression() instanceof OOVariableReferenceExpression);
+	Assert.assertTrue(setterCall.getOwnerExpression() instanceof OOFieldReferenceExpression);
     }
 }

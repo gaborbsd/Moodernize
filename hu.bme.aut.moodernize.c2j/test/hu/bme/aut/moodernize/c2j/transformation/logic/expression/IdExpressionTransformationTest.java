@@ -7,6 +7,7 @@ import hu.bme.aut.moodernize.c2j.AbstractTransformationTest;
 import hu.bme.aut.oogen.OOAssignmentExpression;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OOReturn;
 import hu.bme.aut.oogen.OOStatement;
@@ -17,21 +18,21 @@ public class IdExpressionTransformationTest extends AbstractTransformationTest {
     @Test
     public void baseTypeVariableReference_shouldTransformToPrimitiveTypeOOVariableReference() {
 	StringBuilder sourceCode = new StringBuilder();
-	sourceCode.append("int globalInt;");
 	sourceCode.append("void someFunction() {");
-	sourceCode.append("	globalInt = 1 + 1;");
+	sourceCode.append("	int x = 2;");
+	sourceCode.append("	x = 1 + 1;");
 	sourceCode.append("}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 
-	OOStatement assignmentStatement = getDefaultClass(model).getMethods().get(0).getStatements().get(0);
+	OOStatement assignmentStatement = getDefaultClass(model).getMethods().get(0).getStatements().get(1);
 	Assert.assertTrue(assignmentStatement instanceof OOAssignmentExpression);
 	
 	OOExpression lhs = ((OOAssignmentExpression) assignmentStatement).getLeftSide();
 	Assert.assertTrue(lhs instanceof OOVariableReferenceExpression);
 	
 	OOVariable referredVariable = ((OOVariableReferenceExpression)lhs).getVariable();
-	Assert.assertTrue(referredVariable.getName().equals("globalInt"));
+	Assert.assertTrue(referredVariable.getName().equals("x"));
 	Assert.assertTrue(referredVariable.getType().getBaseType() == OOBaseType.INT);
     }
 

@@ -44,7 +44,7 @@ public class ParameterListAndReturnTypeAnalyser {
 	    if (referenceReturnType != null) {
 		OOClass target = getTargetClass(referenceReturnType);
 		if (target != null) {
-		    assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
+		    assignFunctionToClass(function, TransformUtil.getClassByName(classes, target.getName()));
 		    transformedByReturnType = true;
 		}
 	    }
@@ -65,10 +65,10 @@ public class ParameterListAndReturnTypeAnalyser {
 	if (!transformedByReturnType && parameterReferenceTypes.size() == 1) {
 	    OOClass target = parameterReferenceTypes.get(0);
 	    removeTargetClassParametersFirstOccurenceFromMethod(target, function);
-	    assignFunctionToClass(function, TransformUtil.getClassFromClasses(classes, target));
+	    assignFunctionToClass(function, TransformUtil.getClassByName(classes, target.getName()));
 	} else if (transformedByReturnType) {
 	    OOClass returnClassType = function.getReturnType().getClassType();
-	    OOClass matchingTypeParameter = TransformUtil.getClassFromClasses(parameterReferenceTypes, returnClassType);
+	    OOClass matchingTypeParameter = TransformUtil.getClassByName(parameterReferenceTypes, returnClassType.getName());
 	    if (matchingTypeParameter != null) {
 		removeTargetClassParametersFirstOccurenceFromMethod(matchingTypeParameter, function);
 	    }

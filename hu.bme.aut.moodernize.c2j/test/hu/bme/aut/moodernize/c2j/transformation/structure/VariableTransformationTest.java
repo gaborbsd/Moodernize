@@ -21,7 +21,7 @@ public class VariableTransformationTest extends AbstractTransformationTest {
 	StringBuilder sourceCode = new StringBuilder();
 	sourceCode.append("int a = 2, b;");
 	sourceCode.append("long c[10], d = 5, e;");
-	sourceCode.append("int f = 2 * a + b + c + d + e;");
+	sourceCode.append("int f = 2 * a + b + d + e;");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());
 

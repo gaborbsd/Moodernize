@@ -50,7 +50,7 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	OOVariableDeclarationList declaredVariables = converter.convertSimpleDeclaration(simpleDeclaration);
 
 	for (OOVariable variable : declaredVariables.getVariableDeclarations()) {
-	    if (!TransformUtil.listContainsVariable(globalVariables, variable)) {
+	    if (!TransformUtil.listContainsVariable(globalVariables, variable.getName())) {
 		globalVariables.add(EcoreUtil.copy(variable));
 	    }
 	}

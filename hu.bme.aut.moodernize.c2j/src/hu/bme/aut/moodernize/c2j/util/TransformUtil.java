@@ -32,10 +32,10 @@ public class TransformUtil {
     public static boolean isReferenceType(OOType type) {
 	return type == null ? false : type.getClassType() != null && type.getArrayDimensions() == 0;
     }
-
-    public static boolean listContainsVariable(List<OOVariable> variables, OOVariable var) {
+    
+    public static boolean listContainsVariable(List<OOVariable> variables, String varName) {
 	for (OOVariable v : variables) {
-	    if (v.getName().toUpperCase().equals(var.getName().toUpperCase())) {
+	    if (v.getName().equals(varName)) {
 		return true;
 	    }
 	}
@@ -61,10 +61,6 @@ public class TransformUtil {
 	}
 
 	return false;
-    }
-
-    public static OOClass getClassFromClasses(List<OOClass> classes, OOClass cl) {
-	return getClassByName(classes, cl.getName());
     }
     
     public static OOMethod getMethodFromClass(OOClass cl, String methodName) {
