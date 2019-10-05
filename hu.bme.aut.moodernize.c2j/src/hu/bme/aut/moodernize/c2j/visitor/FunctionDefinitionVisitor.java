@@ -10,7 +10,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.converter.statement.StatementConverter;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
-import hu.bme.aut.moodernize.c2j.dataholders.FunctionVariableTypesDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.FunctionSymbolTable;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
@@ -36,11 +36,11 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	if (declaration instanceof IASTFunctionDefinition) {
 	    IASTFunctionDefinition function = (IASTFunctionDefinition) declaration;
 	    String functionName = function.getDeclarator().getName().resolveBinding().getName();
-	    FunctionVariableTypesDataHolder.clear();
+	    FunctionSymbolTable.clear();
 	    OOMethod correspondingFunction = TransformUtil.getFunctionByName(functions, functionName);
 	    
 	    for (OOVariable parameter : correspondingFunction.getParameters()) {
-		FunctionVariableTypesDataHolder.parameters.add(parameter);
+		FunctionSymbolTable.parameters.add(parameter);
 	    }
 	    
 	    IASTStatement[] statements = ((IASTCompoundStatement) function.getBody()).getStatements();
@@ -61,7 +61,7 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
     private void addToDataHolderIfVariableDeclaration(OOStatement statement) {
 	if (statement instanceof OOVariableDeclarationList) {
 	    for (OOVariable declaredVariable : ((OOVariableDeclarationList) statement).getVariableDeclarations()) {
-		FunctionVariableTypesDataHolder.variableDeclarations.add(declaredVariable);
+		FunctionSymbolTable.variableDeclarations.add(declaredVariable);
 	    }
 	}
     }

@@ -1,6 +1,6 @@
 package hu.bme.aut.moodernize.c2j.util;
 
-import hu.bme.aut.moodernize.c2j.dataholders.FunctionVariableTypesDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.FunctionSymbolTable;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.oogen.OOClass;
@@ -14,21 +14,28 @@ import hu.bme.aut.oogen.OOVariableReferenceExpression;
 public class PointerConverter {
     public static void handlePointerConversion(OOExpression operandPossiblyContainingPointer) {
 	if (operandPossiblyContainingPointer instanceof OOFieldReferenceExpression) {
-	    String referredName = ((OOFieldReferenceExpression) operandPossiblyContainingPointer).getFieldName();
+	    OOFieldReferenceExpression fieldReference = (OOFieldReferenceExpression) operandPossiblyContainingPointer;
+	    String referredName = fieldReference.getFieldName();
 	    if (TransformUtil.isGlobalVariable(referredName)) {
 		OOClass mainClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses,
 			MainClassCreator.MAINCLASSNAME);
-		for (OOMember member : mainClass.getMembers()) {
-		    if (member.getName().equals(referredName)) {
-			changeTypeFromArrayToPointer(member);
-			break;
+		findMemberAndChangeTypeFromArrayToPointer(mainClass, referredName);
+	    } else {
+		OOExpression ownerExpression= fieldReference.getFieldOwner();
+		if (ownerExpression instanceof OOVariableReferenceExpression) {
+		    OOVariable referredVariable = ((OOVariableReferenceExpression) ownerExpression).getVariable();
+		    OOClass classType = referredVariable.getType().getClassType();
+		    OOClass ownerClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses, classType.getName());
+		    if (ownerClass != null) {
+			findMemberAndChangeTypeFromArrayToPointer(ownerClass, referredName);
 		    }
 		}
 	    }
-	} else if (operandPossiblyContainingPointer instanceof OOVariableReferenceExpression) {
+	} 
+	else if (operandPossiblyContainingPointer instanceof OOVariableReferenceExpression) {
 	    OOVariable referredVariable = ((OOVariableReferenceExpression) operandPossiblyContainingPointer)
 		    .getVariable();
-	    OOVariable correspondingDeclaration = FunctionVariableTypesDataHolder
+	    OOVariable correspondingDeclaration = FunctionSymbolTable
 		    .getCorrespondingVariable(referredVariable);
 	    if (correspondingDeclaration != null) {
 		changeTypeFromArrayToPointer(correspondingDeclaration);
@@ -37,6 +44,15 @@ public class PointerConverter {
 	}
     }
 
+    private static void findMemberAndChangeTypeFromArrayToPointer(OOClass cl, String memberName) {
+	for (OOMember member : cl.getMembers()) {
+	    if (member.getName().equals(memberName)) {
+		changeTypeFromArrayToPointer(member);
+		break;
+	    }
+	}
+    }
+    
     private static void changeTypeFromArrayToPointer(OOVariable toChange) {
 	OOType type = toChange.getType();
 	int numberOfIndirections = type.getNumberOfIndirections();

@@ -1,21 +1,14 @@
 package hu.bme.aut.moodernize.c2j.converter.expression;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IEnumeration;
 import org.eclipse.cdt.core.dom.ast.IType;
 
-import hu.bme.aut.moodernize.c2j.dataholders.FunctionVariableTypesDataHolder;
-import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
-import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFieldReferenceExpression;
-import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOStringLiteral;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableReferenceExpression;
@@ -41,14 +34,13 @@ public class IdExpressionConverter {
 	} else if (TransformUtil.isGlobalVariable(name)) {
 	    OOFieldReferenceExpression fieldReference = factory.createOOFieldReferenceExpression();
 	    fieldReference.setFieldName(name);
-	    
+
 	    OOStringLiteral ownerLiteral = factory.createOOStringLiteral();
 	    ownerLiteral.setValue(MainClassCreator.MAINCLASSNAME);
 	    fieldReference.setFieldOwner(ownerLiteral);
-	    
+
 	    return fieldReference;
 	} else {
-
 	    OOVariable referredVariable = factory.createOOVariable();
 	    referredVariable.setName(name);
 	    referredVariable.setType(TypeConverter.convertCDTTypeToOOgenType(type));

@@ -16,6 +16,7 @@ import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.moodernize.c2j.util.OOExpressionWithPrecedingStatements;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOTernaryOperator;
@@ -26,33 +27,37 @@ public class ExpressionConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 
     public OOExpression convertExpression(IASTExpression expression) {
-	OOExpression convertedExpression = getConvertedExpression(expression);
-	CommentProcessor.processOwnedComments(convertedExpression,
+	OOExpressionWithPrecedingStatements convertedExpression = getConvertedExpression(expression);
+	CommentProcessor.processOwnedComments(convertedExpression.expression,
 		CommentMappingDataHolder.findAllOwnedComments(expression));
-	return convertedExpression;
+	return convertedExpression.expression;
     }
 
-    private OOExpression getConvertedExpression(IASTExpression expression) {
+    private OOExpressionWithPrecedingStatements getConvertedExpression(IASTExpression expression) {
 	if (expression instanceof IASTArraySubscriptExpression) {
-	    return convertArraySubscriptExpression((IASTArraySubscriptExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(
+		    convertArraySubscriptExpression((IASTArraySubscriptExpression) expression));
 	} else if (expression instanceof IASTBinaryExpression) {
-	    return convertBinaryExpression((IASTBinaryExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(convertBinaryExpression((IASTBinaryExpression) expression));
 	} else if (expression instanceof IASTCastExpression) {
-	    return convertCastExpression((IASTCastExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(convertCastExpression((IASTCastExpression) expression));
 	} else if (expression instanceof IASTConditionalExpression) {
-	    return convertConditionalExpression((IASTConditionalExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(
+		    convertConditionalExpression((IASTConditionalExpression) expression));
 	} else if (expression instanceof IASTExpressionList) {
-	    return convertExpressionList((IASTExpressionList) expression);
+	    return new OOExpressionWithPrecedingStatements(convertExpressionList((IASTExpressionList) expression));
 	} else if (expression instanceof IASTFieldReference) {
 	    return convertFieldReference((IASTFieldReference) expression);
 	} else if (expression instanceof IASTFunctionCallExpression) {
-	    return convertFunctionCallExpression((IASTFunctionCallExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(
+		    convertFunctionCallExpression((IASTFunctionCallExpression) expression));
 	} else if (expression instanceof IASTIdExpression) {
-	    return convertIdExpression((IASTIdExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(convertIdExpression((IASTIdExpression) expression));
 	} else if (expression instanceof IASTLiteralExpression) {
-	    return convertLiteralExpression((IASTLiteralExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(
+		    convertLiteralExpression((IASTLiteralExpression) expression));
 	} else if (expression instanceof IASTUnaryExpression) {
-	    return convertUnaryExpression((IASTUnaryExpression) expression);
+	    return new OOExpressionWithPrecedingStatements(convertUnaryExpression((IASTUnaryExpression) expression));
 	} else {
 	    throw new UnsupportedOperationException("Unsupported expression encountered: " + expression);
 	}
@@ -94,9 +99,9 @@ public class ExpressionConverter {
 	throw new NotImplementedException();
     }
 
-    private OOExpression convertFieldReference(IASTFieldReference expression) {
+    private OOExpressionWithPrecedingStatements convertFieldReference(IASTFieldReference expression) {
 	FieldReferenceConverter converter = new FieldReferenceConverter();
-	return converter.convertFieldReferenceToGetterCall(expression);
+	return converter.convertFieldReference(expression);
     }
 
     private OOExpression convertFunctionCallExpression(IASTFunctionCallExpression expression) {

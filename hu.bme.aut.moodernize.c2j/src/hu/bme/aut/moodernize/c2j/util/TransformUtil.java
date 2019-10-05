@@ -7,7 +7,7 @@ import java.util.List;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
-import hu.bme.aut.moodernize.c2j.dataholders.FunctionVariableTypesDataHolder;
+import hu.bme.aut.moodernize.c2j.dataholders.FunctionSymbolTable;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.oogen.OOClass;
@@ -38,13 +38,7 @@ public class TransformUtil {
     }
     
     public static boolean listContainsVariable(List<OOVariable> variables, String varName) {
-	for (OOVariable v : variables) {
-	    if (v.getName().equals(varName)) {
-		return true;
-	    }
-	}
-
-	return false;
+	return getVariableByName(variables, varName) != null;
     }
     
     public static boolean listContainsClass(List<OOClass> classes, OOClass cl) {
@@ -193,8 +187,28 @@ public class TransformUtil {
 	    globalVariableNames.add(member.getName());
 	}
 
-	return !listContainsVariable(FunctionVariableTypesDataHolder.variableDeclarations, name)
-		&& !listContainsVariable(FunctionVariableTypesDataHolder.parameters, name)
+	return !listContainsVariable(FunctionSymbolTable.variableDeclarations, name)
+		&& !listContainsVariable(FunctionSymbolTable.parameters, name)
 		&& globalVariableNames.contains(name);
+    }
+    
+    public static OOVariable getVariableByName(List<OOVariable> vars, String varName) {
+	for (OOVariable v : vars) {
+	    if (v.getName().equals(varName)) {
+		return v;
+	    }
+	}
+
+	return null;
+    }
+    
+    public static OOVariable getVariableByNameFromMembers(List<OOMember> vars, String varName) {
+	for (OOMember v : vars) {
+	    if (v.getName().equals(varName)) {
+		return v;
+	    }
+	}
+
+	return null;
     }
 }
