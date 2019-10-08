@@ -222,6 +222,9 @@ public class TransformUtil {
 	    for (OOStatement statement : statements) {
 		if (statement != null) {
 		    containingFunction.getStatements().add(statement);
+		    if (statement instanceof OOVariable) {
+			FunctionSymbolTable.variableDeclarations.add((OOVariable) statement);
+		    }
 		}
 	    }
 	}

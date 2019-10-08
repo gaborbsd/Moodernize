@@ -40,7 +40,6 @@ public class PointerConverter {
 	    if (correspondingDeclaration != null) {
 		changeTypeFromArrayToPointer(correspondingDeclaration);
 	    }
-
 	}
     }
 
