@@ -56,7 +56,7 @@ public class SimpleDeclarationConverter {
 		IASTExpression sizeExpression = modifier.getConstantExpression();
 		//TODO: What to do if some dimensions are set and some are not?
 		if (sizeExpression != null) {
-		    type.getArraySizeExpressions().add(converter.convertExpression(sizeExpression));
+		    type.getArraySizeExpressions().add(converter.convertExpression(sizeExpression).expression);
 		} else {
 		    type.getArraySizeExpressions().add(factory.createOONullLiteral());
 		}

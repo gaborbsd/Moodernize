@@ -10,6 +10,7 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializerList;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOExpression;
@@ -44,7 +45,8 @@ public class InitializerConverter {
     public OOExpression convertInitializerClause(IASTInitializerClause initClause) {
 	if (initClause instanceof IASTExpression) {
 	    ExpressionConverter converter = new ExpressionConverter();
-	    OOExpression convertedExpression = converter.convertExpression((IASTExpression) initClause);
+	    OOExpression convertedExpression = TransformUtil.convertExpressionAndProcessPrecedingStatements(
+			converter, (IASTExpression) initClause);
 	    return convertedExpression;
 	} else if (initClause instanceof IASTInitializerList) {
 	    return convertInitializerList((IASTInitializerList) initClause);

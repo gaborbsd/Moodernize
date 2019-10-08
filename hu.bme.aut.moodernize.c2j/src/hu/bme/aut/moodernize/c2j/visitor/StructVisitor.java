@@ -38,8 +38,7 @@ public class StructVisitor extends AbstractBaseVisitor {
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct) {
 	    ICompositeType struct = (ICompositeType) binding;
-	    // TODO: What to do with incorrect class names? Replace all references or
-	    // ignore?
+
 	    if (!TransformUtil.isCorrectClassName(struct.getName())) {
 		return PROCESS_SKIP;
 	    }

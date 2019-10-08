@@ -7,12 +7,14 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOStatement;
 
 public class CompoundStatementConverter {
     public OOExpression convertConditionExpression(IASTExpression conditionExpression) {
-	OOExpression convertedExpression = new ExpressionConverter().convertExpression(conditionExpression);
+	OOExpression convertedExpression = TransformUtil
+		.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), conditionExpression);
 	// TODO: Convert IntLiteral to BoolLiteral
 
 	return convertedExpression;

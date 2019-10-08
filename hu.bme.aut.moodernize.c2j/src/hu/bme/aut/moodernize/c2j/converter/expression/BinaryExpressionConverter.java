@@ -3,6 +3,7 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOComparatorExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
@@ -20,8 +21,8 @@ public class BinaryExpressionConverter {
 	}
 	
 	ExpressionConverter converter = new ExpressionConverter();
-	OOExpression lhs = converter.convertExpression(binaryExpression.getOperand1());
-	OOExpression rhs = converter.convertExpression(binaryExpression.getOperand2());
+	OOExpression lhs = TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, binaryExpression.getOperand1());
+	OOExpression rhs = TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, binaryExpression.getOperand2());
 	int operator = binaryExpression.getOperator();
 
 	return handleByOperator(operator, lhs, rhs);

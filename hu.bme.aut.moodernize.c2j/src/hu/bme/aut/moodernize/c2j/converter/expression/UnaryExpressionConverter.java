@@ -4,6 +4,7 @@ import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.PointerConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOOneOperandArithmeticExpression;
@@ -16,8 +17,9 @@ public class UnaryExpressionConverter {
 
     public OOExpression convertUnaryExpression(IASTUnaryExpression unaryExpression) {
 	ExpressionConverter converter = new ExpressionConverter();
-	return handleByOperator(unaryExpression.getOperator(),
-		converter.convertExpression(unaryExpression.getOperand()));
+	
+	
+	return handleByOperator(unaryExpression.getOperator(), TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, unaryExpression.getOperand()));
     }
 
     private OOExpression handleByOperator(int operator, OOExpression operand) {
@@ -55,7 +57,7 @@ public class UnaryExpressionConverter {
 	    throw new UnsupportedOperationException("Unsupported unary expression operator encountered " + operator);
 	}
     }
-    
+
     private OOExpression setOperandAndReturn(OOBracketedExpression expression, OOExpression operand) {
 	expression.setOperand(operand);
 	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(expression);

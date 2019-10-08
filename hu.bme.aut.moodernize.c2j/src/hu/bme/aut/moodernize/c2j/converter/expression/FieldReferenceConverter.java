@@ -52,7 +52,7 @@ public class FieldReferenceConverter {
 
     private void setOwnerExpression(OOFunctionCallExpression getterCall, IASTFieldReference fieldReference) {
 	String containingFunctionName = TransformUtil.getContainingFunctionName(fieldReference);
-	OOExpression ownerExpression = new ExpressionConverter().convertExpression(fieldReference.getFieldOwner());
+	OOExpression ownerExpression = TransformUtil.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), fieldReference.getFieldOwner());
 
 	if (ownerExpression instanceof OOVariableReferenceExpression) {
 	    String referredName = ((OOVariableReferenceExpression) ownerExpression).getVariable().getName();
@@ -71,7 +71,8 @@ public class FieldReferenceConverter {
 
     private OOVariable generatePrecedingDeclarationForFieldReference(IASTFieldReference fieldReference,
 	    OOFunctionCallExpression getterCall) {
-	OOExpression ownerExpression = new ExpressionConverter().convertExpression(fieldReference.getFieldOwner());
+	OOExpression ownerExpression = TransformUtil.convertExpressionAndProcessPrecedingStatements(
+		new ExpressionConverter(), fieldReference.getFieldOwner());
 	if (ownerExpression instanceof OOVariableReferenceExpression) {
 	    OOVariable referredVariable = ((OOVariableReferenceExpression) ownerExpression).getVariable();
 	    String fieldName = fieldReference.getFieldName().resolveBinding().getName();
@@ -99,7 +100,8 @@ public class FieldReferenceConverter {
 	OOFunctionCallExpression setterCall = factory.createOOFunctionCallExpression();
 	setterCall.setFunctionName("set" + TransformUtil
 		.getWithUpperCaseFirstCharacter(fieldReference.getFieldName().resolveBinding().getName()));
-	setterCall.getArgumentExpressions().add(new ExpressionConverter().convertExpression(setArgument));
+
+	setterCall.getArgumentExpressions().add(TransformUtil.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), setArgument));
 	setOwnerExpression(setterCall, fieldReference);
 
 	return setterCall;

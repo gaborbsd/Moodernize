@@ -11,6 +11,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOCase;
 import hu.bme.aut.oogen.OOCompoundStatement;
 import hu.bme.aut.oogen.OODefault;
@@ -36,7 +37,8 @@ public class SwitchStatementConverter {
 
     private void handleControllerExpression() {
 	ExpressionConverter converter = new ExpressionConverter();
-	ooSwitch.setControllerExpression(converter.convertExpression(cdtSwitch.getControllerExpression()));
+	ooSwitch.setControllerExpression(TransformUtil.convertExpressionAndProcessPrecedingStatements(converter,
+		cdtSwitch.getControllerExpression()));
     }
 
     private void collectCaseAndDefaultStatements() {

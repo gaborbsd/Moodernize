@@ -19,6 +19,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOCase;
 import hu.bme.aut.oogen.OOCompoundStatement;
 import hu.bme.aut.oogen.OODoWhile;
@@ -79,7 +80,8 @@ public class StatementConverter {
 
     private OOStatement convertCaseStatement(IASTCaseStatement statement) {
 	OOCase caseStatement = factory.createOOCase();
-	caseStatement.setExpression(new ExpressionConverter().convertExpression(statement.getExpression()));
+	caseStatement.setExpression(TransformUtil
+		.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), statement.getExpression()));
 
 	return caseStatement;
     }
@@ -116,8 +118,8 @@ public class StatementConverter {
     }
 
     private OOStatement convertExpressionStatement(IASTExpressionStatement statement) {
-	ExpressionConverter converter = new ExpressionConverter();
-	return converter.convertExpression(statement.getExpression());
+	return TransformUtil.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(),
+		statement.getExpression());
     }
 
     private OOStatement convertForStatetement(IASTForStatement statement) {
@@ -127,7 +129,8 @@ public class StatementConverter {
 
 	forStatement.setCondition(converter.convertConditionExpression(statement.getConditionExpression()));
 	converter.addStatementsToBody(statement.getBody(), forStatement.getBodyStatements());
-	forStatement.setIncrementExpression(expressionConverter.convertExpression(statement.getIterationExpression()));
+	forStatement.setIncrementExpression(TransformUtil.convertExpressionAndProcessPrecedingStatements(
+		expressionConverter, statement.getIterationExpression()));
 	forStatement.setInitStatement(convertStatement(statement.getInitializerStatement()));
 
 	return forStatement;
@@ -151,7 +154,8 @@ public class StatementConverter {
     }
 
     private OOStatement convertReturnStatement(IASTReturnStatement statement) {
-	OOExpression returnExpression = new ExpressionConverter().convertExpression(statement.getReturnValue());
+	OOExpression returnExpression = TransformUtil
+		.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), statement.getReturnValue());
 	OOReturn returnStatement = factory.createOOReturn();
 	returnStatement.setReturnedExpresssion(returnExpression);
 	return returnStatement;
