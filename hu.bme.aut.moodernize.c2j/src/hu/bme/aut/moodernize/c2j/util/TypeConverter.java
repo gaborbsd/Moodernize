@@ -33,10 +33,9 @@ public class TypeConverter {
     }
 
     private static void handleType(OOType ooType, IType cdtType) {
-	// TODO: More than one indirection is not supported yet
 	while (cdtType instanceof IPointerType) {
 	    cdtType = ((IPointerType) cdtType).getType();
-	    ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
+	    //ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
 	    ooType.setNumberOfIndirections(ooType.getNumberOfIndirections() + 1);
 	}
 

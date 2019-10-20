@@ -42,11 +42,12 @@ public class SimpleDeclarationConverter {
 	declaredVariable.setName(declarator.getName().resolveBinding().getName());
 	OOType type = declaredVariable.getType();
 
+	/*
 	for (@SuppressWarnings("unused") IASTPointerOperator pointerOperator : declarator.getPointerOperators()) {
 	    type.setArrayDimensions(type.getArrayDimensions() + 1);
 	    type.getArraySizeExpressions().add(factory.createOONullLiteral());
 	    type.setNumberOfIndirections(type.getNumberOfIndirections() + 1);
-	}
+	}*/
 	
 	if (declarator instanceof IASTArrayDeclarator) {
 	    IASTArrayDeclarator arrayDeclarator = (IASTArrayDeclarator) declarator;

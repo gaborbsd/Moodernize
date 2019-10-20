@@ -44,6 +44,9 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof IFunction || binding instanceof IEnumeration || binding instanceof IField
 		|| (isStruct(binding))) {
+	    if (name == null || name.getFileLocation() == null) {
+		return PROCESS_SKIP;
+	    }
 	    int distance = Math.abs(name.getFileLocation().getStartingLineNumber() - commentLineNumber);
 	    int currentDistance = Math.abs(currentClosestLineNumber - commentLineNumber);
 

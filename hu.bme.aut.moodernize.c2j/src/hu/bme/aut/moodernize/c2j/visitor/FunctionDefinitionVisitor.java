@@ -16,6 +16,7 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableDeclarationList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
     private List<OOMethod> functions;
@@ -46,13 +47,18 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	    IASTStatement[] statements = ((IASTCompoundStatement) function.getBody()).getStatements();
 	    StatementConverter converter = new StatementConverter();
 	    for (IASTStatement statement : statements) {
-		OOStatement convertedStatement = converter.convertStatement(statement);
+		try {
+			OOStatement convertedStatement = converter.convertStatement(statement);
 
-		CommentProcessor.processOwnedComments(convertedStatement,
-			CommentMappingDataHolder.findAllOwnedComments(statement));
-		addToDataHolderIfVariableDeclaration(convertedStatement);
+			CommentProcessor.processOwnedComments(convertedStatement,
+				CommentMappingDataHolder.findAllOwnedComments(statement));
+			addToDataHolderIfVariableDeclaration(convertedStatement);
 
-		correspondingFunction.getStatements().add(convertedStatement);
+			correspondingFunction.getStatements().add(convertedStatement); 
+		} catch (UnsupportedOperationException | NotImplementedException e) {
+		    continue;
+		}
+
 	    }
 	}
 	return PROCESS_CONTINUE;

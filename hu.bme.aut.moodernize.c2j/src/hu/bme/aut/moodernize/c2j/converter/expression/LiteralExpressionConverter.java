@@ -19,7 +19,14 @@ public class LiteralExpressionConverter {
 	String valueString = new String(literalExpression.getValue());
 	switch (literalExpression.getKind()) {
 	case IASTLiteralExpression.lk_integer_constant:
-	    int valueInt = Integer.parseInt(valueString);
+	    int valueInt;
+	    try {
+		valueInt = Integer.parseInt(valueString);
+	    } 
+	    // TODO: Hexadecimal?
+	    catch (NumberFormatException e) {
+		valueInt = -1024;
+	    }
 	    OOIntegerLiteral integerLiteral = factory.createOOIntegerLiteral();
 	    integerLiteral.setValue(valueInt);
 	    return integerLiteral;
