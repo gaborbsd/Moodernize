@@ -12,6 +12,7 @@ import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
 import hu.bme.aut.moodernize.c2j.dataholders.FunctionSymbolTable;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
+import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOExpression;
@@ -236,5 +237,13 @@ public class TransformUtil {
 	TransformUtil.addStatementsToCurrentFunction(expression, convertedExpression.precedingStatements);
 
 	return convertedExpression.expression;
+    }
+    
+    public static OOExpression getOperandInsideBrackets(OOExpression expression) {
+	while (expression instanceof OOBracketedExpression) {
+	    expression = ((OOBracketedExpression) expression).getOperand();
+	}
+	
+	return expression;
     }
 }

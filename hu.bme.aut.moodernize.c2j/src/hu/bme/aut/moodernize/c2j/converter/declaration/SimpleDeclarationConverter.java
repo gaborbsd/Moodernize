@@ -42,12 +42,12 @@ public class SimpleDeclarationConverter {
 	declaredVariable.setName(declarator.getName().resolveBinding().getName());
 	OOType type = declaredVariable.getType();
 
-	/*
+	
 	for (@SuppressWarnings("unused") IASTPointerOperator pointerOperator : declarator.getPointerOperators()) {
 	    type.setArrayDimensions(type.getArrayDimensions() + 1);
 	    type.getArraySizeExpressions().add(factory.createOONullLiteral());
 	    type.setNumberOfIndirections(type.getNumberOfIndirections() + 1);
-	}*/
+	}
 	
 	if (declarator instanceof IASTArrayDeclarator) {
 	    IASTArrayDeclarator arrayDeclarator = (IASTArrayDeclarator) declarator;
@@ -55,7 +55,6 @@ public class SimpleDeclarationConverter {
 	    for (IASTArrayModifier modifier : arrayDeclarator.getArrayModifiers()) {
 		type.setArrayDimensions(type.getArrayDimensions() + 1);
 		IASTExpression sizeExpression = modifier.getConstantExpression();
-		//TODO: What to do if some dimensions are set and some are not?
 		if (sizeExpression != null) {
 		    type.getArraySizeExpressions().add(converter.convertExpression(sizeExpression).expression);
 		} else {

@@ -18,6 +18,7 @@ import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.OOExpressionWithPrecedingStatements;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOTernaryOperator;
@@ -60,15 +61,18 @@ public class ExpressionConverter {
 	} else if (expression instanceof IASTUnaryExpression) {
 	    return new OOExpressionWithPrecedingStatements(convertUnaryExpression((IASTUnaryExpression) expression));
 	} else {
-	    throw new UnsupportedOperationException("Unsupported expression encountered: " + expression);
+	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    return new OOExpressionWithPrecedingStatements(emptyExpression);
+	    // throw new UnsupportedOperationException("Unsupported expression encountered:
+	    // " + expression);
 	}
     }
 
     private OOExpression convertArraySubscriptExpression(IASTArraySubscriptExpression expression) {
 	OOIndexing collectionIndex = factory.createOOIndexing();
 
-	collectionIndex.setCollectionExpression(
-		TransformUtil.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), expression.getArrayExpression()));
+	collectionIndex.setCollectionExpression(TransformUtil.convertExpressionAndProcessPrecedingStatements(
+		new ExpressionConverter(), expression.getArrayExpression()));
 	collectionIndex
 		.setIndexExpression(new InitializerConverter().convertInitializerClause(expression.getArgument()));
 
@@ -89,9 +93,12 @@ public class ExpressionConverter {
 	OOTernaryOperator ternary = factory.createOOTernaryOperator();
 	ExpressionConverter converter = new ExpressionConverter();
 
-	ternary.setCondition(TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, expression.getLogicalConditionExpression()));
-	ternary.setPositiveBranch(TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, expression.getPositiveResultExpression()));
-	ternary.setNegativeBranch(TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, expression.getNegativeResultExpression()));
+	ternary.setCondition(TransformUtil.convertExpressionAndProcessPrecedingStatements(converter,
+		expression.getLogicalConditionExpression()));
+	ternary.setPositiveBranch(TransformUtil.convertExpressionAndProcessPrecedingStatements(converter,
+		expression.getPositiveResultExpression()));
+	ternary.setNegativeBranch(TransformUtil.convertExpressionAndProcessPrecedingStatements(converter,
+		expression.getNegativeResultExpression()));
 
 	IntegerLiteralToBooleanConverter.handleIntToBoolConversion(ternary);
 
@@ -99,7 +106,8 @@ public class ExpressionConverter {
     }
 
     private OOExpression convertExpressionList(IASTExpressionList expression) {
-	throw new NotImplementedException();
+	return factory.createOOEmptyExpression();
+	// throw new NotImplementedException();
     }
 
     private OOExpressionWithPrecedingStatements convertFieldReference(IASTFieldReference expression) {

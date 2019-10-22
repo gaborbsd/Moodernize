@@ -137,7 +137,8 @@ public class StatementConverter {
     }
 
     private OOStatement convertGotoStatement(IASTGotoStatement statement) {
-	throw new NotImplementedException();
+	return factory.createOOEmptyExpression();
+	// throw new NotImplementedException();
     }
 
     private OOStatement convertIfStatement(IASTIfStatement statement) {

@@ -10,10 +10,11 @@ public class ProblemVisitor extends AbstractBaseVisitor {
     }
 
     public int visit(IASTProblem problem) {
-	if (!isCorrectContainingFile(problem)) {
+	return PROCESS_SKIP;
+	/*if (!isCorrectContainingFile(problem)) {
 	    return PROCESS_SKIP;
 	}
 	throw new OperationCanceledException(
 		"Compilation erros exist in the given source project! Please compile your project and fix the errors.");
-    }
+    */}
 }

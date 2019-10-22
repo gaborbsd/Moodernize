@@ -72,7 +72,8 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
 		for (IASTComment comment : ast.getComments()) {
-		    if (comment.getContainingFilename().equals(ast.getContainingFilename())) {
+		    if (comment.getContainingFilename().equals(ast.getContainingFilename())
+			    && comment.getFileLocation() != null) {
 			CommentOwnerVisitor visitor = new CommentOwnerVisitor(ast.getContainingFilename(), comment);
 			ast.accept(visitor);
 			commentOwners.add(visitor.getCommentOwnerResult());

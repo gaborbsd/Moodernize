@@ -26,6 +26,9 @@ public class ParameterListAndReturnTypeAnalyser {
     }
 
     public void assignFunctionsToClasses() {
+	if (classes.isEmpty()) {
+	    return;
+	}
 	for (OOMethod function : functions) {
 	    checkReturnType(function);
 	    checkParameterList(function);
@@ -54,21 +57,22 @@ public class ParameterListAndReturnTypeAnalyser {
     private void checkParameterList(OOMethod function) {
 	List<OOVariable> parameters = function.getParameters();
 	List<OOClass> parameterReferenceTypes = new ArrayList<OOClass>();
-	
+
 	for (OOVariable parameter : parameters) {
 	    OOClass referenceType = parameter.getType().getClassType();
 	    if (referenceType != null && !TransformUtil.listContainsClass(parameterReferenceTypes, referenceType)) {
 		parameterReferenceTypes.add(referenceType);
 	    }
 	}
-	
+
 	if (!transformedByReturnType && parameterReferenceTypes.size() == 1) {
 	    OOClass target = parameterReferenceTypes.get(0);
 	    removeTargetClassParametersFirstOccurenceFromMethod(target, function);
 	    assignFunctionToClass(function, TransformUtil.getClassByName(classes, target.getName()));
 	} else if (transformedByReturnType) {
 	    OOClass returnClassType = function.getReturnType().getClassType();
-	    OOClass matchingTypeParameter = TransformUtil.getClassByName(parameterReferenceTypes, returnClassType.getName());
+	    OOClass matchingTypeParameter = TransformUtil.getClassByName(parameterReferenceTypes,
+		    returnClassType.getName());
 	    if (matchingTypeParameter != null) {
 		removeTargetClassParametersFirstOccurenceFromMethod(matchingTypeParameter, function);
 	    }
@@ -92,8 +96,10 @@ public class ParameterListAndReturnTypeAnalyser {
     }
 
     private void assignFunctionToClass(OOMethod function, OOClass target) {
-	target.getMethods().add(EcoreUtil.copy(function));
-	toRemove.add(function);
+	if (function != null && target != null) {
+	    target.getMethods().add(EcoreUtil.copy(function));
+	    toRemove.add(function);
+	}
     }
 
     private void removeTargetClassParametersFirstOccurenceFromMethod(OOClass toRemove, OOMethod from) {
@@ -108,6 +114,10 @@ public class ParameterListAndReturnTypeAnalyser {
 	    method = TransformUtil.getFunctionByName(functions, from.getName());
 	}
 
+	if (method == null) {
+	    return;
+	}
+	
 	Iterator<OOVariable> iterator = method.getParameters().iterator();
 	int index = 0;
 	while (iterator.hasNext()) {

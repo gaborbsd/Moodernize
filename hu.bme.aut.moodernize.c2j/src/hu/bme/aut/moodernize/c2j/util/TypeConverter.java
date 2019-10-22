@@ -35,7 +35,7 @@ public class TypeConverter {
     private static void handleType(OOType ooType, IType cdtType) {
 	while (cdtType instanceof IPointerType) {
 	    cdtType = ((IPointerType) cdtType).getType();
-	    //ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
+	    ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
 	    ooType.setNumberOfIndirections(ooType.getNumberOfIndirections() + 1);
 	}
 
@@ -92,7 +92,8 @@ public class TypeConverter {
 	    ooType.setBaseType(OOBaseType.OBJECT);
 	    break;
 	default:
-	    throw new UnsupportedOperationException("Unsupported IBasicType encountered: " + type);
+	    ooType.setBaseType(OOBaseType.OBJECT);
+	    //throw new UnsupportedOperationException("Unsupported IBasicType encountered: " + type);
 	}
     }
 
@@ -160,7 +161,8 @@ public class TypeConverter {
 	    type.setBaseType(OOBaseType.OBJECT);
 	    break;
 	default:
-	    throw new UnsupportedOperationException("Unsupported SimpleDeclSpecifier type" + specifier.getType());
+	    return generateDefaultObjectType();
+	    // throw new UnsupportedOperationException("Unsupported SimpleDeclSpecifier type" + specifier.getType());
 	}
 
 	return type;
@@ -178,7 +180,8 @@ public class TypeConverter {
 	    setOOEnumType(type, typeName);
 	    return type;
 	default:
-	    throw new NotImplementedException();
+	    return generateDefaultObjectType();
+	    // throw new NotImplementedException();
 	}
     }
 
@@ -194,6 +197,12 @@ public class TypeConverter {
 	    setOOClassType(type, typeName);
 	}
 
+	return type;
+    }
+    
+    public static OOType generateDefaultObjectType() {
+	OOType type = factory.createOOType();
+	type.setBaseType(OOBaseType.OBJECT);
 	return type;
     }
 }

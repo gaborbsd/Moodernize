@@ -19,24 +19,25 @@ public class PointerConverter {
 	    if (TransformUtil.isGlobalVariable(referredName)) {
 		OOClass mainClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses,
 			MainClassCreator.MAINCLASSNAME);
-		findMemberAndChangeTypeFromArrayToPointer(mainClass, referredName);
+		if (mainClass != null) {
+		    findMemberAndChangeTypeFromArrayToPointer(mainClass, referredName);
+		}
 	    } else {
-		OOExpression ownerExpression= fieldReference.getFieldOwner();
+		OOExpression ownerExpression = fieldReference.getFieldOwner();
 		if (ownerExpression instanceof OOVariableReferenceExpression) {
 		    OOVariable referredVariable = ((OOVariableReferenceExpression) ownerExpression).getVariable();
 		    OOClass classType = referredVariable.getType().getClassType();
-		    OOClass ownerClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses, classType.getName());
+		    OOClass ownerClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses,
+			    classType.getName());
 		    if (ownerClass != null) {
 			findMemberAndChangeTypeFromArrayToPointer(ownerClass, referredName);
 		    }
 		}
 	    }
-	} 
-	else if (operandPossiblyContainingPointer instanceof OOVariableReferenceExpression) {
+	} else if (operandPossiblyContainingPointer instanceof OOVariableReferenceExpression) {
 	    OOVariable referredVariable = ((OOVariableReferenceExpression) operandPossiblyContainingPointer)
 		    .getVariable();
-	    OOVariable correspondingDeclaration = FunctionSymbolTable
-		    .getCorrespondingVariable(referredVariable);
+	    OOVariable correspondingDeclaration = FunctionSymbolTable.getCorrespondingVariable(referredVariable);
 	    if (correspondingDeclaration != null) {
 		changeTypeFromArrayToPointer(correspondingDeclaration);
 	    }
@@ -51,7 +52,7 @@ public class PointerConverter {
 	    }
 	}
     }
-    
+
     private static void changeTypeFromArrayToPointer(OOVariable toChange) {
 	OOType type = toChange.getType();
 	int numberOfIndirections = type.getNumberOfIndirections();

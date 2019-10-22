@@ -15,6 +15,7 @@ import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFunctionCallExpression;
 import hu.bme.aut.oogen.OOMethod;
@@ -36,7 +37,9 @@ public class FunctionCallExpressionConverter {
 	handleFunctionArguments(functionCall, call);
 	handleFunctionOwner(functionCall, call);
 
-	storeFunctionCall(functionCall, TransformUtil.getContainingFunctionName(call));
+	if (!(functionCall.getOwnerExpression() instanceof OOEmptyExpression)) {
+	    storeFunctionCall(functionCall, TransformUtil.getContainingFunctionName(call));
+	}
 
 	return functionCall;
     }
@@ -44,11 +47,16 @@ public class FunctionCallExpressionConverter {
     private void handleFunctionName(OOFunctionCallExpression functionCall, IASTFunctionCallExpression call) {
 	IASTExpression functionNameExpression = call.getFunctionNameExpression();
 	if (!(functionNameExpression instanceof IASTIdExpression)) {
-	    throw new UnsupportedOperationException(
-		    "Unexpected function call NameExpression encountered: " + functionNameExpression);
+	    functionCall.setFunctionName("UNRECOGNIZEDFUNCTIONNAME");
+	    /*
+	     * throw new UnsupportedOperationException(
+	     * "Unexpected function call NameExpression encountered: " +
+	     * functionNameExpression);
+	     */
+	} else {
+	    functionCall
+		    .setFunctionName(((IASTIdExpression) functionNameExpression).getName().resolveBinding().getName());
 	}
-
-	functionCall.setFunctionName(((IASTIdExpression) functionNameExpression).getName().resolveBinding().getName());
     }
 
     private void handleFunctionArguments(OOFunctionCallExpression functionCall, IASTFunctionCallExpression call) {
@@ -71,24 +79,28 @@ public class FunctionCallExpressionConverter {
 	if (ownerSetToRemovedParameter) {
 	    return;
 	}
+	try {
+	    OOClass containingClass = getContainingClass(functionCall.getFunctionName());
+	    OOClass mainClass = TransformUtil.getMainClassFromClasses(TransformationDataHolder.createdClasses);
+	    OOMethod calledFunction = getCalledFunction(mainClass.getMethods(), functionCall.getFunctionName());
 
-	OOClass containingClass = getContainingClass(functionCall.getFunctionName());
-	OOClass mainClass = TransformUtil.getMainClassFromClasses(TransformationDataHolder.createdClasses);
-	OOMethod calledFunction = getCalledFunction(mainClass.getMethods(), functionCall.getFunctionName());
+	    if (calledFunction.isStatic()) {
+		OOStringLiteral ownerExpression = factory.createOOStringLiteral();
+		ownerExpression.setValue(containingClass.getName());
+		functionCall.setOwnerExpression(ownerExpression);
+		return;
+	    }
 
-	if (calledFunction.isStatic()) {
-	    OOStringLiteral ownerExpression = factory.createOOStringLiteral();
-	    ownerExpression.setValue(containingClass.getName());
-	    functionCall.setOwnerExpression(ownerExpression);
-	    return;
-	}
+	    String containingFunctionName = TransformUtil.getContainingFunctionName(call);
+	    OOMethod containingFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.createdClasses,
+		    containingFunctionName);
 
-	String containingFunctionName = TransformUtil.getContainingFunctionName(call);
-	OOMethod containingFunction = TransformUtil.getMethodFromClasses(TransformationDataHolder.createdClasses,
-		containingFunctionName);
-
-	if (!checkIfFunctionContainsPreviousOwnerAndSetAsNewOwner(functionCall, containingFunction)) {
-	    createNewInstanceAndSetAsOwner(functionCall, containingClass, containingFunction);
+	    if (!checkIfFunctionContainsPreviousOwnerAndSetAsNewOwner(functionCall, containingFunction)) {
+		createNewInstanceAndSetAsOwner(functionCall, containingClass, containingFunction);
+	    }
+	} catch (UnsupportedOperationException e) {
+	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    functionCall.setOwnerExpression(emptyExpression);
 	}
     }
 

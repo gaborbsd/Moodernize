@@ -4,6 +4,7 @@ import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OODoubleLiteral;
+import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIntegerLiteral;
 import hu.bme.aut.oogen.OOLogicalLiteral;
@@ -18,13 +19,12 @@ public class LiteralExpressionConverter {
     public OOExpression convertLiteralExpression(IASTLiteralExpression literalExpression) {
 	String valueString = new String(literalExpression.getValue());
 	switch (literalExpression.getKind()) {
+	// TODO: Hexadecimal parse
 	case IASTLiteralExpression.lk_integer_constant:
 	    int valueInt;
 	    try {
 		valueInt = Integer.parseInt(valueString);
-	    } 
-	    // TODO: Hexadecimal?
-	    catch (NumberFormatException e) {
+	    } catch (NumberFormatException e) {
 		valueInt = -1024;
 	    }
 	    OOIntegerLiteral integerLiteral = factory.createOOIntegerLiteral();
@@ -37,9 +37,15 @@ public class LiteralExpressionConverter {
 	    OOLogicalLiteral logicalLiteral = factory.createOOLogicalLiteral();
 	    logicalLiteral.setValue(valueBoolean);
 	    return logicalLiteral;
-
+	    
+	//TODO: scientific parse
 	case IASTLiteralExpression.lk_float_constant:
-	    double valueDouble = Double.parseDouble(valueString);
+	    double valueDouble;
+	    try {
+		valueDouble = Double.parseDouble(valueString);
+	    } catch (NumberFormatException e) {
+		valueDouble = -1024;
+	    }
 	    OODoubleLiteral doubleLiteral = factory.createOODoubleLiteral();
 	    doubleLiteral.setValue(valueDouble);
 	    return doubleLiteral;
@@ -66,7 +72,10 @@ public class LiteralExpressionConverter {
 	    return factory.createOONullLiteral();
 
 	default:
-	    throw new UnsupportedOperationException("Unsupported LiteralExpression encountered: " + literalExpression);
+	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	// throw new UnsupportedOperationException("Unsupported LiteralExpression
+	// encountered: " + literalExpression);
 	}
     }
 }

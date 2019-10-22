@@ -13,6 +13,7 @@ import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOInitializerList;
 import hu.bme.aut.oogen.OONewArray;
@@ -38,7 +39,9 @@ public class InitializerConverter {
 	} else if (init instanceof IASTInitializerList) {
 	    return convertInitializerList((IASTInitializerList) init);
 	} else {
-	    throw new UnsupportedOperationException("Unsupported Initializer encountered: " + init);
+	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    // throw new UnsupportedOperationException("Unsupported Initializer encountered: " + init);
 	}
     }
 
@@ -51,7 +54,9 @@ public class InitializerConverter {
 	} else if (initClause instanceof IASTInitializerList) {
 	    return convertInitializerList((IASTInitializerList) initClause);
 	} else {
-	    throw new InvalidParameterException("Invalid Initializer encountered " + initClause);
+	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    // throw new InvalidParameterException("Invalid Initializer encountered " + initClause);
 	}
     }
 

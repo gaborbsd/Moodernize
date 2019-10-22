@@ -5,6 +5,7 @@ import org.eclipse.cdt.core.dom.ast.IASTElaboratedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOType;
 
@@ -16,7 +17,9 @@ public class DeclaratorSpecifierConverter {
 	    return TypeConverter.convertElaboratedTypeSpecifierType((IASTElaboratedTypeSpecifier) specifier);
 	} else if (specifier instanceof IASTNamedTypeSpecifier) {
 	    return TypeConverter.convertNamedTypeSpecifierType((IASTNamedTypeSpecifier) specifier);
-	} else
-	    throw new UnsupportedOperationException("Unsupported DeclSpecifier encountered: " + specifier);
+	} else {
+	    return TypeConverter.generateDefaultObjectType();
+	    //throw new UnsupportedOperationException("Unsupported DeclSpecifier encountered: " + specifier);
+	}
     }
 }

@@ -34,7 +34,14 @@ public class IntegerLiteralToBooleanConverter {
 	if (expression instanceof OOTwoOperandLogicalExpression) {
 	    convertTwoOperandLogicalExpression((OOTwoOperandLogicalExpression) expression);
 	} else if (expression instanceof OOMinusExpression) {
-	    return createBoolFromLogicalInt((OOIntegerLiteral) (((OOMinusExpression) expression).getOperand()));
+	    OOExpression operand = ((OOMinusExpression) expression).getOperand();
+	    operand = TransformUtil.getOperandInsideBrackets(operand);
+	    if (operand != null && operand instanceof OOIntegerLiteral) {
+		return createBoolFromLogicalInt((OOIntegerLiteral) operand);
+	    }
+	    else {
+		return expression;
+	    }
 	} else if (expression instanceof OOOneOperandLogicalExpression) {
 	    convertOneOperandLogicalExpression((OOOneOperandLogicalExpression) expression);
 	} else if (expression instanceof OOTernaryOperator) {
@@ -79,7 +86,7 @@ public class IntegerLiteralToBooleanConverter {
 
     private static void convertAssignmentExpression(OOAssignmentExpression expression) {
 	OOExpression lhs = expression.getLeftSide();
-	
+
 	if (lhs instanceof OOVariableReferenceExpression) {
 	    OOVariableReferenceExpression referredVariable = (OOVariableReferenceExpression) lhs;
 	    if (referredVariable.getVariable().getType().getBaseType() == OOBaseType.BOOLEAN) {
@@ -141,11 +148,11 @@ public class IntegerLiteralToBooleanConverter {
 	for (OOComment comment : integerLiteral.getBeforeComments()) {
 	    logicalLiteral.getBeforeComments().add(EcoreUtil.copy(comment));
 	}
-	
+
 	for (OOComment comment : integerLiteral.getAfterComments()) {
 	    logicalLiteral.getAfterComments().add(EcoreUtil.copy(comment));
 	}
-	
+
 	return logicalLiteral;
     }
 }

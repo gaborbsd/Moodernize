@@ -40,21 +40,24 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	    FunctionSymbolTable.clear();
 	    OOMethod correspondingFunction = TransformUtil.getFunctionByName(functions, functionName);
 	    
+	    if (correspondingFunction == null) {
+		return PROCESS_SKIP;
+	    }
+	    
 	    for (OOVariable parameter : correspondingFunction.getParameters()) {
 		FunctionSymbolTable.parameters.add(parameter);
 	    }
-	    
+
 	    IASTStatement[] statements = ((IASTCompoundStatement) function.getBody()).getStatements();
 	    StatementConverter converter = new StatementConverter();
 	    for (IASTStatement statement : statements) {
 		try {
-			OOStatement convertedStatement = converter.convertStatement(statement);
+		    OOStatement convertedStatement = converter.convertStatement(statement);
+		    CommentProcessor.processOwnedComments(convertedStatement,
+			    CommentMappingDataHolder.findAllOwnedComments(statement));
+		    addToDataHolderIfVariableDeclaration(convertedStatement);
 
-			CommentProcessor.processOwnedComments(convertedStatement,
-				CommentMappingDataHolder.findAllOwnedComments(statement));
-			addToDataHolderIfVariableDeclaration(convertedStatement);
-
-			correspondingFunction.getStatements().add(convertedStatement); 
+		    correspondingFunction.getStatements().add(convertedStatement);
 		} catch (UnsupportedOperationException | NotImplementedException e) {
 		    continue;
 		}

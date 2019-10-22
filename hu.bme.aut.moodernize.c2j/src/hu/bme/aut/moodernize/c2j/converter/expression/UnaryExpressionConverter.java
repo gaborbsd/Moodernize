@@ -6,6 +6,7 @@ import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.PointerConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBracketedExpression;
+import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOOneOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOOneOperandLogicalExpression;
@@ -47,14 +48,17 @@ public class UnaryExpressionConverter {
 	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPrefixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_sizeof:
-	    throw new NotImplementedException();
+	    OOEmptyExpression expression = factory.createOOEmptyExpression();
+	    return expression;
+	    //throw new NotImplementedException();
 	case IASTUnaryExpression.op_star:
 	    PointerConverter.handlePointerConversion(operand);
 	    return operand;
 	case IASTUnaryExpression.op_tilde:
 	    return setOperandAndReturn(factory.createOOBitWiseComplement(), operand);
 	default:
-	    throw new UnsupportedOperationException("Unsupported unary expression operator encountered " + operator);
+	    return factory.createOOEmptyExpression();
+	    // throw new UnsupportedOperationException("Unsupported unary expression operator encountered " + operator);
 	}
     }
 

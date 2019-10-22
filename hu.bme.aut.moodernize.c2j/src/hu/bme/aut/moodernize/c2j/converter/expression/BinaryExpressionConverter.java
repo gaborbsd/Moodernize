@@ -5,6 +5,7 @@ import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOComparatorExpression;
+import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOTwoOperandAssignableExpression;
@@ -116,26 +117,38 @@ public class BinaryExpressionConverter {
 
 	case IASTBinaryExpression.op_ellipses:
 	    // gcc only: (...) range
-	    throw new NotImplementedException();
+	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_max:
 	    // g++ only: >?
-	    throw new NotImplementedException();
+	    emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_min:
 	    // g++ only: <?
-	    throw new NotImplementedException();
+	    emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmarrow:
 	    // C++ only
-	    throw new NotImplementedException();
+	    emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmdot:
 	    // C== only
-	    throw new NotImplementedException();
+	    emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    //throw new NotImplementedException();
 
 	default:
-	    throw new UnsupportedOperationException("Unsupported binary expression operator encountered " + operator);
+	    emptyExpression = factory.createOOEmptyExpression();
+	    return emptyExpression;
+	    // throw new UnsupportedOperationException("Unsupported binary expression operator encountered " + operator);
 	}
     }
 

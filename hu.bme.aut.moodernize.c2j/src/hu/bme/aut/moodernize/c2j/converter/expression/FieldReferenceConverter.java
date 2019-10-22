@@ -1,5 +1,6 @@
 package hu.bme.aut.moodernize.c2j.converter.expression;
 
+import java.rmi.UnexpectedException;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -10,6 +11,7 @@ import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.util.OOExpressionWithPrecedingStatements;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
+import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOClass;
@@ -35,7 +37,12 @@ public class FieldReferenceConverter {
 	    getterCall.setFunctionName("get" + TransformUtil.getWithUpperCaseFirstCharacter(fieldName));
 	    setOwnerExpression(getterCall, fieldReference);
 
-	    OOVariable declaration = generatePrecedingDeclarationForFieldReference(fieldReference, getterCall);
+	    OOVariable declaration;
+	    try {
+		declaration = generatePrecedingDeclarationForFieldReference(fieldReference, getterCall);
+	    } catch (UnexpectedException e) {
+		return new OOExpressionWithPrecedingStatements(getterCall);
+	    }
 	    if (declaration == null) {
 		// TODO: Failed to get the variable reference expression
 		return new OOExpressionWithPrecedingStatements(getterCall);
@@ -47,7 +54,7 @@ public class FieldReferenceConverter {
 	    OOExpressionWithPrecedingStatements declarationAndReference = new OOExpressionWithPrecedingStatements(
 		    declarationReference);
 	    declarationAndReference.precedingStatements.add(declaration);
-	    
+
 	    FunctionSymbolTable.variableDeclarations.add(declaration);
 	    return declarationAndReference;
 	} else {
@@ -79,7 +86,7 @@ public class FieldReferenceConverter {
     }
 
     private OOVariable generatePrecedingDeclarationForFieldReference(IASTFieldReference fieldReference,
-	    OOFunctionCallExpression getterCall) {
+	    OOFunctionCallExpression getterCall) throws UnexpectedException {
 	OOExpression ownerExpression = TransformUtil.convertExpressionAndProcessPrecedingStatements(
 		new ExpressionConverter(), fieldReference.getFieldOwner());
 
@@ -87,15 +94,20 @@ public class FieldReferenceConverter {
 	    ownerExpression = ((OOBracketedExpression) ownerExpression).getOperand();
 	}
 	if (ownerExpression instanceof OOVariableReferenceExpression) {
-	    return createGeneratedDeclarationForVariableReference((OOVariableReferenceExpression) ownerExpression,
-		    fieldReference, getterCall);
+	    try {
+		return createGeneratedDeclarationForVariableReference((OOVariableReferenceExpression) ownerExpression,
+			fieldReference, getterCall);
+	    } catch (UnexpectedException e) {
+		throw e;
+	    }
+
 	}
 
 	return null;
     }
 
     private OOVariable createGeneratedDeclarationForVariableReference(OOVariableReferenceExpression varRef,
-	    IASTFieldReference fieldRef, OOFunctionCallExpression getterCall) {
+	    IASTFieldReference fieldRef, OOFunctionCallExpression getterCall) throws UnexpectedException {
 	OOVariable referredVariable = varRef.getVariable();
 	String fieldName = fieldRef.getFieldName().resolveBinding().getName();
 	String namePrefix = "generated";
@@ -105,18 +117,25 @@ public class FieldReferenceConverter {
 	declaration.setName(namePrefix + namePostFix);
 	declaration.setInitializerExpression(getterCall);
 
+	OOType type = referredVariable.getType();
+	if (type == null || type.getClassType() == null) {
+	    throw new UnexpectedException("The type of the referred field is incomplete!");
+	}
 	OOClass correspondingClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses,
-		referredVariable.getType().getClassType().getName());
+		type.getClassType().getName());
 	if (correspondingClass == null) {
-	    OOType type = factory.createOOType();
-	    type.setBaseType(OOBaseType.OBJECT);
-	    declaration.setType(type);
+	    OOType newType = factory.createOOType();
+	    newType.setBaseType(OOBaseType.OBJECT);
+	    declaration.setType(newType);
 	} else {
 	    OOVariable correspondingMember = TransformUtil.getVariableByNameFromMembers(correspondingClass.getMembers(),
 		    fieldName);
-	    declaration.setType(correspondingMember.getType());
+	    if (correspondingMember != null) {
+		declaration.setType(correspondingMember.getType());
+	    } else {
+		declaration.setType(TypeConverter.generateDefaultObjectType());
+	    }
 	}
-	
 
 	return declaration;
     }
