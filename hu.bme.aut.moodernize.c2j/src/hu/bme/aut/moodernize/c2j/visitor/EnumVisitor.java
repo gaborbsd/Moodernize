@@ -26,13 +26,20 @@ public class EnumVisitor extends AbstractBaseVisitor {
 	if (!isCorrectContainingFile(name)) {
 	    return PROCESS_SKIP;
 	}
-	
+
 	if (name.getRoleOfName(true) != IASTNameOwner.r_definition) {
 	    return PROCESS_SKIP;
 	}
-	
+
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof IEnumeration) {
+	    /////////////////////////////////////////////////////////////////
+
+	    System.out.println("---------------------------");
+	    System.out.println("FOUND NEW ENUM");
+	    System.out.println("---------------------------");
+
+	    ////////////////////////////////////////////////////////////////
 	    String enumName = binding.getName();
 	    if (!TransformUtil.isCorrectClassName(enumName)) {
 		return PROCESS_SKIP;

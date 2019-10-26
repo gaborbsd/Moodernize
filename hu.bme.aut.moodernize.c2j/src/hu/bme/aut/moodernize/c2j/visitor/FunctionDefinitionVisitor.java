@@ -44,6 +44,16 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 		return PROCESS_SKIP;
 	    }
 	    
+	    
+	    /////////////////////////////////////////////////////////////////
+	    
+	    System.out.println("---------------------------");
+	    System.out.println("ENTERED NEW FUNCTION BODY");
+	    System.out.println("---------------------------");
+	    
+	    ////////////////////////////////////////////////////////////////
+	    
+	    
 	    for (OOVariable parameter : correspondingFunction.getParameters()) {
 		FunctionSymbolTable.parameters.add(parameter);
 	    }

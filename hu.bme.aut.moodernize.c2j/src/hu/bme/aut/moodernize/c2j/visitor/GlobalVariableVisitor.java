@@ -24,8 +24,13 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	shouldVisitDeclarations = true;
     }
 
-    // TODO: Performance?
     public int visit(IASTDeclaration declaration) {
+	/////////////////////////////////////////////////////////////////
+	    System.out.println("---------------------------");
+	    System.out.println("ENTERED NEW DECLARATION: WANTED GLOBALVARIABLE");
+	    System.out.println("---------------------------");
+	////////////////////////////////////////////////////////////////
+	    
 	if (!isCorrectContainingFile(declaration)) {
 	    return PROCESS_SKIP;
 	}

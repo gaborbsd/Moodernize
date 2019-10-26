@@ -1,7 +1,5 @@
 package hu.bme.aut.moodernize.c2j.converter.declaration;
 
-import java.security.InvalidParameterException;
-
 import org.eclipse.cdt.core.dom.ast.IASTEqualsInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;

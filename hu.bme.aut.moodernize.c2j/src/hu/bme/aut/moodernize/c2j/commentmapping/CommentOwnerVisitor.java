@@ -3,7 +3,9 @@ package hu.bme.aut.moodernize.c2j.commentmapping;
 import org.eclipse.cdt.core.dom.ast.IASTComment;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.ICompositeType;
@@ -19,12 +21,15 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
     private int currentClosestLineNumber = Integer.MAX_VALUE;
     private CommentOwnerResult commentOwnerResult = new CommentOwnerResult();
     private IASTComment comment;
+    private IASTFileLocation commentLocation;
+    int epsilon = 10;
 
     public CommentOwnerVisitor(String fileName, IASTComment comment) {
 	super(fileName);
 
 	this.commentLineNumber = comment.getFileLocation().getStartingLineNumber();
 	this.comment = comment;
+	this.commentLocation = comment.getFileLocation();
 
 	commentOwnerResult.commentOwner = null;
 	commentOwnerResult.position = null;
@@ -55,7 +60,7 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 		commentOwnerResult.commentOwner = binding;
 	    }
 
-	    return PROCESS_CONTINUE;
+	    return calculateReturnValue(name);
 	}
 
 	return PROCESS_SKIP;
@@ -67,9 +72,9 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	}
 
 	if (statement instanceof IASTCompoundStatement) {
-	    return PROCESS_CONTINUE;
+	    return calculateReturnValue(statement);
 	}
-	
+
 	int distance = Math.abs(statement.getFileLocation().getStartingLineNumber() - commentLineNumber);
 	int currentDistance = Math.abs(currentClosestLineNumber - commentLineNumber);
 	if (distance < currentDistance
@@ -78,7 +83,7 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	    commentOwnerResult.commentOwner = statement;
 	}
 
-	return PROCESS_CONTINUE;
+	return calculateReturnValue(statement);
     }
 
     public int visit(IASTExpression expression) {
@@ -93,7 +98,37 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	    commentOwnerResult.commentOwner = expression;
 	}
 
-	return PROCESS_CONTINUE;
+	return calculateReturnValue(expression);
+    }
+
+    private boolean isStruct(IBinding binding) {
+	return binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct;
+    }
+
+    private boolean commentIsBeforeNode(IASTNode node) {
+	IASTFileLocation nodeLocation = node.getFileLocation();
+	return commentLocation.getStartingLineNumber() < nodeLocation.getStartingLineNumber();
+    }
+
+    private int calculateLineDifference(IASTNode node) {
+	IASTFileLocation nodeLocation = node.getFileLocation();
+	int difference;
+	if (commentIsBeforeNode(node)) {
+	    difference = nodeLocation.getStartingLineNumber() - commentLocation.getEndingLineNumber();
+	} else {
+	    difference = commentLocation.getStartingLineNumber() - nodeLocation.getEndingLineNumber();
+	}
+
+	return difference;
+    }
+
+    private int calculateReturnValue(IASTNode node) {
+	int lineDifference = calculateLineDifference(node);
+	if (lineDifference <= epsilon) {
+	    return PROCESS_CONTINUE;
+	} else {
+	    return PROCESS_SKIP;
+	}
     }
 
     public CommentOwnerResult getCommentOwnerResult() {
@@ -109,9 +144,5 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
 	commentOwnerResult.comment = ooComment;
 
 	return commentOwnerResult;
-    }
-
-    private boolean isStruct(IBinding binding) {
-	return binding instanceof ICompositeType && ((ICompositeType) binding).getKey() == ICompositeType.k_struct;
     }
 }

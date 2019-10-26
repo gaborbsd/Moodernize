@@ -11,7 +11,6 @@ import hu.bme.aut.oogen.OOTwoOperandArithmeticExpression;
 import hu.bme.aut.oogen.OOTwoOperandAssignableExpression;
 import hu.bme.aut.oogen.OOTwoOperandLogicalExpression;
 import hu.bme.aut.oogen.OogenFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class BinaryExpressionConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;

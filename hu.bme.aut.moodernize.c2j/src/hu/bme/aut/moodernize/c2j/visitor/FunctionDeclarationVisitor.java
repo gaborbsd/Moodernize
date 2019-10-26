@@ -40,6 +40,15 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof IFunction) {
+	    
+	    /////////////////////////////////////////////////////////////////
+	    
+	    System.out.println("---------------------------");
+	    System.out.println("FOUND NEW FUNCTION DECLARATION");
+	    System.out.println("---------------------------");
+	    
+	    ////////////////////////////////////////////////////////////////
+	    
 	    IFunction cdtFunction = (IFunction) binding;
 
 	    OOMethod ooFunction = factory.createOOMethod();

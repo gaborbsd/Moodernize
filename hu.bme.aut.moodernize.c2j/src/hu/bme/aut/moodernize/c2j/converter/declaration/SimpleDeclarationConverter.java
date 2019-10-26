@@ -6,7 +6,6 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
-import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -43,11 +42,11 @@ public class SimpleDeclarationConverter {
 	OOType type = declaredVariable.getType();
 
 	
-	for (@SuppressWarnings("unused") IASTPointerOperator pointerOperator : declarator.getPointerOperators()) {
+	/*for (@SuppressWarnings("unused") IASTPointerOperator pointerOperator : declarator.getPointerOperators()) {
 	    type.setArrayDimensions(type.getArrayDimensions() + 1);
 	    type.getArraySizeExpressions().add(factory.createOONullLiteral());
 	    type.setNumberOfIndirections(type.getNumberOfIndirections() + 1);
-	}
+	}*/
 	
 	if (declarator instanceof IASTArrayDeclarator) {
 	    IASTArrayDeclarator arrayDeclarator = (IASTArrayDeclarator) declarator;

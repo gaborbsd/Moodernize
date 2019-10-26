@@ -23,7 +23,6 @@ import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOIndexing;
 import hu.bme.aut.oogen.OOTernaryOperator;
 import hu.bme.aut.oogen.OogenFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class ExpressionConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;

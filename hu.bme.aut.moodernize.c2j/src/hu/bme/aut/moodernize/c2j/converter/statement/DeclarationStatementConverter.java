@@ -8,7 +8,6 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import hu.bme.aut.moodernize.c2j.converter.declaration.SimpleDeclarationConverter;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OogenFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class DeclarationStatementConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
