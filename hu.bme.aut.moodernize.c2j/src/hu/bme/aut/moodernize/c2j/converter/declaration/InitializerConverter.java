@@ -116,7 +116,7 @@ public class InitializerConverter {
 	    initializerList.getInitializerExpressions().add(convertInitializerClause(clause));
 	}
 
-	if (type.getBaseType() == OOBaseType.BOOLEAN) {
+	if (type != null && type.getBaseType()!= null && type.getBaseType() == OOBaseType.BOOLEAN) {
 	    IntegerLiteralToBooleanConverter.handleIntToBoolConversion(initializerList);
 	}
 	return initializerList;

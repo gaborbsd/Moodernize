@@ -33,13 +33,6 @@ public class EnumVisitor extends AbstractBaseVisitor {
 
 	IBinding binding = name.resolveBinding();
 	if (binding instanceof IEnumeration) {
-	    /////////////////////////////////////////////////////////////////
-
-	    System.out.println("---------------------------");
-	    System.out.println("FOUND NEW ENUM");
-	    System.out.println("---------------------------");
-
-	    ////////////////////////////////////////////////////////////////
 	    String enumName = binding.getName();
 	    if (!TransformUtil.isCorrectClassName(enumName)) {
 		return PROCESS_SKIP;

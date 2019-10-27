@@ -25,6 +25,9 @@ import hu.bme.aut.oogen.OOVariable;
 public class TransformUtil {
 
     public static String getWithUpperCaseFirstCharacter(String s) {
+	if (s == null || s.length() == 0) {
+	    return "";
+	}
 	if (s.length() == 1) {
 	    return s.substring(0, 1).toUpperCase();
 	}
@@ -221,7 +224,7 @@ public class TransformUtil {
 		containingFunctionName);
 	if (statements != null) {
 	    for (OOStatement statement : statements) {
-		if (statement != null) {
+		if (statement != null && containingFunctionName != null) {
 		    containingFunction.getStatements().add(statement);
 		    if (statement instanceof OOVariable) {
 			FunctionSymbolTable.variableDeclarations.add((OOVariable) statement);

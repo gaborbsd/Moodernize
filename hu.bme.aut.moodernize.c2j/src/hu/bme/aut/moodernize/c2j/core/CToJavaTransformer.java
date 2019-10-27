@@ -39,7 +39,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
-	checkForErrors(asts);
+	// checkForErrors(asts);
 	clearDataStructures();
 	createCommentMappings(asts);
 	collectProjectStructure(asts);
@@ -68,7 +68,6 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     }
 
     private void createCommentMappings(Set<IASTTranslationUnit> asts) {
-	System.out.println("STARTED COMMENT MAPPINGS");
 	List<CommentOwnerResult> commentOwners = new ArrayList<CommentOwnerResult>();
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
@@ -83,7 +82,6 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	    }
 	}
 	CommentMappingDataHolder.addAllMappings(commentOwners);
-	System.out.println("FINISHED COMMENT MAPPINGS");
     }
 
     private void collectProjectStructure(Set<IASTTranslationUnit> asts) {

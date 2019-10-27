@@ -42,7 +42,12 @@ public class SwitchStatementConverter {
     }
 
     private void collectCaseAndDefaultStatements() {
-	IASTStatement[] bodyStatements = ((IASTCompoundStatement) cdtSwitch.getBody()).getStatements();
+	IASTStatement body = cdtSwitch.getBody();
+	// TODO: Non-compound body? Is it even possible or invalid code?
+	if (!(body instanceof IASTCompoundStatement)) {
+	    return;
+	}
+	IASTStatement[] bodyStatements = ((IASTCompoundStatement) body).getStatements();
 	StatementConverter converter = new StatementConverter();
 
 	OOCompoundStatement key = null;
@@ -54,7 +59,9 @@ public class SwitchStatementConverter {
 		    statementBodies.putIfAbsent(compoundStatement, new ArrayList<OOStatement>());
 		    key = compoundStatement;
 		} else {
-		    statementBodies.get(key).add(convertedStatement);
+		    if (statementBodies != null && statementBodies.containsKey(key)) {
+			statementBodies.get(key).add(convertedStatement);
+		    }
 		}
 	    }
 	}

@@ -22,7 +22,7 @@ public class CommentOwnerVisitor extends AbstractBaseVisitor {
     private CommentOwnerResult commentOwnerResult = new CommentOwnerResult();
     private IASTComment comment;
     private IASTFileLocation commentLocation;
-    int epsilon = 10;
+    int epsilon = 5;
 
     public CommentOwnerVisitor(String fileName, IASTComment comment) {
 	super(fileName);
