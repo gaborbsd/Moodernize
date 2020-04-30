@@ -39,7 +39,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts) {
-	// checkForErrors(asts);
+	checkForErrors(asts);
 	clearDataStructures();
 	createCommentMappings(asts);
 	collectProjectStructure(asts);

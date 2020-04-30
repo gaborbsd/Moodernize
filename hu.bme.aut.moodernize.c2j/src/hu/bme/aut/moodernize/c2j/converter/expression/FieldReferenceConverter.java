@@ -22,8 +22,6 @@ import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableReferenceExpression;
 import hu.bme.aut.oogen.OogenFactory;
 
-// Ha meg nincs kirakva valtozoba, akkor deklaracio + arra referencia megy vissza
-// Egyebkent csak a referencia a meglevo deklaraciora
 public class FieldReferenceConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 

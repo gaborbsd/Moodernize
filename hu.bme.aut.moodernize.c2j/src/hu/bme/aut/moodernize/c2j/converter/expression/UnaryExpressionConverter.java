@@ -17,8 +17,6 @@ public class UnaryExpressionConverter {
 
     public OOExpression convertUnaryExpression(IASTUnaryExpression unaryExpression) {
 	ExpressionConverter converter = new ExpressionConverter();
-	
-	
 	return handleByOperator(unaryExpression.getOperator(), TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, unaryExpression.getOperand()));
     }
 

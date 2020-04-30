@@ -1,0 +1,21 @@
+grammar hu.bme.aut.apitransform.ApiTransform with org.eclipse.xtext.common.Terminals
+
+generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
+
+Model:
+	transformations+=Transformation*;
+
+Transformation:
+	source=Function '=>' target=Target;
+
+Target:
+	static?='static'? (prefix=FunctionPrefix)? function=Function;
+
+FunctionPrefix:
+	prefixes+=ID ('.' prefixes+=ID)* '.';
+
+Function:
+	name=ID '(' parameters+=Parameter* ')';
+
+Parameter:
+	name=ID;

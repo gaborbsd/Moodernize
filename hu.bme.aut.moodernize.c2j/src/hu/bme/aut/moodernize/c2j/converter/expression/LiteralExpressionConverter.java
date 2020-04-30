@@ -37,8 +37,8 @@ public class LiteralExpressionConverter {
 	    OOLogicalLiteral logicalLiteral = factory.createOOLogicalLiteral();
 	    logicalLiteral.setValue(valueBoolean);
 	    return logicalLiteral;
-	    
-	//TODO: scientific parse
+
+	// TODO: scientific parse
 	case IASTLiteralExpression.lk_float_constant:
 	    double valueDouble;
 	    try {

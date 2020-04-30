@@ -1,5 +1,6 @@
 package hu.bme.aut.moodernize.ui.popup.actions;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -44,7 +47,14 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.progress.IProgressService;
+import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.resource.XtextResourceSet;
 
+import com.google.inject.Injector;
+
+import hu.bme.aut.apitransform.ApiTransformStandaloneSetup;
+import hu.bme.aut.apitransform.apiTransform.ApiTransformPackage;
+import hu.bme.aut.apitransform.apiTransform.Model;
 import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
 import hu.bme.aut.oogen.OOClass;
@@ -55,7 +65,8 @@ import hu.bme.aut.oogen.java.OOCodeGeneratorTemplatesJava;
 
 public class TransformCToJava implements IObjectActionDelegate {
     private static final Pattern PKG_CLASS_PARSE_PATTERN = Pattern.compile("(.*)\\.(.*)");
-
+    private static final String API_TRANSFORM_FILE_NAME = "transformations.apitransform";
+    
     private IProject project;
     private ICProject cProject;
 
@@ -89,6 +100,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 		SubMonitor subMonitor = SubMonitor.convert(pm, 100);
 		try {
 		    subMonitor.beginTask("Parsing project", 100);
+		    Model model = loadApiTransformationModel();
 		    Set<IASTTranslationUnit> asts = parseCProject();
 		    try {
 			Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts);
@@ -124,7 +136,38 @@ public class TransformCToJava implements IObjectActionDelegate {
 	    }
 	}
     }
+    
+    private Model loadApiTransformationModel() {
+	Injector injector = new ApiTransformStandaloneSetup().createInjector();
+	ApiTransformPackage.eINSTANCE.eClass();
+	XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+	resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+	
+	java.net.URI uri = cProject.getLocationURI();
+	String fullURI = uri.getScheme() + ":/" + uri.getPath().substring(1) + File.separator + API_TRANSFORM_FILE_NAME;
+	Resource resource = resourceSet.getResource(URI.createURI(fullURI), true);
+	return (Model) resource.getContents().get(0);
+    }
 
+    private Set<IASTTranslationUnit> parseCProject() {
+	Set<IASTTranslationUnit> asts = new HashSet<>();
+	try {
+	    for (ISourceRoot folder : cProject.getSourceRoots()) {
+		if (folder.getElementName() == null || folder.getElementName().isEmpty())
+		    continue;
+		for (ITranslationUnit tu : folder.getTranslationUnits()) {
+		    asts.add(tu.getAST());
+		}
+	    }
+	} catch (CModelException cme) {
+	    cme.printStackTrace();
+	} catch (CoreException ce) {
+	    ce.printStackTrace();
+	}
+
+	return asts;
+    }
+    
     private Map<String, String> transformToOOgenModel(SubMonitor subMonitor, Set<IASTTranslationUnit> asts) {
 	SubMonitor transformationMonitor = subMonitor.split(50);
 	transformationMonitor.beginTask("Transforming program code", 100);
@@ -147,25 +190,6 @@ public class TransformCToJava implements IObjectActionDelegate {
 	transformationMonitor.worked(90);
 	transformationMonitor.done();
 	return classes;
-    }
-
-    private Set<IASTTranslationUnit> parseCProject() {
-	Set<IASTTranslationUnit> asts = new HashSet<>();
-	try {
-	    for (ISourceRoot folder : cProject.getSourceRoots()) {
-		if (folder.getElementName() == null || folder.getElementName().isEmpty())
-		    continue;
-		for (ITranslationUnit tu : folder.getTranslationUnits()) {
-		    asts.add(tu.getAST());
-		}
-	    }
-	} catch (CModelException cme) {
-	    cme.printStackTrace();
-	} catch (CoreException ce) {
-	    ce.printStackTrace();
-	}
-
-	return asts;
     }
 
     private void generateJavaProject(SubMonitor subMonitor, Map<String, String> transformedCode) {
