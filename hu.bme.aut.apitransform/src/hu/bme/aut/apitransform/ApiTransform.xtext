@@ -102,10 +102,6 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 		'className:'
 	;
 	
-	terminal STATICKW:
-		'static'
-	;
-	
 	terminal OPERATORASSIGN:
 		'='
 	;
