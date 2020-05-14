@@ -144,7 +144,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 	resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 	
 	java.net.URI uri = cProject.getLocationURI();
-	String fullURI = uri.getScheme() + ":/" + uri.getPath().substring(1) + File.separator + API_TRANSFORM_FILE_NAME;
+	String fullURI = uri.getScheme() + ":" + uri.getPath() + File.separator + API_TRANSFORM_FILE_NAME;
 	Resource resource = resourceSet.getResource(URI.createURI(fullURI), true);
 	return (Model) resource.getContents().get(0);
     }

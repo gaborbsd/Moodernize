@@ -2,20 +2,90 @@ grammar hu.bme.aut.apitransform.ApiTransform with org.eclipse.xtext.common.Termi
 
 generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 
-Model:
-	transformations+=Transformation*;
+	Model:
+		transformations+=Transformation*
+	;
+	
+	Transformation:
+		LBRACE TRANSFORMKW
+			source = Function | Operator
+			target = Function | Operator
+		RBRACE
+	;
+	
+	Function:
+		FUNCTIONKW LBRACE
+			instantiations = Instantiation?
+			name=FullName | ID
+			parameters += Parameter*
+			owner=ID | {Function} STATICKW 
+		RBRACE
+	;
+		
+	Operator:
+		OPERATORKW LBRACE
+			type=OPERATORASSIGN
+			operand+=Parameter*
+		RBRACE
+	;
+		
+	Instantiation:
+		INSTANTIATIONKW LBRACE
+			instances+=Instance+
+		RBRACE
+	;
+	
+	Instance:
+		INSTANCEKW name=ID LBRACE
+			className=FullName parameters+=Parameter*
+		RBRACE
+	;
+		
+	Parameter:
+		name=ID
+	;
+	
+	PackageName:
+		prefixes+=ID ('.' prefixes+=ID)* '.'
+	;
+	
+	FullName:
+		packageName=PackageName name=ID
+	;
+	
+	
+	terminal TRANSFORMKW:
+		'transformation'
+	;
+	
+	terminal INSTANCEKW:
+		'instance'
+	;
+	
+	terminal INSTANTIATIONKW:
+		'instantiation'
+	;
+	
+	terminal FUNCTIONKW:
+		'function'
+	;
+	
+	terminal OPERATORKW:
+		'operator'
+	;
+	
+	terminal STATICKW:
+		'static'
+	;
+	
+	terminal OPERATORASSIGN:
+		'assign'
+	;
+	
+	terminal LBRACE:
+		'{'
+	;
 
-Transformation:
-	source=Function '=>' target=Target;
-
-Target:
-	static?='static'? (prefix=FunctionPrefix)? function=Function;
-
-FunctionPrefix:
-	prefixes+=ID ('.' prefixes+=ID)* '.';
-
-Function:
-	name=ID '(' parameters+=Parameter* ')';
-
-Parameter:
-	name=ID;
+	terminal RBRACE:
+		'}'
+	;

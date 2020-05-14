@@ -11,22 +11,35 @@
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Transformation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/source"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/target"/>
-    </genClasses>
-    <genClasses ecoreClass="ApiTransform.ecore#//Target">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Target/static"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Target/prefix"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Target/function"/>
-    </genClasses>
-    <genClasses ecoreClass="ApiTransform.ecore#//FunctionPrefix">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//FunctionPrefix/prefixes"/>
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Function">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Function/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Function/instantiations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Function/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Function/parameters"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Function/owner"/>
+    </genClasses>
+    <genClasses ecoreClass="ApiTransform.ecore#//Operator">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Operator/target"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Operator/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Operator/operand"/>
+    </genClasses>
+    <genClasses ecoreClass="ApiTransform.ecore#//Instantiation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Instantiation/instances"/>
+    </genClasses>
+    <genClasses ecoreClass="ApiTransform.ecore#//Instance">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Instance/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Instance/className"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Instance/parameters"/>
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Parameter">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Parameter/name"/>
+    </genClasses>
+    <genClasses ecoreClass="ApiTransform.ecore#//PackageName">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//PackageName/prefixes"/>
+    </genClasses>
+    <genClasses ecoreClass="ApiTransform.ecore#//FullName">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//FullName/packageName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//FullName/name"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

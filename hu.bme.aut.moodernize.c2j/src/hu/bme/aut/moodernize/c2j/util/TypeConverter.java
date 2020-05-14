@@ -205,6 +205,7 @@ public class TypeConverter {
     public static OOType generateDefaultObjectType() {
 	OOType type = factory.createOOType();
 	type.setBaseType(OOBaseType.OBJECT);
+
 	return type;
     }
 }
