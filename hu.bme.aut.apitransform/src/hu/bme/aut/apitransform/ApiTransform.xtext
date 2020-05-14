@@ -8,8 +8,8 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	Transformation:
 		LBRACE TRANSFORMKW
-			source = Function | Operator
-			target = Function | Operator
+			SOURCEKW source=Function | Operator
+			TARGETSKW targets+=(Function | Operator)+
 		RBRACE
 	;
 	
@@ -58,6 +58,14 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 		'transformation'
 	;
 	
+	terminal SOURCEKW:
+		'source'
+	;
+	
+	terminal TARGETSKW:
+		'targets'
+	;
+	
 	terminal INSTANCEKW:
 		'instance'
 	;
@@ -79,7 +87,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	;
 	
 	terminal OPERATORASSIGN:
-		'assign'
+		'='
 	;
 	
 	terminal LBRACE:
