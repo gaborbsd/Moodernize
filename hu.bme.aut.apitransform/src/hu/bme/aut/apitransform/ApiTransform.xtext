@@ -9,23 +9,22 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	Transformation:
 		LBRACE TRANSFORMKW
 			SOURCEKW source=Function | Operator
-			TARGETSKW targets+=(Function | Operator)+
+			TARGETSKW LBRACE targets+=(Function | Operator)+ RBRACE
 		RBRACE
 	;
 	
 	Function:
-		FUNCTIONKW LBRACE
+		FUNCTIONKW name=ID LBRACE
 			instantiations = Instantiation?
-			name=FullName | ID
-			parameters += Parameter*
-			owner=ID | {Function} STATICKW 
+			PARAMETERSKW parameters += Parameter*
+			OWNERKW owner=ID | PrefixedName
 		RBRACE
 	;
 		
 	Operator:
 		OPERATORKW LBRACE
-			type=OPERATORASSIGN
-			operand+=Parameter*
+			TYPEKW type=OPERATORASSIGN
+			OPERANDSKW operand+=Parameter*
 		RBRACE
 	;
 		
@@ -37,7 +36,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	Instance:
 		INSTANCEKW name=ID LBRACE
-			className=FullName parameters+=Parameter*
+			CLASSNAMEKW className=PrefixedName PARAMETERSKW parameters+=Parameter*
 		RBRACE
 	;
 		
@@ -45,12 +44,9 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 		name=ID
 	;
 	
-	PackageName:
-		prefixes+=ID ('.' prefixes+=ID)* '.'
-	;
 	
-	FullName:
-		packageName=PackageName name=ID
+	PrefixedName:
+		prefixes+=ID ('.' prefixes+=ID)* '.' name=ID
 	;
 	
 	
@@ -80,6 +76,30 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	terminal OPERATORKW:
 		'operator'
+	;
+	
+	terminal TYPEKW:
+		'type:'
+	;
+	
+	terminal OPERANDSKW:
+		'operands:'
+	;
+	
+	terminal PARAMETERSKW:
+		'parameters:'
+	;
+	
+	terminal OWNERKW:
+		'owner:'
+	;
+	
+	terminal NAMEKW:
+		'name:'
+	;
+	
+	terminal CLASSNAMEKW:
+		'className:'
 	;
 	
 	terminal STATICKW:
