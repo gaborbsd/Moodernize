@@ -16,7 +16,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Function/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Function/instantiations"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Function/parameters"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Function/owner"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Function/owner"/>
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Operator">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Operator/targets"/>
@@ -36,6 +36,10 @@
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//PrefixedName">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//PrefixedName/prefixes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//PrefixedName/name"/>
+    </genClasses>
+    <genClasses ecoreClass="ApiTransform.ecore#//Owner">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Owner/owner"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

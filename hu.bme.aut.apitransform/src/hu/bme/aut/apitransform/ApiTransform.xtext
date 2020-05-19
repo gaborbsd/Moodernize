@@ -7,36 +7,36 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	;
 	
 	Transformation:
-		TRANSFORMKW LBRACE 
-			SOURCEKW source=Function | Operator
-			TARGETSKW LBRACE targets+=(Function | Operator)+ RBRACE
-		RBRACE
+		'transformation' '{' 
+			'source' source=Function | Operator
+			'targets' '{'  targets+=(Function | Operator)+ '}'
+		'}'
 	;
 	
 	Function:
-		FUNCTIONKW name=ID LBRACE
-			instantiations = Instantiation?
-			PARAMETERSKW parameters += Parameter*
-			OWNERKW (owner=ID | PrefixedName)?
-		RBRACE
+		'function' name=ID '{' 
+			(instantiations = Instantiation)?
+			'parameters:' parameters += Parameter*
+			(owner = Owner)?
+		'}'
 	;
 		
 	Operator:
-		OPERATORKW type=OPERATORASSIGN LBRACE
-			OPERANDSKW operand+=Parameter*
-		RBRACE
+		'operator' type='=' '{'
+			'operands:' operand+=Parameter*
+		'}'
 	;
 		
 	Instantiation:
-		INSTANTIATIONKW LBRACE
+		'instantiation' '{'
 			instances+=Instance+
-		RBRACE
+		'{'
 	;
 	
 	Instance:
-		INSTANCEKW name=ID LBRACE
-			CLASSNAMEKW className=PrefixedName PARAMETERSKW parameters+=Parameter*
-		RBRACE
+		'instance' name=ID '{'
+			'className:' className=PrefixedName 'parameters:' parameters+=Parameter*
+		'}'
 	;
 		
 	Parameter:
@@ -48,59 +48,6 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 		prefixes+=ID ('.' prefixes+=ID)* '.' name=ID
 	;
 	
-	
-	terminal TRANSFORMKW:
-		'transformation'
-	;
-	
-	terminal SOURCEKW:
-		'source'
-	;
-	
-	terminal TARGETSKW:
-		'targets'
-	;
-	
-	terminal INSTANCEKW:
-		'instance'
-	;
-	
-	terminal INSTANTIATIONKW:
-		'instantiation'
-	;
-	
-	terminal FUNCTIONKW:
-		'function'
-	;
-	
-	terminal OPERATORKW:
-		'operator'
-	;
-	
-	terminal OPERANDSKW:
-		'operands:'
-	;
-	
-	terminal PARAMETERSKW:
-		'parameters:'
-	;
-	
-	terminal OWNERKW:
-		'owner:'
-	;
-	
-	terminal CLASSNAMEKW:
-		'className:'
-	;
-	
-	terminal OPERATORASSIGN:
-		'='
-	;
-	
-	terminal LBRACE:
-		'{'
-	;
-
-	terminal RBRACE:
-		'}'
+	Owner:
+		'owner:' owner=ID | PrefixedName
 	;
