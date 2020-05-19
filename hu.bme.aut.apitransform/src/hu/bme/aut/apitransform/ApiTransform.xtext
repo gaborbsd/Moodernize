@@ -53,9 +53,9 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	;
 	
 	PrefixedName:
-		prefixes+=ID ('.' prefixes+=ID)* '.' name=ID
+		(prefixes+=ID ('.' prefixes+=ID)* '.' )?  name=ID
 	;
 	
 	Owner:
-		'owner:' owner=ID | PrefixedName
+		'owner:' owner=PrefixedName
 	;

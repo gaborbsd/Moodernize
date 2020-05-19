@@ -46,7 +46,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//PrefixedName/name"/>
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Owner">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Owner/owner"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Owner/owner"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
