@@ -8,21 +8,21 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	Transformation:
 		'transformation' '{' 
-			'source' source=Function | Operator
-			'targets' '{'  targets+=(Function | Operator)+ '}'
+			'source' (source=Function | source=Operator)
+			'targets' '{'  (targets+=Function | targets+=Operator)+ '}'
 		'}'
 	;
 	
 	Function:
 		'function' name=ID '{' 
-			(instantiations = Instantiation)?
-			'parameters:' parameters += Parameter*
+			(instantiations=Instantiation)?
+			'parameters:' parameters+=Parameter*
 			(owner = Owner)?
 		'}'
 	;
 		
 	Operator:
-		'operator' type='=' '{'
+		'operator' type=OPERATORTYPE '{'
 			'operands:' operand+=Parameter*
 		'}'
 	;
@@ -30,7 +30,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	Instantiation:
 		'instantiation' '{'
 			instances+=Instance+
-		'{'
+		'}'
 	;
 	
 	Instance:
@@ -40,9 +40,8 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	;
 		
 	Parameter:
-		name=ID
+		(name=ID | operator=Operator)
 	;
-	
 	
 	PrefixedName:
 		prefixes+=ID ('.' prefixes+=ID)* '.' name=ID
@@ -50,4 +49,8 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	Owner:
 		'owner:' owner=ID | PrefixedName
+	;
+	
+	terminal OPERATORTYPE:
+		'plus' | 'minus' | 'multiply' 'divide' 'assign'
 	;
