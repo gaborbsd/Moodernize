@@ -22,8 +22,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	;
 		
 	Operator:
-		OPERATORKW LBRACE
-			TYPEKW type=OPERATORASSIGN
+		OPERATORKW type=OPERATORASSIGN LBRACE
 			OPERANDSKW operand+=Parameter*
 		RBRACE
 	;
@@ -78,10 +77,6 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 		'operator'
 	;
 	
-	terminal TYPEKW:
-		'type:'
-	;
-	
 	terminal OPERANDSKW:
 		'operands:'
 	;
@@ -92,10 +87,6 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	terminal OWNERKW:
 		'owner:'
-	;
-	
-	terminal NAMEKW:
-		'name:'
 	;
 	
 	terminal CLASSNAMEKW:
