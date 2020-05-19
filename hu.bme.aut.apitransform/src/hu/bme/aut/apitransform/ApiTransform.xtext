@@ -7,7 +7,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	;
 	
 	Transformation:
-		LBRACE TRANSFORMKW
+		TRANSFORMKW LBRACE 
 			SOURCEKW source=Function | Operator
 			TARGETSKW LBRACE targets+=(Function | Operator)+ RBRACE
 		RBRACE
