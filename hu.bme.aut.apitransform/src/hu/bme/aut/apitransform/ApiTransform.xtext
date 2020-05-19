@@ -17,7 +17,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 		FUNCTIONKW name=ID LBRACE
 			instantiations = Instantiation?
 			PARAMETERSKW parameters += Parameter*
-			OWNERKW owner=ID | PrefixedName
+			OWNERKW (owner=ID | PrefixedName)?
 		RBRACE
 	;
 		
