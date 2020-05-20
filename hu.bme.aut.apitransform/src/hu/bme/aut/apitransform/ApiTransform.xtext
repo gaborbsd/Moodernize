@@ -8,37 +8,26 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	Transformation:
 		'transformation' '{' 
-			source=SourceBlock
-			target=TargetBlock
-		'}'
-	;
-	
-	SourceBlock:
-		'source' (source=Function | source=Operator)
-	;
-	
-	TargetBlock:
-		{TargetBlock} 'targets' '{'  (instantiations=Instantiation)?
-		 (targets+=Function | targets+=Operator)*
+			'source' (source=Function | source=Operator)
+			'targets' '{'  
+				('instantiation' '{'
+					instances+=Instance+
+				'}')?
+		 		(targets+=Function | targets+=Operator)*
 		 '}'
+		'}'
 	;
 	
 	Function:
 		'function' name=ID '{'
 			'parameters:' parameters+=Parameter*
-			(owner = Owner)?
+			('owner:' owner=PrefixedName)?
 		'}'
 	;
 		
 	Operator:
 		'operator' (type='plus' | type='minus' | type='multiply' | type='divide' | type='assign') '{'
 			'operands:' operand+=Parameter*
-		'}'
-	;
-		
-	Instantiation:
-		'instantiation' '{'
-			instances+=Instance+
 		'}'
 	;
 	
@@ -54,8 +43,4 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	PrefixedName:
 		(prefixes+=ID ('.' prefixes+=ID)* '.' )?  name=ID
-	;
-	
-	Owner:
-		'owner:' owner=PrefixedName
 	;

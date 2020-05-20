@@ -11,14 +11,8 @@
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Transformation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/source"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/target"/>
-    </genClasses>
-    <genClasses ecoreClass="ApiTransform.ecore#//SourceBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//SourceBlock/source"/>
-    </genClasses>
-    <genClasses ecoreClass="ApiTransform.ecore#//TargetBlock">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//TargetBlock/instantiations"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//TargetBlock/targets"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/instantiations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/targets"/>
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Function">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Function/name"/>
@@ -44,9 +38,6 @@
     <genClasses ecoreClass="ApiTransform.ecore#//PrefixedName">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//PrefixedName/prefixes"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//PrefixedName/name"/>
-    </genClasses>
-    <genClasses ecoreClass="ApiTransform.ecore#//Owner">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Owner/owner"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

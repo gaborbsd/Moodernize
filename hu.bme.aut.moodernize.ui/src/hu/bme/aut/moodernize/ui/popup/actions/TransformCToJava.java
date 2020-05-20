@@ -65,11 +65,10 @@ import hu.bme.aut.oogen.java.OOCodeGeneratorTemplatesJava;
 
 public class TransformCToJava implements IObjectActionDelegate {
     private static final Pattern PKG_CLASS_PARSE_PATTERN = Pattern.compile("(.*)\\.(.*)");
-    private static final String API_TRANSFORM_FILE_NAME = "transformations.apitransform";
     
     private IProject project;
     private ICProject cProject;
-
+    
     private IProgressService pgService;
     private Shell shell;
     private Display display;
@@ -100,7 +99,8 @@ public class TransformCToJava implements IObjectActionDelegate {
 		SubMonitor subMonitor = SubMonitor.convert(pm, 100);
 		try {
 		    subMonitor.beginTask("Parsing project", 100);
-		    Model model = loadApiTransformationModel();
+		    ApiTransformModelTransformer modelTransformer = new ApiTransformModelTransformer(cProject);
+		    Model model = modelTransformer.getApiTransformationModel();
 		    Set<IASTTranslationUnit> asts = parseCProject();
 		    try {
 			Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts);
@@ -135,18 +135,6 @@ public class TransformCToJava implements IObjectActionDelegate {
 		}
 	    }
 	}
-    }
-    
-    private Model loadApiTransformationModel() {
-	Injector injector = new ApiTransformStandaloneSetup().createInjector();
-	ApiTransformPackage.eINSTANCE.eClass();
-	XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-	resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-	
-	java.net.URI uri = cProject.getLocationURI();
-	String fullURI = uri.getScheme() + ":" + uri.getPath() + File.separator + API_TRANSFORM_FILE_NAME;
-	Resource resource = resourceSet.getResource(URI.createURI(fullURI), true);
-	return (Model) resource.getContents().get(0);
     }
 
     private Set<IASTTranslationUnit> parseCProject() {
