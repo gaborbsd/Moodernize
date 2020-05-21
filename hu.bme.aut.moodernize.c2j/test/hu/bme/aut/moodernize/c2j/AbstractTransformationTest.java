@@ -34,7 +34,7 @@ public abstract class AbstractTransformationTest {
     protected OOModel getModelBySourceCode(String sourceCode) {
 	try {
 	    IASTTranslationUnit ast = getIASTTranslationUnit(sourceCode.toString().toCharArray());
-	    return transformer.transform(new HashSet<IASTTranslationUnit>(Arrays.asList(ast)));
+	    return transformer.transform(new HashSet<IASTTranslationUnit>(Arrays.asList(ast)), null);
 	} catch (CoreException ex) {
 	    ex.printStackTrace();
 	    return null;

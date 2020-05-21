@@ -1,6 +1,5 @@
 package hu.bme.aut.moodernize.ui.popup.actions;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +25,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -47,13 +44,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.progress.IProgressService;
-import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.resource.XtextResourceSet;
 
-import com.google.inject.Injector;
-
-import hu.bme.aut.apitransform.ApiTransformStandaloneSetup;
-import hu.bme.aut.apitransform.apiTransform.ApiTransformPackage;
 import hu.bme.aut.apitransform.apiTransform.Model;
 import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
@@ -65,10 +56,10 @@ import hu.bme.aut.oogen.java.OOCodeGeneratorTemplatesJava;
 
 public class TransformCToJava implements IObjectActionDelegate {
     private static final Pattern PKG_CLASS_PARSE_PATTERN = Pattern.compile("(.*)\\.(.*)");
-    
+
     private IProject project;
     private ICProject cProject;
-    
+
     private IProgressService pgService;
     private Shell shell;
     private Display display;
@@ -103,7 +94,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 		    Model model = modelTransformer.getApiTransformationModel();
 		    Set<IASTTranslationUnit> asts = parseCProject();
 		    try {
-			Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts);
+			Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts, model);
 			generateJavaProject(subMonitor, transformedCode);
 		    } catch (OperationCanceledException e) {
 			showErrorWindow(e.getMessage());
@@ -155,14 +146,14 @@ public class TransformCToJava implements IObjectActionDelegate {
 
 	return asts;
     }
-    
-    private Map<String, String> transformToOOgenModel(SubMonitor subMonitor, Set<IASTTranslationUnit> asts) {
+
+    private Map<String, String> transformToOOgenModel(SubMonitor subMonitor, Set<IASTTranslationUnit> asts, Model model) {
 	SubMonitor transformationMonitor = subMonitor.split(50);
 	transformationMonitor.beginTask("Transforming program code", 100);
 	transformationMonitor.worked(10);
 
 	ICToJavaTransformer transformer = new CToJavaTransformer();
-	OOModel ooModel = transformer.transform(asts);
+	OOModel ooModel = transformer.transform(asts, model);
 
 	Map<String, String> classes = new HashMap<>();
 	OOCodeGeneratorTemplatesJava template = OOCodeGeneratorTemplatesJava.getInstance();
@@ -239,7 +230,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 	    e.printStackTrace();
 	}
     }
-    
+
     private void showErrorWindow(String message) {
 	display.asyncExec(new Runnable() {
 	    @Override

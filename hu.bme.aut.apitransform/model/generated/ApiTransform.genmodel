@@ -11,7 +11,7 @@
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Transformation">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/source"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/instantiations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/instances"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Transformation/targets"/>
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Function">
@@ -22,9 +22,6 @@
     <genClasses ecoreClass="ApiTransform.ecore#//Operator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Operator/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Operator/operand"/>
-    </genClasses>
-    <genClasses ecoreClass="ApiTransform.ecore#//Instantiation">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ApiTransform.ecore#//Instantiation/instances"/>
     </genClasses>
     <genClasses ecoreClass="ApiTransform.ecore#//Instance">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ApiTransform.ecore#//Instance/name"/>

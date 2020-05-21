@@ -14,7 +14,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 					instances+=Instance+
 				'}')?
 		 		(targets+=Function | targets+=Operator)*
-		 '}'
+		 	'}'
 		'}'
 	;
 	
@@ -26,7 +26,7 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	;
 		
 	Operator:
-		'operator' (type='plus' | type='minus' | type='multiply' | type='divide' | type='assign') '{'
+		'operator' type=OPERATORTYPE '{'
 			'operands:' operand+=Parameter*
 		'}'
 	;
@@ -43,4 +43,8 @@ generate apiTransform "http://www.bme.hu/aut/apitransform/ApiTransform"
 	
 	PrefixedName:
 		(prefixes+=ID ('.' prefixes+=ID)* '.' )?  name=ID
+	;
+	
+	terminal OPERATORTYPE:
+		'plus' | 'minus' | 'multiply' | 'divide' | 'assign'
 	;

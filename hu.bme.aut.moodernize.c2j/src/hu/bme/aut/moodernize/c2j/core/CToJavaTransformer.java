@@ -7,6 +7,7 @@ import java.util.Set;
 import org.eclipse.cdt.core.dom.ast.IASTComment;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
+import hu.bme.aut.apitransform.apiTransform.Model;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerResult;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerVisitor;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
@@ -38,12 +39,14 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
 
     @Override
-    public OOModel transform(Set<IASTTranslationUnit> asts) {
+    public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
 	checkForErrors(asts);
 	clearDataStructures();
 	createCommentMappings(asts);
+	
 	collectProjectStructure(asts);
 	assignFunctionsToClassesBySignature();
+	
 	createMainClass();
 	createSupplementingMethods();
 	collectFunctionDefinitions(asts);
