@@ -14,6 +14,7 @@ import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOClass;
+import hu.bme.aut.oogen.OOComment;
 import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOMember;
@@ -21,6 +22,7 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OogenFactory;
 
 public class TransformUtil {
 
@@ -241,12 +243,19 @@ public class TransformUtil {
 
 	return convertedExpression.expression;
     }
-    
+
     public static OOExpression getOperandInsideBrackets(OOExpression expression) {
 	while (expression instanceof OOBracketedExpression) {
 	    expression = ((OOBracketedExpression) expression).getOperand();
 	}
-	
+
 	return expression;
+    }
+    
+    public static void createAndAttachNotRecognizedErrorComment(OOExpression expression, String errorMessage) {
+	OogenFactory factory = OogenFactory.eINSTANCE;
+	OOComment errorComment = factory.createOOComment();
+	errorComment.setText("/*" + errorMessage + "*/");
+	expression.getBeforeComments().add(errorComment);
     }
 }

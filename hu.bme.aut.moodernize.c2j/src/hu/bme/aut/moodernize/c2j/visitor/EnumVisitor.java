@@ -45,7 +45,7 @@ public class EnumVisitor extends AbstractBaseVisitor {
 		ooEnum.getOptions().add(enumerator.getName());
 	    }
 
-	    CommentProcessor.processOwnedComments(ooEnum, CommentMappingDataHolder.findAllOwnedComments(enumeration));
+	    CommentProcessor.attachOwnedCommentsToOwner(ooEnum, CommentMappingDataHolder.findAllOwnedComments(enumeration));
 
 	    if (!TransformUtil.listContainsEnum(enums, ooEnum)) {
 		enums.add(ooEnum);

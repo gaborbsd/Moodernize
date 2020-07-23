@@ -90,8 +90,8 @@ public class TransformCToJava implements IObjectActionDelegate {
 		SubMonitor subMonitor = SubMonitor.convert(pm, 100);
 		try {
 		    subMonitor.beginTask("Parsing project", 100);
-		    ApiTransformModelTransformer modelTransformer = new ApiTransformModelTransformer(cProject);
-		    Model model = modelTransformer.getApiTransformationModel();
+		    ApiTransformModelInterpreter interpreter = new ApiTransformModelInterpreter(cProject);
+		    Model model = interpreter.getApiTransformationModel();
 		    Set<IASTTranslationUnit> asts = parseCProject();
 		    try {
 			Map<String, String> transformedCode = transformToOOgenModel(subMonitor, asts, model);

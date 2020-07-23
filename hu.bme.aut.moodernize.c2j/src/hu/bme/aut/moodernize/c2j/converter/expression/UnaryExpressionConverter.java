@@ -3,7 +3,6 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
-import hu.bme.aut.moodernize.c2j.util.PointerConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBracketedExpression;
 import hu.bme.aut.oogen.OOEmptyExpression;
@@ -17,7 +16,8 @@ public class UnaryExpressionConverter {
 
     public OOExpression convertUnaryExpression(IASTUnaryExpression unaryExpression) {
 	ExpressionConverter converter = new ExpressionConverter();
-	return handleByOperator(unaryExpression.getOperator(), TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, unaryExpression.getOperand()));
+	return handleByOperator(unaryExpression.getOperator(),
+		TransformUtil.convertExpressionAndProcessPrecedingStatements(converter, unaryExpression.getOperand()));
     }
 
     private OOExpression handleByOperator(int operator, OOExpression operand) {
@@ -33,29 +33,30 @@ public class UnaryExpressionConverter {
 	case IASTUnaryExpression.op_plus:
 	    return setOperandAndReturn(factory.createOOPlusExpression(), operand);
 	case IASTUnaryExpression.op_postFixDecr:
-	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPostfixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_postFixIncr:
-	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPostfixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixDecr:
-	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPrefixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixIncr:
-	    PointerConverter.handlePointerConversion(operand);
 	    return setOperandAndReturn(factory.createOOPrefixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_sizeof:
-	    OOEmptyExpression expression = factory.createOOEmptyExpression();
-	    return expression;
-	    //throw new NotImplementedException();
+	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression,
+		    "Error: sizeof expression not supported yet");
+	    return emptyExpression;
+	// throw new NotImplementedException();
 	case IASTUnaryExpression.op_star:
-	    PointerConverter.handlePointerConversion(operand);
 	    return operand;
 	case IASTUnaryExpression.op_tilde:
 	    return setOperandAndReturn(factory.createOOBitWiseComplement(), operand);
 	default:
-	    return factory.createOOEmptyExpression();
-	    // throw new UnsupportedOperationException("Unsupported unary expression operator encountered " + operator);
+	    OOEmptyExpression expression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(expression,
+		    "Error: Unsupported unary expression operator");
+	    return expression;
+	// throw new UnsupportedOperationException("Unsupported unary expression
+	// operator encountered " + operator);
 	}
     }
 

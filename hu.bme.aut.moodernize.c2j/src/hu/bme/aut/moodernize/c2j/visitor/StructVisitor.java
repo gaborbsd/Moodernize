@@ -52,12 +52,12 @@ public class StructVisitor extends AbstractBaseVisitor {
 		classMember.setType(TypeConverter.convertCDTTypeToOOgenType(structMember.getType()));
 		classMember.setVisibility(OOVisibility.PRIVATE);
 
-		CommentProcessor.processOwnedComments(classMember, CommentMappingDataHolder.findAllOwnedComments(structMember));
+		CommentProcessor.attachOwnedCommentsToOwner(classMember, CommentMappingDataHolder.findAllOwnedComments(structMember));
 
 		newClass.getMembers().add(classMember);
 	    }
 
-	    CommentProcessor.processOwnedComments(newClass, CommentMappingDataHolder.findAllOwnedComments(struct));
+	    CommentProcessor.attachOwnedCommentsToOwner(newClass, CommentMappingDataHolder.findAllOwnedComments(struct));
 
 	    if (!TransformUtil.listContainsClass(classes, newClass)) {
 		classes.add(newClass);

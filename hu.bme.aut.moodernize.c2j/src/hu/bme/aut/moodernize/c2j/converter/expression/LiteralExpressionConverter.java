@@ -2,6 +2,7 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OODoubleLiteral;
 import hu.bme.aut.oogen.OOEmptyExpression;
@@ -73,6 +74,7 @@ public class LiteralExpressionConverter {
 
 	default:
 	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported literal expression");
 	    return emptyExpression;
 	// throw new UnsupportedOperationException("Unsupported LiteralExpression
 	// encountered: " + literalExpression);

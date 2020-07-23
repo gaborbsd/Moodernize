@@ -38,6 +38,7 @@ public class InitializerConverter {
 	    return convertInitializerList((IASTInitializerList) init);
 	} else {
 	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unrecognized Initializer");
 	    return emptyExpression;
 	    // throw new UnsupportedOperationException("Unsupported Initializer encountered: " + init);
 	}
@@ -53,6 +54,7 @@ public class InitializerConverter {
 	    return convertInitializerList((IASTInitializerList) initClause);
 	} else {
 	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Invalid initializer");
 	    return emptyExpression;
 	    // throw new InvalidParameterException("Invalid Initializer encountered " + initClause);
 	}

@@ -100,6 +100,7 @@ public class FunctionCallExpressionConverter {
 	    }
 	} catch (UnsupportedOperationException e) {
 	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Function owner not recognized");
 	    functionCall.setOwnerExpression(emptyExpression);
 	}
     }

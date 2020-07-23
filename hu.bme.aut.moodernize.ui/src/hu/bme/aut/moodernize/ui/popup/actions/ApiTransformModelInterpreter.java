@@ -14,11 +14,11 @@ import hu.bme.aut.apitransform.ApiTransformStandaloneSetup;
 import hu.bme.aut.apitransform.apiTransform.ApiTransformPackage;
 import hu.bme.aut.apitransform.apiTransform.Model;
 
-public class ApiTransformModelTransformer {
+public class ApiTransformModelInterpreter {
     private static final String API_TRANSFORM_FILE_NAME = "transformations.apitransform";
     private ICProject cProject;
     
-    public ApiTransformModelTransformer(ICProject cProject) {
+    public ApiTransformModelInterpreter(ICProject cProject) {
 	this.cProject = cProject;
     }
     
@@ -35,7 +35,11 @@ public class ApiTransformModelTransformer {
 	
 	java.net.URI uri = cProject.getLocationURI();
 	String fullURI = uri.getScheme() + ":" + uri.getPath() + File.separator + API_TRANSFORM_FILE_NAME;
-	Resource resource = resourceSet.getResource(URI.createURI(fullURI), true);
-	return (Model) resource.getContents().get(0);
+	try {
+		Resource resource = resourceSet.getResource(URI.createURI(fullURI), true);
+		return (Model) resource.getContents().get(0);
+	} catch (Exception ex) {
+	    return null;
+	} 
     }
 }

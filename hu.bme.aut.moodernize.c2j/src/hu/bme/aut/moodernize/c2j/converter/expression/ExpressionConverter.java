@@ -17,6 +17,7 @@ import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.OOExpressionWithPrecedingStatements;
+import hu.bme.aut.moodernize.c2j.util.PointerConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
@@ -29,7 +30,7 @@ public class ExpressionConverter {
 
     public OOExpressionWithPrecedingStatements convertExpression(IASTExpression expression) {
 	OOExpressionWithPrecedingStatements convertedExpression = getConvertedExpression(expression);
-	CommentProcessor.processOwnedComments(convertedExpression.expression,
+	CommentProcessor.attachOwnedCommentsToOwner(convertedExpression.expression,
 		CommentMappingDataHolder.findAllOwnedComments(expression));
 	return convertedExpression;
     }
@@ -61,6 +62,7 @@ public class ExpressionConverter {
 	    return new OOExpressionWithPrecedingStatements(convertUnaryExpression((IASTUnaryExpression) expression));
 	} else {
 	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported expression");
 	    return new OOExpressionWithPrecedingStatements(emptyExpression);
 	    // throw new UnsupportedOperationException("Unsupported expression encountered:
 	    // " + expression);
@@ -75,6 +77,7 @@ public class ExpressionConverter {
 	collectionIndex
 		.setIndexExpression(new InitializerConverter().convertInitializerClause(expression.getArgument()));
 
+	PointerConverter.handlePointerConversion(collectionIndex);
 	return collectionIndex;
     }
 

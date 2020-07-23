@@ -20,7 +20,7 @@ public class IdExpressionConverter {
     public OOExpression convertIdExpression(IASTIdExpression idExpression) {
 	IType type = idExpression.getExpressionType();
 	String name = idExpression.getName().resolveBinding().getName();
-
+	
 	if (type instanceof IEnumeration) {
 	    OOFieldReferenceExpression enumReference = factory.createOOFieldReferenceExpression();
 	    enumReference.setFieldName(name);

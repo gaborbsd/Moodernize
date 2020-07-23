@@ -117,35 +117,41 @@ public class BinaryExpressionConverter {
 	case IASTBinaryExpression.op_ellipses:
 	    // gcc only: (...) range
 	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported expression: op_ellipses");
 	    return emptyExpression;
 	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_max:
 	    // g++ only: >?
 	    emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported expression: op_max");
 	    return emptyExpression;
 	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_min:
 	    // g++ only: <?
 	    emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported expression: op_min");
 	    return emptyExpression;
 	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmarrow:
 	    // C++ only
 	    emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported expression: op_pmarrow");
 	    return emptyExpression;
 	    // throw new NotImplementedException();
 
 	case IASTBinaryExpression.op_pmdot:
 	    // C== only
 	    emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported expression: op_pmdot");
 	    return emptyExpression;
 	    //throw new NotImplementedException();
 
 	default:
 	    emptyExpression = factory.createOOEmptyExpression();
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Unsupported binary expression operator");
 	    return emptyExpression;
 	    // throw new UnsupportedOperationException("Unsupported binary expression operator encountered " + operator);
 	}

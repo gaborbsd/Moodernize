@@ -53,7 +53,7 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	    for (IASTStatement statement : statements) {
 		try {
 		    OOStatement convertedStatement = converter.convertStatement(statement);
-		    CommentProcessor.processOwnedComments(convertedStatement,
+		    CommentProcessor.attachOwnedCommentsToOwner(convertedStatement,
 			    CommentMappingDataHolder.findAllOwnedComments(statement));
 		    addToDataHolderIfVariableDeclaration(convertedStatement);
 
@@ -61,7 +61,6 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 		} catch (UnsupportedOperationException | NotImplementedException e) {
 		    continue;
 		}
-
 	    }
 	}
 	return PROCESS_CONTINUE;

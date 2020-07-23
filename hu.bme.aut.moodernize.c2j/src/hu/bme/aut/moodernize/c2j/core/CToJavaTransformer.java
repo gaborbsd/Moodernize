@@ -40,8 +40,9 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
+	//TODO: Null-check apiTransformModel (tests pass null)
 	checkForErrors(asts);
-	clearDataStructures();
+	clearDataHolders();
 	createCommentMappings(asts);
 	
 	collectProjectStructure(asts);
@@ -63,7 +64,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	}
     }
 
-    private void clearDataStructures() {
+    private void clearDataHolders() {
 	TransformationDataHolder.clear();
 	RemovedParameterDataHolder.clearEntries();
 	FunctionCallExpressionDataHolder.clearFunctionCalls("");

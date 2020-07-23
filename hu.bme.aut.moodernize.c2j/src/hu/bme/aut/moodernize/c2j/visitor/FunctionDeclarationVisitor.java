@@ -60,7 +60,7 @@ public class FunctionDeclarationVisitor extends AbstractBaseVisitor {
 		ooFunction.getParameters().add(ooParameter);
 	    }
 
-	    CommentProcessor.processOwnedComments(ooFunction,
+	    CommentProcessor.attachOwnedCommentsToOwner(ooFunction,
 		    CommentMappingDataHolder.findAllOwnedComments(cdtFunction));
 
 	    if (!TransformUtil.listContainsMethod(globalFunctions, ooFunction)) {
