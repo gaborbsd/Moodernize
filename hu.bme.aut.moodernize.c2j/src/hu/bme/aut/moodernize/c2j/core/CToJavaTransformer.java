@@ -37,10 +37,12 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private List<OOClass> createdClasses = TransformationDataHolder.createdClasses;
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
-
+    public static Model apiModel = null;
+    
     @Override
     public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
-	//TODO: Null-check apiTransformModel (tests pass null)
+	apiModel = apiTransformModel;
+	
 	checkForErrors(asts);
 	clearDataHolders();
 	createCommentMappings(asts);
@@ -50,7 +52,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	
 	createMainClass();
 	createSupplementingMethods();
-	collectFunctionDefinitions(asts);
+	collectFunctionDefinitions(asts, apiTransformModel);
 	createProjectHierarchy();
 
 	return model;
@@ -114,7 +116,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	assigner.assignFunctionsToClasses();
     }
 
-    private void collectFunctionDefinitions(Set<IASTTranslationUnit> asts) {
+    private void collectFunctionDefinitions(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
 		ast.accept(new FunctionDefinitionVisitor(ast.getContainingFilename(), getAllFunctions()));

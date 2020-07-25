@@ -9,9 +9,12 @@ import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
+import hu.bme.aut.moodernize.c2j.core.ApiTransformModelInterpreter;
+import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
+import hu.bme.aut.moodernize.c2j.util.OOExpressionWithPrecedingStatements;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBaseType;
 import hu.bme.aut.oogen.OOClass;
@@ -30,10 +33,16 @@ public class FunctionCallExpressionConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
     private boolean ownerSetToRemovedParameter = false;
 
-    public OOFunctionCallExpression convertFunctionCallExpression(IASTFunctionCallExpression call) {
+    public OOExpressionWithPrecedingStatements convertFunctionCallExpression(IASTFunctionCallExpression call) {
+	ApiTransformModelInterpreter interpreter = new ApiTransformModelInterpreter(CToJavaTransformer.apiModel);
+	String functionName = createFunctionName(call);
+	
+	if (interpreter.functionIsApiCall(functionName)) {
+	    return handleApiCall(call);
+	}
+	
 	OOFunctionCallExpression functionCall = factory.createOOFunctionCallExpression();
-
-	handleFunctionName(functionCall, call);
+	functionCall.setFunctionName(functionName);
 	handleFunctionArguments(functionCall, call);
 	handleFunctionOwner(functionCall, call);
 
@@ -41,22 +50,20 @@ public class FunctionCallExpressionConverter {
 	    storeFunctionCall(functionCall, TransformUtil.getContainingFunctionName(call));
 	}
 
-	return functionCall;
+	return new OOExpressionWithPrecedingStatements(functionCall);
     }
 
-    private void handleFunctionName(OOFunctionCallExpression functionCall, IASTFunctionCallExpression call) {
+    private OOExpressionWithPrecedingStatements handleApiCall(IASTFunctionCallExpression call) {
+	OOFunctionCallExpression ooCall = factory.createOOFunctionCallExpression();
+	ooCall.setFunctionName("APICALL");
+	return new OOExpressionWithPrecedingStatements(ooCall);
+    }
+
+    private String createFunctionName(IASTFunctionCallExpression call) {
 	IASTExpression functionNameExpression = call.getFunctionNameExpression();
-	if (!(functionNameExpression instanceof IASTIdExpression)) {
-	    functionCall.setFunctionName("UNRECOGNIZEDFUNCTIONNAME");
-	    /*
-	     * throw new UnsupportedOperationException(
-	     * "Unexpected function call NameExpression encountered: " +
-	     * functionNameExpression);
-	     */
-	} else {
-	    functionCall
-		    .setFunctionName(((IASTIdExpression) functionNameExpression).getName().resolveBinding().getName());
-	}
+	return functionNameExpression instanceof IASTIdExpression
+		? ((IASTIdExpression) functionNameExpression).getName().resolveBinding().getName()
+		: "ERROR_UNRECOGNIZED_FUNCTIONNAME";
     }
 
     private void handleFunctionArguments(OOFunctionCallExpression functionCall, IASTFunctionCallExpression call) {
@@ -99,9 +106,9 @@ public class FunctionCallExpressionConverter {
 		createNewInstanceAndSetAsOwner(functionCall, containingClass, containingFunction);
 	    }
 	} catch (UnsupportedOperationException e) {
-	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
-	    TransformUtil.createAndAttachNotRecognizedErrorComment(emptyExpression, "Error: Function owner not recognized");
-	    functionCall.setOwnerExpression(emptyExpression);
+	    TransformUtil.createAndAttachNotRecognizedErrorComment(functionCall,
+		    "Error: Function owner not recognized");
+	    functionCall.setOwnerExpression(null);
 	}
     }
 

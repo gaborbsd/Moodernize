@@ -33,7 +33,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class StatementConverter {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
-
+    
     public OOStatement convertStatement(IASTStatement statement) {
 	if (statement instanceof IASTBreakStatement) {
 	    return convertBreakStatement((IASTBreakStatement) statement);

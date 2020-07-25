@@ -51,8 +51,7 @@ public class ExpressionConverter {
 	} else if (expression instanceof IASTFieldReference) {
 	    return convertFieldReference((IASTFieldReference) expression);
 	} else if (expression instanceof IASTFunctionCallExpression) {
-	    return new OOExpressionWithPrecedingStatements(
-		    convertFunctionCallExpression((IASTFunctionCallExpression) expression));
+	    return convertFunctionCallExpression((IASTFunctionCallExpression) expression);
 	} else if (expression instanceof IASTIdExpression) {
 	    return new OOExpressionWithPrecedingStatements(convertIdExpression((IASTIdExpression) expression));
 	} else if (expression instanceof IASTLiteralExpression) {
@@ -117,7 +116,7 @@ public class ExpressionConverter {
 	return converter.convertFieldReference(expression);
     }
 
-    private OOExpression convertFunctionCallExpression(IASTFunctionCallExpression expression) {
+    private OOExpressionWithPrecedingStatements convertFunctionCallExpression(IASTFunctionCallExpression expression) {
 	FunctionCallExpressionConverter converter = new FunctionCallExpressionConverter();
 	return converter.convertFunctionCallExpression(expression);
     }

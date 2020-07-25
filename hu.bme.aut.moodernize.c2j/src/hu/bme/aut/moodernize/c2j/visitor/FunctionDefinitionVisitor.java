@@ -20,11 +20,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
     private List<OOMethod> functions;
-
+    
     public FunctionDefinitionVisitor(String fileName, List<OOMethod> functions) {
 	super(fileName);
 	this.functions = functions;
-
+	
 	shouldVisitDeclarations = true;
     }
 
