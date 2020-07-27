@@ -26,7 +26,7 @@ public class ApiTransformModelInterpreter {
     public boolean functionIsApiCall(String functionName) {
 	return apiCalls.contains(functionName);
     }
-    
+        
     private void collectApiCallList() {
 	if (model == null || model.getTransformations() == null || model.getTransformations().isEmpty()) {
 	    return;

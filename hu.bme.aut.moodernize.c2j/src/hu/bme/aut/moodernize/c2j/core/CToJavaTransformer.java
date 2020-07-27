@@ -43,7 +43,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
 	apiModel = apiTransformModel;
 	
-	checkForErrors(asts);
+	// checkForErrors(asts);
 	clearDataHolders();
 	createCommentMappings(asts);
 	
