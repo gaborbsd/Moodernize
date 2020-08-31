@@ -14,6 +14,7 @@ import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.moodernize.c2j.projectcreation.ProjectCreator;
 import hu.bme.aut.moodernize.c2j.projectcreation.SupplementingMethodCreator;
@@ -30,7 +31,7 @@ import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOModel;
 import hu.bme.aut.oogen.OogenFactory;
 
-public class CToJavaTransformer implements ICToJavaTransformer {
+public class CToJavaTransformer {
     private static OogenFactory factory = OogenFactory.eINSTANCE;
 
     private OOModel model = factory.createOOModel();
@@ -38,12 +39,12 @@ public class CToJavaTransformer implements ICToJavaTransformer {
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
     public static Model apiModel = null;
+    /*public static TransformCToJava uiModule;*/
     
-    @Override
-    public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
+    public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel/*, TransformCToJava ui*/) {
 	apiModel = apiTransformModel;
-	
 	// checkForErrors(asts);
+	
 	clearDataHolders();
 	createCommentMappings(asts);
 	
@@ -52,12 +53,12 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	
 	createMainClass();
 	createSupplementingMethods();
-	collectFunctionDefinitions(asts, apiTransformModel);
+	collectFunctionDefinitions(asts);
 	createProjectHierarchy();
 
 	return model;
     }
-
+    
     private void checkForErrors(Set<IASTTranslationUnit> asts) {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
@@ -71,6 +72,7 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	RemovedParameterDataHolder.clearEntries();
 	FunctionCallExpressionDataHolder.clearFunctionCalls("");
 	CommentMappingDataHolder.clearMappings();
+	PointerConversionDataHolder.clear();
     }
 
     private void createCommentMappings(Set<IASTTranslationUnit> asts) {
@@ -116,12 +118,13 @@ public class CToJavaTransformer implements ICToJavaTransformer {
 	assigner.assignFunctionsToClasses();
     }
 
-    private void collectFunctionDefinitions(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
+    private void collectFunctionDefinitions(Set<IASTTranslationUnit> asts) {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
 		ast.accept(new FunctionDefinitionVisitor(ast.getContainingFilename(), getAllFunctions()));
 	    }
 	}
+	PointerConversionDataHolder.writeResultsToFile();
     }
 
     private void createSupplementingMethods() {

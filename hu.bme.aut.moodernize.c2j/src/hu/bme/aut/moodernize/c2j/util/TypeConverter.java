@@ -36,6 +36,7 @@ public class TypeConverter {
 	    cdtType = ((IPointerType) cdtType).getType();
 	    //ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
 	    ooType.setNumberOfIndirections(ooType.getNumberOfIndirections() + 1);
+	    ooType.setWasPointer(true);
 	}
 
 	if (cdtType instanceof IBasicType) {

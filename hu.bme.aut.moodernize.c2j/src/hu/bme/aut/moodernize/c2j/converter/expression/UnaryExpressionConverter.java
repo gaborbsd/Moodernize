@@ -2,6 +2,8 @@ package hu.bme.aut.moodernize.c2j.converter.expression;
 
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerAttributeType;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOBracketedExpression;
@@ -33,12 +35,16 @@ public class UnaryExpressionConverter {
 	case IASTUnaryExpression.op_plus:
 	    return setOperandAndReturn(factory.createOOPlusExpression(), operand);
 	case IASTUnaryExpression.op_postFixDecr:
+	    PointerConversionDataHolder.setPointerAttribute(operand, true, PointerAttributeType.ARITHMETICS);
 	    return setOperandAndReturn(factory.createOOPostfixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_postFixIncr:
+	    PointerConversionDataHolder.setPointerAttribute(operand, true, PointerAttributeType.ARITHMETICS);
 	    return setOperandAndReturn(factory.createOOPostfixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixDecr:
+	    PointerConversionDataHolder.setPointerAttribute(operand, true, PointerAttributeType.ARITHMETICS);
 	    return setOperandAndReturn(factory.createOOPrefixDecrementExpression(), operand);
 	case IASTUnaryExpression.op_prefixIncr:
+	    PointerConversionDataHolder.setPointerAttribute(operand, true, PointerAttributeType.ARITHMETICS);
 	    return setOperandAndReturn(factory.createOOPrefixIncrementExpression(), operand);
 	case IASTUnaryExpression.op_sizeof:
 	    OOEmptyExpression emptyExpression = factory.createOOEmptyExpression();
@@ -47,6 +53,7 @@ public class UnaryExpressionConverter {
 	    return emptyExpression;
 	// throw new NotImplementedException();
 	case IASTUnaryExpression.op_star:
+	    PointerConversionDataHolder.setPointerAttribute(operand, true, PointerAttributeType.DEREFER);
 	    return operand;
 	case IASTUnaryExpression.op_tilde:
 	    return setOperandAndReturn(factory.createOOBitWiseComplement(), operand);

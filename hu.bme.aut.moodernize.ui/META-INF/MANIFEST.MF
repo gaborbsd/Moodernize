@@ -19,3 +19,4 @@ Import-Package: hu.bme.aut.apitransform,
  hu.bme.aut.oogen,
  hu.bme.aut.oogen.java,
  org.eclipse.emf.common.util
+Export-Package: hu.bme.aut.moodernize.ui.popup.actions

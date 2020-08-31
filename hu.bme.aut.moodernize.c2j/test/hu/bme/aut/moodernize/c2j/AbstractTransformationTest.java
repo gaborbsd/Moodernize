@@ -18,13 +18,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 
 import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
-import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOModel;
 
 public abstract class AbstractTransformationTest {
-    protected ICToJavaTransformer transformer;
+    protected CToJavaTransformer transformer;
 
     @Before
     public void setup() {

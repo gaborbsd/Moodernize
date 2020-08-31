@@ -15,9 +15,11 @@ import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerAttributeType;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConverter;
 import hu.bme.aut.moodernize.c2j.util.IntegerLiteralToBooleanConverter;
 import hu.bme.aut.moodernize.c2j.util.OOExpressionWithPrecedingStatements;
-import hu.bme.aut.moodernize.c2j.util.PointerConverter;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOEmptyExpression;
 import hu.bme.aut.oogen.OOExpression;
@@ -76,7 +78,8 @@ public class ExpressionConverter {
 	collectionIndex
 		.setIndexExpression(new InitializerConverter().convertInitializerClause(expression.getArgument()));
 
-	PointerConverter.handlePointerConversion(collectionIndex);
+	new PointerConverter().handlePointerConversion(collectionIndex.getCollectionExpression());
+	PointerConversionDataHolder.setPointerAttribute(collectionIndex.getCollectionExpression(), true, PointerAttributeType.INDEX);
 	return collectionIndex;
     }
 

@@ -17,11 +17,13 @@ import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOComment;
 import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOExpression;
+import hu.bme.aut.oogen.OOFieldReferenceExpression;
 import hu.bme.aut.oogen.OOMember;
 import hu.bme.aut.oogen.OOMethod;
 import hu.bme.aut.oogen.OOStatement;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
+import hu.bme.aut.oogen.OOVariableReferenceExpression;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class TransformUtil {
@@ -251,11 +253,43 @@ public class TransformUtil {
 
 	return expression;
     }
-    
+
     public static void createAndAttachNotRecognizedErrorComment(OOExpression expression, String errorMessage) {
 	OogenFactory factory = OogenFactory.eINSTANCE;
 	OOComment errorComment = factory.createOOComment();
 	errorComment.setText("/*" + errorMessage + "*/");
 	expression.getBeforeComments().add(errorComment);
+    }
+    
+    public static OOVariable extractVariableFromExpression(OOExpression expression) {
+	OOVariable variable = null;
+	if (expression instanceof OOFieldReferenceExpression) {
+	    OOFieldReferenceExpression fieldReference = (OOFieldReferenceExpression) expression;
+	    String referredName = fieldReference.getFieldName();
+	    if (TransformUtil.isGlobalVariable(referredName)) {
+		OOClass mainClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses,
+			MainClassCreator.MAINCLASSNAME);
+		if (mainClass != null) {
+		    variable = TransformUtil.getVariableByNameFromMembers(mainClass.getMembers(), referredName);
+		}
+	    } else {
+		OOExpression ownerExpression = fieldReference.getFieldOwner();
+		if (ownerExpression instanceof OOVariableReferenceExpression) {
+		    OOVariable referredVariable = ((OOVariableReferenceExpression) ownerExpression).getVariable();
+		    OOClass classType = referredVariable.getType().getClassType();
+		    OOClass ownerClass = TransformUtil.getClassByName(TransformationDataHolder.createdClasses,
+			    classType.getName());
+		    if (ownerClass != null) {
+			variable = TransformUtil.getVariableByNameFromMembers(ownerClass.getMembers(), referredName);
+		    }
+		}
+	    }
+	} else if (expression instanceof OOVariableReferenceExpression) {
+	    OOVariable referredVariable = ((OOVariableReferenceExpression) expression).getVariable();
+	    OOVariable correspondingDeclaration = FunctionSymbolTable.getCorrespondingVariable(referredVariable);
+	    variable = correspondingDeclaration;
+	}
+
+	return variable != null && variable.getType().isWasPointer() ? variable : null;
     }
 }

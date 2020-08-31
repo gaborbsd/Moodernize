@@ -6,6 +6,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
+import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
@@ -61,6 +62,7 @@ public class SimpleDeclarationConverter {
 		}
 	    }
 	}
+	
 	handleInitializerExpression(declaredVariable, declarator);
     }
 

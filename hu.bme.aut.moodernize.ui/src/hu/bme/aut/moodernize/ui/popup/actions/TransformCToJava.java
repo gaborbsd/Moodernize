@@ -47,7 +47,6 @@ import org.eclipse.ui.progress.IProgressService;
 
 import hu.bme.aut.apitransform.apiTransform.Model;
 import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
-import hu.bme.aut.moodernize.c2j.core.ICToJavaTransformer;
 import hu.bme.aut.oogen.OOClass;
 import hu.bme.aut.oogen.OOEnumeration;
 import hu.bme.aut.oogen.OOModel;
@@ -152,7 +151,7 @@ public class TransformCToJava implements IObjectActionDelegate {
 	transformationMonitor.beginTask("Transforming program code", 100);
 	transformationMonitor.worked(10);
 
-	ICToJavaTransformer transformer = new CToJavaTransformer();
+	CToJavaTransformer transformer = new CToJavaTransformer();
 	OOModel ooModel = transformer.transform(asts, model);
 
 	Map<String, String> classes = new HashMap<>();
@@ -232,6 +231,15 @@ public class TransformCToJava implements IObjectActionDelegate {
     }
 
     private void showErrorWindow(String message) {
+	display.asyncExec(new Runnable() {
+	    @Override
+	    public void run() {
+		MessageDialog.openError(shell, "Error", message);
+	    }
+	});
+    }
+    
+    public void showPointerQuestionWindow(String message) {
 	display.asyncExec(new Runnable() {
 	    @Override
 	    public void run() {
