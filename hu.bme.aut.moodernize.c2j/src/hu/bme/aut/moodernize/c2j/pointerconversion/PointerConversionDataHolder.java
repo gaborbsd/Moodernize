@@ -12,17 +12,14 @@ import hu.bme.aut.oogen.OOVariable;
 
 public class PointerConversionDataHolder {
     private static List<PointerAttributes> pointerConversionResults = new ArrayList<PointerAttributes>();
-    private static List<OOVariable> variableDeclarations = new ArrayList<OOVariable>();
 
     public static void clear() {
 	pointerConversionResults.clear();
-	variableDeclarations.clear();
     }
 
-    public static void addDeclaration(OOVariable declaration) {
-	if (!TransformUtil.listContainsVariable(variableDeclarations, declaration.getName()) && declaration.getType().isWasPointer()) {
-	    variableDeclarations.add(declaration);
-	    pointerConversionResults.add(new PointerAttributes(declaration));
+    public static void addDeclaration(OOVariable declaration, String scope) {
+	if (declaration.getType().isDeclaredAsPointer() && !declarationExists(declaration, scope)) {
+	    pointerConversionResults.add(new PointerAttributes(declaration, scope));
 	}
     }
     
@@ -68,6 +65,15 @@ public class PointerConversionDataHolder {
 	} catch (IOException e) {
 
 	}
+    }
+    
+    private static boolean declarationExists(OOVariable declaration, String scope) {
+	for (PointerAttributes attributes : pointerConversionResults) {
+	    if (attributes.pointerDeclaration.getName().equals(declaration.getName()) && attributes.scopeIdentifier.equals(scope)) {
+		return true;
+	    }    
+	}
+	return false;
     }
 
     private static PointerAttributes findAttributesByName(String name) {

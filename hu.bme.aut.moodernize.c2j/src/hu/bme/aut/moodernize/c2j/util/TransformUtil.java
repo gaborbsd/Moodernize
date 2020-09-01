@@ -290,6 +290,6 @@ public class TransformUtil {
 	    variable = correspondingDeclaration;
 	}
 
-	return variable != null && variable.getType().isWasPointer() ? variable : null;
+	return variable != null && variable.getType().isDeclaredAsPointer() ? variable : null;
     }
 }

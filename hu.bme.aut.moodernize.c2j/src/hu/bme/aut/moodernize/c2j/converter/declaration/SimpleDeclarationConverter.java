@@ -49,6 +49,11 @@ public class SimpleDeclarationConverter {
 	    type.setNumberOfIndirections(type.getNumberOfIndirections() + 1);
 	}*/
 	
+	for (@SuppressWarnings("unused") IASTPointerOperator pointerOperator : declarator.getPointerOperators()) {
+	    type.setPointerIndirections(type.getPointerIndirections() + 1);
+	    type.setDeclaredAsPointer(true);
+	}
+	
 	if (declarator instanceof IASTArrayDeclarator) {
 	    IASTArrayDeclarator arrayDeclarator = (IASTArrayDeclarator) declarator;
 	    ExpressionConverter converter = new ExpressionConverter();

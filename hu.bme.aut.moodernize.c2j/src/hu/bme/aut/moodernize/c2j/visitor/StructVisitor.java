@@ -10,6 +10,7 @@ import org.eclipse.cdt.core.dom.ast.IField;
 
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentProcessor;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.moodernize.c2j.util.TypeConverter;
 import hu.bme.aut.oogen.OOClass;
@@ -55,6 +56,7 @@ public class StructVisitor extends AbstractBaseVisitor {
 		CommentProcessor.attachOwnedCommentsToOwner(classMember, CommentMappingDataHolder.findAllOwnedComments(structMember));
 
 		newClass.getMembers().add(classMember);
+		PointerConversionDataHolder.addDeclaration(classMember, "CLASS_" + newClass.getName());
 	    }
 
 	    CommentProcessor.attachOwnedCommentsToOwner(newClass, CommentMappingDataHolder.findAllOwnedComments(struct));

@@ -4,13 +4,16 @@ import hu.bme.aut.oogen.OOVariable;
 
 public class PointerAttributes {
     public OOVariable pointerDeclaration;
+    public String scopeIdentifier;
+    
     public boolean indexOperatorUsed = false;
     public boolean pointerArithmeticsUsed = false;
     public boolean dereferOperatorUsed = false;
     public boolean isParameter = false;
     public boolean isReturnValue = false;
 
-    public PointerAttributes(OOVariable variable) {
+    public PointerAttributes(OOVariable variable, String scopeIdentifier) {
 	this.pointerDeclaration = variable;
+	this.scopeIdentifier = scopeIdentifier;
     }
 }

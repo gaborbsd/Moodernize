@@ -3,7 +3,6 @@ package hu.bme.aut.moodernize.c2j.dataholders;
 import java.util.ArrayList;
 import java.util.List;
 
-import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;

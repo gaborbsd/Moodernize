@@ -7,7 +7,7 @@ import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOType;
 import hu.bme.aut.oogen.OOVariable;
 
-public class PointerConverter {
+public class PointerConverter {    
     public void handlePointerConversion(OOExpression operandPossiblyContainingPointer) {
 	OOVariable variable = TransformUtil.extractVariableFromExpression(operandPossiblyContainingPointer);
 	if (variable != null) {
@@ -17,11 +17,11 @@ public class PointerConverter {
 
     private void changeTypeFromPointerToArray(OOVariable toChange) {
 	OOType type = toChange.getType();
-	int numberOfIndirections = type.getNumberOfIndirections();
-	if (numberOfIndirections > 0) {
-	    for (int i = 1; i <= numberOfIndirections; i++) {
+	int indirections = type.getPointerIndirections();
+	if (indirections > 0) {
+	    for (int i = 1; i <= indirections; i++) {
 		type.setArrayDimensions(type.getArrayDimensions() + 1);
-		type.setNumberOfIndirections(type.getNumberOfIndirections() - 1);
+		type.setPointerIndirections(type.getPointerIndirections() - 1);
 	    }
 	}
     }

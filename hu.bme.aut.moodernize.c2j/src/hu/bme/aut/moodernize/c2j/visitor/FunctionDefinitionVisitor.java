@@ -56,7 +56,7 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 		    OOStatement convertedStatement = converter.convertStatement(statement);
 		    CommentProcessor.attachOwnedCommentsToOwner(convertedStatement,
 			    CommentMappingDataHolder.findAllOwnedComments(statement));
-		    addToDataHolderIfVariableDeclaration(convertedStatement);
+		    addToDataHolderIfVariableDeclaration(convertedStatement, functionName);
 
 		    correspondingFunction.getStatements().add(convertedStatement);
 		} catch (UnsupportedOperationException | NotImplementedException e) {
@@ -67,11 +67,11 @@ public class FunctionDefinitionVisitor extends AbstractBaseVisitor {
 	return PROCESS_CONTINUE;
     }
 
-    private void addToDataHolderIfVariableDeclaration(OOStatement statement) {
+    private void addToDataHolderIfVariableDeclaration(OOStatement statement, String containingFunctionName) {
 	if (statement instanceof OOVariableDeclarationList) {
 	    for (OOVariable declaredVariable : ((OOVariableDeclarationList) statement).getVariableDeclarations()) {
 		FunctionSymbolTable.addDeclaration(declaredVariable);
-		PointerConversionDataHolder.addDeclaration(declaredVariable);
+		PointerConversionDataHolder.addDeclaration(declaredVariable, "FUNCTION_" + containingFunctionName);
 	    }
 	}
     }

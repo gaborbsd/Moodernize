@@ -34,9 +34,8 @@ public class TypeConverter {
     private static void handleType(OOType ooType, IType cdtType) {
 	while (cdtType instanceof IPointerType) {
 	    cdtType = ((IPointerType) cdtType).getType();
-	    //ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
-	    ooType.setNumberOfIndirections(ooType.getNumberOfIndirections() + 1);
-	    ooType.setWasPointer(true);
+	    ooType.setPointerIndirections(ooType.getPointerIndirections() + 1);
+	    ooType.setDeclaredAsPointer(true);
 	}
 
 	if (cdtType instanceof IBasicType) {
@@ -56,7 +55,7 @@ public class TypeConverter {
 
     private static void handleArrayType(OOType ooType, IType arrayType) {
 	while (arrayType instanceof IArrayType) {
-	    //ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
+	    ooType.setArrayDimensions(ooType.getArrayDimensions() + 1);
 	    arrayType = ((IArrayType) arrayType).getType();
 	}
     }
