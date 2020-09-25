@@ -83,7 +83,7 @@ public class LiteralExpressionTransformationTest extends AbstractTransformationT
     public void nullPointer_shouldTransformToOONullLiteral() {
 	StringBuilder sourceCode = new StringBuilder();
 	sourceCode.append("void someFunction() {");
-	sourceCode.append("	int *x = NULL;");
+	sourceCode.append("	int *x = (void*) 0;");
 	sourceCode.append("}");
 
 	OOModel model = getModelBySourceCode(sourceCode.toString());

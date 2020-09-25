@@ -29,6 +29,6 @@ public class TypeCastConverter {
 
     private boolean shouldBeConvertedToNullLiteral(OOExpression operand, OOType castType) {
 	return operand instanceof OOIntegerLiteral && ((OOIntegerLiteral) operand).getValue() == 0
-		&& castType.getBaseType() == OOBaseType.OBJECT;
+		&& castType.getBaseType() == OOBaseType.OBJECT && castType.getClassType() == null;
     }
 }
