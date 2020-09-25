@@ -37,9 +37,10 @@ public class FunctionCallExpressionConverter {
 	ApiTransformModelInterpreter interpreter = new ApiTransformModelInterpreter(CToJavaTransformer.apiModel);
 	String functionName = createFunctionName(call);
 	
-	/* if (interpreter.functionIsApiCall(functionName)) {
-	    return handleApiCall(call);
-	} */
+	OOExpressionWithPrecedingStatements interpreterResult = interpreter.interpret(functionName);
+	if (interpreterResult != null) {
+	    return interpreterResult;
+	}
 	
 	OOFunctionCallExpression functionCall = factory.createOOFunctionCallExpression();
 	functionCall.setFunctionName(functionName);
@@ -52,13 +53,7 @@ public class FunctionCallExpressionConverter {
 
 	return new OOExpressionWithPrecedingStatements(functionCall);
     }
-
-    private OOExpressionWithPrecedingStatements handleApiCall(IASTFunctionCallExpression call) {
-	OOFunctionCallExpression ooCall = factory.createOOFunctionCallExpression();
-	ooCall.setFunctionName("APICALL");
-	return new OOExpressionWithPrecedingStatements(ooCall);
-    }
-
+    
     private String createFunctionName(IASTFunctionCallExpression call) {
 	IASTExpression functionNameExpression = call.getFunctionNameExpression();
 	return functionNameExpression instanceof IASTIdExpression

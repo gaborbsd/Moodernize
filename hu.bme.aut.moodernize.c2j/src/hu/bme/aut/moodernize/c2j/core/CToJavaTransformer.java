@@ -39,9 +39,8 @@ public class CToJavaTransformer {
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
     public static Model apiModel = null;
-    /*public static TransformCToJava uiModule;*/
     
-    public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel/*, TransformCToJava ui*/) {
+    public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
 	apiModel = apiTransformModel;
 	// checkForErrors(asts);
 	
@@ -124,7 +123,7 @@ public class CToJavaTransformer {
 		ast.accept(new FunctionDefinitionVisitor(ast.getContainingFilename(), getAllFunctions()));
 	    }
 	}
-	PointerConversionDataHolder.writeResultsToFile();
+	// PointerConversionDataHolder.writeResultsToFile();
     }
 
     private void createSupplementingMethods() {

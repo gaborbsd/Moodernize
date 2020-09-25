@@ -19,6 +19,8 @@ import org.eclipse.cdt.core.dom.ast.IASTSwitchStatement;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 
 import hu.bme.aut.moodernize.c2j.converter.expression.ExpressionConverter;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerAttributeType;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOCase;
 import hu.bme.aut.oogen.OOCompoundStatement;
@@ -159,6 +161,8 @@ public class StatementConverter {
 		.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), statement.getReturnValue());
 	OOReturn returnStatement = factory.createOOReturn();
 	returnStatement.setReturnedExpresssion(returnExpression);
+	
+	PointerConversionDataHolder.setPointerAttribute(returnExpression, true, PointerAttributeType.RETURNVALUE);
 	return returnStatement;
     }
 

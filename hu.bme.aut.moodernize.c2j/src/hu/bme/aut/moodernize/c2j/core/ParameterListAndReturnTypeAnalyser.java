@@ -57,7 +57,7 @@ public class ParameterListAndReturnTypeAnalyser {
     private void checkParameterList(OOMethod function) {
 	List<OOVariable> parameters = function.getParameters();
 	List<OOClass> parameterReferenceTypes = new ArrayList<OOClass>();
-
+	
 	for (OOVariable parameter : parameters) {
 	    OOClass referenceType = parameter.getType().getClassType();
 	    if (referenceType != null && !TransformUtil.listContainsClass(parameterReferenceTypes, referenceType)) {

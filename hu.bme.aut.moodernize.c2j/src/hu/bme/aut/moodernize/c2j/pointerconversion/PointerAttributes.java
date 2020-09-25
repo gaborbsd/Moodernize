@@ -11,6 +11,7 @@ public class PointerAttributes {
     public boolean dereferOperatorUsed = false;
     public boolean isParameter = false;
     public boolean isReturnValue = false;
+    public boolean isTransformedAsArray = false;
 
     public PointerAttributes(OOVariable variable, String scopeIdentifier) {
 	this.pointerDeclaration = variable;

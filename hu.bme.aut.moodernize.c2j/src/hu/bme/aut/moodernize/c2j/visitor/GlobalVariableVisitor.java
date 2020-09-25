@@ -11,6 +11,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import hu.bme.aut.moodernize.c2j.converter.declaration.SimpleDeclarationConverter;
+import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
 import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.oogen.OOVariable;
 import hu.bme.aut.oogen.OOVariableDeclarationList;
@@ -52,6 +53,7 @@ public class GlobalVariableVisitor extends AbstractBaseVisitor {
 	    if (!TransformUtil.listContainsVariable(globalVariables, variable.getName())) {
 		globalVariables.add(EcoreUtil.copy(variable));
 	    }
+	    PointerConversionDataHolder.addDeclaration(variable, "GLOBAL");
 	}
 
 	return PROCESS_SKIP;
