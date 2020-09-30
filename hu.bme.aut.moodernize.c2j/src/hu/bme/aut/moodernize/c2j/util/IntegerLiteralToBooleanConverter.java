@@ -38,8 +38,7 @@ public class IntegerLiteralToBooleanConverter {
 	    operand = TransformUtil.getOperandInsideBrackets(operand);
 	    if (operand != null && operand instanceof OOIntegerLiteral) {
 		return createBoolFromLogicalInt((OOIntegerLiteral) operand);
-	    }
-	    else {
+	    } else {
 		return expression;
 	    }
 	} else if (expression instanceof OOOneOperandLogicalExpression) {
@@ -120,10 +119,15 @@ public class IntegerLiteralToBooleanConverter {
 	OOExpression ownerExpression = expression.getOwnerExpression();
 	if (ownerExpression instanceof OOVariableReferenceExpression) {
 	    OOVariable referredVariable = ((OOVariableReferenceExpression) ownerExpression).getVariable();
-	    if (referredVariable.getType().getBaseType() == OOBaseType.BOOLEAN) {
-		OOExpression convertedArgument = handleIntToBoolConversion(expression.getArgumentExpressions().get(0));
-		expression.getArgumentExpressions().clear();
-		expression.getArgumentExpressions().add(convertedArgument);
+	    try {
+		if (referredVariable.getType().getBaseType() == OOBaseType.BOOLEAN) {
+		    OOExpression convertedArgument = handleIntToBoolConversion(
+			    expression.getArgumentExpressions().get(0));
+		    expression.getArgumentExpressions().clear();
+		    expression.getArgumentExpressions().add(convertedArgument);
+		}
+	    } catch (NullPointerException ex) {
+		return;
 	    }
 	}
     }

@@ -1,30 +1,33 @@
-package hu.bme.aut.moodernize.c2j.core;
+package hu.bme.aut.moodernize.c2j.apitransform;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 
 import hu.bme.aut.apitransform.apiTransform.Function;
-import hu.bme.aut.apitransform.apiTransform.Instance;
 import hu.bme.aut.apitransform.apiTransform.Model;
+import hu.bme.aut.apitransform.apiTransform.Parameter;
 import hu.bme.aut.apitransform.apiTransform.Transformation;
 import hu.bme.aut.moodernize.c2j.util.OOExpressionWithPrecedingStatements;
+import hu.bme.aut.oogen.OOExpression;
 import hu.bme.aut.oogen.OOFunctionCallExpression;
-import hu.bme.aut.oogen.OOStatement;
-import hu.bme.aut.oogen.OogenFactory;
+import hu.bme.aut.oogen.OOVariable;
 
 public class ApiTransformModelInterpreter {
-    private static OogenFactory factory = OogenFactory.eINSTANCE;
     private Model model;
     private List<String> apiCalls = new ArrayList<String>();
-
+    static Map<String, OOExpression> sourceArguments = new HashMap<String, OOExpression>();
+    
     public ApiTransformModelInterpreter(Model model) {
 	this.model = model;
 	collectApiCallList();
+	sourceArguments.clear();
     }
 
-    public OOExpressionWithPrecedingStatements interpret(String functionName) {
+    public OOExpressionWithPrecedingStatements interpret(String functionName, List<OOExpression> arguments) {
 	if (!functionIsApiCall(functionName)) {
 	    return null;
 	}
@@ -32,17 +35,27 @@ public class ApiTransformModelInterpreter {
 	if (transformation == null) {
 	    return null;
 	}
-	
-	
+	mapSourceArguments(transformation, arguments);
+
+	List<OOVariable> instances = new InstanceConverter().createInstances(transformation);
+	List<OOFunctionCallExpression> targets = new TargetConverter().createTargets(transformation);
+	OOExpressionWithPrecedingStatements result;
+	if (!targets.isEmpty()) {
+	    result = new OOExpressionWithPrecedingStatements(targets.get(targets.size() - 1));
+	    result.precedingStatements.addAll(instances);
+	    result.precedingStatements.addAll(targets.subList(0, targets.size() - 1));
+	} else {
+	    result = new OOExpressionWithPrecedingStatements(null);
+	    result.precedingStatements.addAll(instances);
+	}
+
 	// Instance-ok létrehozása OOVariable-ként, mennek a statementekbe
 	// Minden targethez egy OOFunctionCallExpression. A legutolsó az expression, a
 	// többi statement.
 	// Operátorok kezelése paraméterként. "'plus' | 'minus' | 'multiply' | 'divide'
 	// | 'assign'".
 
-	OOFunctionCallExpression ooCall = factory.createOOFunctionCallExpression();
-	ooCall.setFunctionName("APICALL");
-	return new OOExpressionWithPrecedingStatements(ooCall);
+	return result;
     }
 
     public boolean functionIsApiCall(String functionName) {
@@ -56,16 +69,21 @@ public class ApiTransformModelInterpreter {
 		return transformation;
 	    }
 	}
-	
+
 	return null;
     }
     
-    private List<OOStatement> createInstances(Transformation transformation) {
-	for (Instance instance: transformation.getInstances()) {
-	    
+    private void mapSourceArguments(Transformation transformation, List<OOExpression> arguments) {
+	if (!(transformation.getSource() instanceof Function)) {
+	    return;
 	}
-	
-	return null;
+	List<Parameter> parameters = ((Function)transformation.getSource()).getParameters();
+	for(Parameter parameter : parameters) {
+	    int index = parameters.indexOf(parameter);
+	    if (index > -1 && arguments.size() - 1 >= index && !sourceArguments.containsKey(parameter.getName())) {
+		sourceArguments.put(parameter.getName(), arguments.get(index));
+	    }
+	}
     }
 
     private void collectApiCallList() {

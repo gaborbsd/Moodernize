@@ -12,7 +12,7 @@ import hu.bme.aut.oogen.OOTypeCast;
 import hu.bme.aut.oogen.OogenFactory;
 
 public class TypeCastConverter {
-    private static OogenFactory factory = OogenFactory.eINSTANCE;
+    private static OogenFactory factory = OogenFactory.eINSTANCE; 
 
     public OOExpression convertTypeCast(IASTCastExpression cast) {
 	OOTypeCast typeCast = factory.createOOTypeCast();

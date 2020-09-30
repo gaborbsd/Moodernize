@@ -1,5 +1,6 @@
 package hu.bme.aut.moodernize.c2j.converter.expression;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +9,8 @@ import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 
+import hu.bme.aut.moodernize.c2j.apitransform.ApiTransformModelInterpreter;
 import hu.bme.aut.moodernize.c2j.converter.declaration.InitializerConverter;
-import hu.bme.aut.moodernize.c2j.core.ApiTransformModelInterpreter;
 import hu.bme.aut.moodernize.c2j.core.CToJavaTransformer;
 import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
@@ -37,7 +38,7 @@ public class FunctionCallExpressionConverter {
 	ApiTransformModelInterpreter interpreter = new ApiTransformModelInterpreter(CToJavaTransformer.apiModel);
 	String functionName = createFunctionName(call);
 	
-	OOExpressionWithPrecedingStatements interpreterResult = interpreter.interpret(functionName);
+	OOExpressionWithPrecedingStatements interpreterResult = interpreter.interpret(functionName, getFunctionArguments(call));
 	if (interpreterResult != null) {
 	    return interpreterResult;
 	}
@@ -59,6 +60,15 @@ public class FunctionCallExpressionConverter {
 	return functionNameExpression instanceof IASTIdExpression
 		? ((IASTIdExpression) functionNameExpression).getName().resolveBinding().getName()
 		: "ERROR_UNRECOGNIZED_FUNCTIONNAME";
+    }
+    
+    private List<OOExpression> getFunctionArguments(IASTFunctionCallExpression call) {
+	List<OOExpression> result = new ArrayList<OOExpression>();
+	for (IASTInitializerClause argument : call.getArguments()) {
+	    result.add(new InitializerConverter().convertInitializerClause(argument));
+	}
+	
+	return result;
     }
 
     private void handleFunctionArguments(OOFunctionCallExpression functionCall, IASTFunctionCallExpression call) {
