@@ -8,6 +8,10 @@ import org.eclipse.cdt.core.dom.ast.IASTComment;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
 import hu.bme.aut.apitransform.apiTransform.Model;
+import hu.bme.aut.moodernize.c2j.callchain.CallChainAnalyzer;
+import hu.bme.aut.moodernize.c2j.callchain.CallGraph;
+import hu.bme.aut.moodernize.c2j.callchain.FunctionCallMapHolder;
+import hu.bme.aut.moodernize.c2j.callchain.Vertex;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerResult;
 import hu.bme.aut.moodernize.c2j.commentmapping.CommentOwnerVisitor;
 import hu.bme.aut.moodernize.c2j.dataholders.CommentMappingDataHolder;
@@ -15,9 +19,11 @@ import hu.bme.aut.moodernize.c2j.dataholders.FunctionCallExpressionDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.RemovedParameterDataHolder;
 import hu.bme.aut.moodernize.c2j.dataholders.TransformationDataHolder;
 import hu.bme.aut.moodernize.c2j.pointerconversion.PointerConversionDataHolder;
+import hu.bme.aut.moodernize.c2j.projectcreation.CallChainClassCreator;
 import hu.bme.aut.moodernize.c2j.projectcreation.MainClassCreator;
 import hu.bme.aut.moodernize.c2j.projectcreation.ProjectCreator;
 import hu.bme.aut.moodernize.c2j.projectcreation.SupplementingMethodCreator;
+import hu.bme.aut.moodernize.c2j.util.TransformUtil;
 import hu.bme.aut.moodernize.c2j.visitor.AbstractBaseVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.EnumVisitor;
 import hu.bme.aut.moodernize.c2j.visitor.FunctionDeclarationVisitor;
@@ -39,25 +45,27 @@ public class CToJavaTransformer {
     private List<OOMethod> globalFunctions = new ArrayList<OOMethod>();
     private List<OOEnumeration> enums = new ArrayList<OOEnumeration>();
     public static Model apiModel = null;
-    
+    private FunctionCallMapHolder functionCalls = new FunctionCallMapHolder();
+
     public OOModel transform(Set<IASTTranslationUnit> asts, Model apiTransformModel) {
 	apiModel = apiTransformModel;
 	// checkForErrors(asts);
-	
+
 	clearDataHolders();
 	createCommentMappings(asts);
-	
+
 	collectProjectStructure(asts);
 	assignFunctionsToClassesBySignature();
-	
+
 	createMainClass();
 	createSupplementingMethods();
 	collectFunctionDefinitions(asts);
+	createClassesFromCallChains();
 	createProjectHierarchy();
 
 	return model;
     }
-    
+
     private void checkForErrors(Set<IASTTranslationUnit> asts) {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
@@ -120,10 +128,38 @@ public class CToJavaTransformer {
     private void collectFunctionDefinitions(Set<IASTTranslationUnit> asts) {
 	for (IASTTranslationUnit ast : asts) {
 	    if (ast != null) {
-		ast.accept(new FunctionDefinitionVisitor(ast.getContainingFilename(), getAllFunctions()));
+		FunctionDefinitionVisitor visitor = new FunctionDefinitionVisitor(ast.getContainingFilename(),
+			getAllFunctions());
+		ast.accept(visitor);
+		visitor.getFunctionCallMap().entrySet().forEach(entry -> {
+		    if (TransformUtil.listContainsMethod(
+			    TransformUtil.getMainClassFromClasses(createdClasses).getMethods(), entry.getKey())) {
+			functionCalls.addCallGraphEntry(entry.getKey(), entry.getValue());
+		    } else {
+			functionCalls.addOutsideFunctionEntry(entry.getKey(), entry.getValue());
+		    }
+		});
 	    }
 	}
 	// PointerConversionDataHolder.writeResultsToFile();
+    }
+
+    private void createClassesFromCallChains() {
+	CallChainAnalyzer analyzer = new CallChainAnalyzer();
+	List<List<Vertex>> classes = analyzer.createClasses(
+		new CallGraph(functionCalls.getCallGraphFunctionCalls(),
+			TransformUtil.getMainClassFromClasses(createdClasses).getMethods()),
+		functionCalls.getOutsideFunctionCalls());
+
+	for (List<Vertex> createdClass : classes) {
+	    System.out.println("---------------NEW CLASS------------");
+	    for (Vertex vertex : createdClass) {
+		System.out.println(vertex.getName());
+	    }
+	}
+
+	createdClasses.addAll(new CallChainClassCreator().createCallChainClasses(classes,
+		TransformUtil.getMainClassFromClasses(createdClasses).getMethods(), functionCalls));
     }
 
     private void createSupplementingMethods() {
@@ -143,14 +179,8 @@ public class CToJavaTransformer {
 
     private List<OOMethod> getAllFunctions() {
 	List<OOMethod> functions = new ArrayList<OOMethod>();
-	for (OOMethod function : globalFunctions) {
-	    functions.add(function);
-	}
-	for (OOClass cl : createdClasses) {
-	    for (OOMethod method : cl.getMethods()) {
-		functions.add(method);
-	    }
-	}
+	globalFunctions.forEach(function -> functions.add(function));
+	createdClasses.forEach(cl -> cl.getMethods().forEach(method -> functions.add(method)));
 
 	return functions;
     }

@@ -144,8 +144,11 @@ public class FieldReferenceConverter {
 	setterCall.setFunctionName("set" + TransformUtil
 		.getWithUpperCaseFirstCharacter(fieldReference.getFieldName().resolveBinding().getName()));
 
-	setterCall.getArgumentExpressions().add(
-		TransformUtil.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), setArgument));
+	OOExpression expression = TransformUtil
+		.convertExpressionAndProcessPrecedingStatements(new ExpressionConverter(), setArgument);
+	if (expression != null) {
+	    setterCall.getArgumentExpressions().add(expression);
+	}
 	setOwnerExpression(setterCall, fieldReference);
 
 	return setterCall;
